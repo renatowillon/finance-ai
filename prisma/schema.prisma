@@ -52,7 +52,6 @@ enum TransactionCategory {
   ROUPAS
   VIAGENS
   CONTAS
-  OUTRAS
 }
 
 enum TransactionPaymentMethods {
