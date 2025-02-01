@@ -6,13 +6,21 @@ import {
 } from "lucide-react";
 import SumaryCard from "./summary-card";
 import { db } from "@/app/_lib/prisma";
+import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 
 interface SumaryProps {
   month: string;
 }
 
 const SumaryCards = async ({ month }: SumaryProps) => {
+  const { userId } = await auth();
+  if (!userId) {
+    redirect("/login");
+  }
+
   const where = {
+    userId,
     date: {
       gte: new Date(`2025-${month}-01`),
       lt: new Date(`2025-${month}-31`),
