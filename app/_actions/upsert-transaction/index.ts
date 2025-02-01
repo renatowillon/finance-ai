@@ -27,11 +27,11 @@ export const upsertTransaction = async (params: upsertTransactionParams) => {
     throw new Error("Não autorizado!, realize o login.");
   }
   await db.transaction.upsert({
-    where: {
-      id: params.id,
-    },
     update: { ...params, userId },
     create: { ...params, userId },
+    where: {
+      id: params.id ?? "",
+    },
   });
   revalidatePath("/transaction");
 };
