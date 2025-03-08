@@ -60,8 +60,8 @@ const TransactionsPieChats = ({
     },
   ];
   return (
-    <Card className="flex flex-col p-12">
-      <CardContent className="flex-1 pb-0">
+    <Card className="flex flex-col">
+      <CardContent className="flex-1">
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px]"

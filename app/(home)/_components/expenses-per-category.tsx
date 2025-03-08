@@ -23,7 +23,7 @@ const ExpensesPerCategory = ({
               <p className="text-sm font-bold">
                 {TRANSACTION_CATEGORY_LABELS[category.category]}
               </p>
-              <p className="text-sm font-bold">{category.percentageOfTotal}</p>
+              <p className="text-sm font-bold">{category.percentageOfTotal}%</p>
             </div>
             <Progress value={category.percentageOfTotal} />
           </div>
