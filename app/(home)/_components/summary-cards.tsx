@@ -5,55 +5,28 @@ import {
   WalletIcon,
 } from "lucide-react";
 import SumaryCard from "./summary-card";
-import { db } from "@/app/_lib/prisma";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
 interface SumaryProps {
   month: string;
+  balance: number;
+  depositTotal: number;
+  investimentsTotal: number;
+  expensesTotal: number;
 }
 
-const SumaryCards = async ({ month }: SumaryProps) => {
+const SumaryCards = async ({
+  balance,
+  depositTotal,
+  expensesTotal,
+  investimentsTotal,
+}: SumaryProps) => {
   const { userId } = await auth();
   if (!userId) {
     redirect("/login");
   }
 
-  const where = {
-    userId,
-    date: {
-      gte: new Date(`2025-${month}-01`),
-      lt: new Date(`2025-${month}-31`),
-    },
-  };
-  const depositTotal = Number(
-    (
-      await db.transaction.aggregate({
-        where: { ...where, type: "DEPOSITO" },
-        _sum: { amount: true },
-      })
-    )?._sum?.amount,
-  );
-
-  const investimentsTotal = Number(
-    (
-      await db.transaction.aggregate({
-        where: { ...where, type: "INVESTIMENTO" },
-        _sum: { amount: true },
-      })
-    )?._sum?.amount,
-  );
-
-  const expensesTotal = Number(
-    (
-      await db.transaction.aggregate({
-        where: { ...where, type: "DESPESA" },
-        _sum: { amount: true },
-      })
-    )?._sum?.amount,
-  );
-
-  const balance = depositTotal - investimentsTotal - expensesTotal;
   return (
     <div className="space-y-6">
       <div>
