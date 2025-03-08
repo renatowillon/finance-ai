@@ -13,7 +13,14 @@ const LoginPage = async () => {
   return (
     <div className="grid h-full grid-cols-2">
       <div className="mx-auto flex h-full max-w-[550px] flex-col justify-center gap-3 p-8">
-        <p className="mb-8 text-slate-600/50">Logo do SaaS</p>
+        <p className="mb-8 text-slate-600/50">
+          <Image
+            src="/logo-wfinance.png"
+            width={173}
+            height={39}
+            alt="Wfinance"
+          />
+        </p>
         <h1 className="mb-3 text-4xl font-bold">Bem-Vindo</h1>
         <p className="mb-3 text-muted-foreground">
           A Finance AI é uma plataforma de gestão financeira que utiliza IA para
