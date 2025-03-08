@@ -13,7 +13,7 @@ const SumaryCard = ({ icon, title, amount, size }: SumaryCardProps) => {
   return (
     <Card className={`${size === "large" ? "bg-white bg-opacity-5" : ""}`}>
       <CardHeader className="flex-row items-center gap-4">
-        {icon}
+        <p className="gap-2 rounded-lg bg-primary/5 p-3">{icon}</p>
         <p
           className={`${size === "small" ? "text-muted-foreground" : "text-white opacity-70"}`}
         >
