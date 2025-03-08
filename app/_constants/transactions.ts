@@ -36,6 +36,15 @@ export const TRANSACTION_PAYMENT_METHOD_LABEL = {
   CARTAO_CREDITO: "Cartão de Crédito",
 };
 
+export const TRANSACTION_PAYMENT_METHOD_ICONS = {
+  [TransactionPaymentMethods.PIX]: "pix.svg",
+  [TransactionPaymentMethods.TRANSFERENCIA]: "transferência.svg",
+  [TransactionPaymentMethods.BOLETO]: "boleto.svg",
+  [TransactionPaymentMethods.DINHEIRO]: "dinheiro.svg",
+  [TransactionPaymentMethods.CARTAO_DEBITO]: "debito.svg",
+  [TransactionPaymentMethods.CARTAO_CREDITO]: "credito.svg",
+};
+
 export const TRANSACTION_TYPE_OPTIONS = [
   {
     value: TransactionType.DEPOSITO,
