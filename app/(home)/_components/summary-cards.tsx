@@ -14,6 +14,7 @@ interface SumaryProps {
   depositTotal: number;
   investimentsTotal: number;
   expensesTotal: number;
+  userCanAddTransaction?: boolean;
 }
 
 const SumaryCards = async ({
@@ -21,6 +22,7 @@ const SumaryCards = async ({
   depositTotal,
   expensesTotal,
   investimentsTotal,
+  userCanAddTransaction,
 }: SumaryProps) => {
   const { userId } = await auth();
   if (!userId) {
@@ -35,6 +37,7 @@ const SumaryCards = async ({
           title="Saldo"
           amount={balance}
           size="large"
+          userCanAddTransaction={userCanAddTransaction}
         />
       </div>
       <div className="grid grid-cols-3 gap-6">
