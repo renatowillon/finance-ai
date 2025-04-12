@@ -21,7 +21,7 @@ export const POST = async (request: Request) => {
   );
 
   switch (event.type) {
-    case "invoice.paid":
+    case "invoice.paid": {
       //atualizar o usuario com o novo plano
       const { customer, subscription, subscription_details } =
         event.data.object;
@@ -39,6 +39,27 @@ export const POST = async (request: Request) => {
         },
       });
       break;
+    }
+    case "customer.subscription.deleted":
+      {
+        //Remover o plano premium do usuario
+        const subscription = await stripe.subscriptions.retrieve(
+          event.data.object.id,
+        );
+        const clerkUserid = subscription?.metadata?.clerk_user_id;
+        if (!clerkUserid) {
+          return NextResponse.error();
+        }
+        await clerkClient().users.updateUser(clerkUserid, {
+          privateMetadata: {
+            stripeCustomerId: null,
+            stripeSubscriptionId: null,
+          },
+          publicMetadata: {
+            subscriptionPlan: null,
+          },
+        });
+      }
+      return NextResponse.json({ received: true });
   }
-  return NextResponse.json({ received: true });
 };
