@@ -26,6 +26,16 @@ model Transaction {
   userId        String
 }
 
+model User{
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  senha String
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  status Boolean @default(true)
+}
+
 enum TransactionType {
   DEPOSITO
   DESPESA
