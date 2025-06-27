@@ -39,8 +39,14 @@ model User{
   updateAt DateTime @updatedAt
   status Boolean @default(true)
   transactions Transaction[]
+  plano Planos @default(FREE)
 
   @@map("users")
+}
+
+enum Planos {
+  FREE
+  PREMIUM
 }
 
 enum TransactionType {
