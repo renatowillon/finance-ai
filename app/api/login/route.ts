@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-
 import { db } from "../../_lib/prisma";
+
 export async function POST(req: NextRequest) {
   const { email, senha } = await req.json();
   const user = await db.user.findUnique({ where: { email } });
@@ -17,8 +17,10 @@ export async function POST(req: NextRequest) {
 
   response.cookies.set("userId", String(user.id), {
     httpOnly: true,
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 60 * 60 * 24 * 7, // 7 dias
     path: "/",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   });
   return response;
 }

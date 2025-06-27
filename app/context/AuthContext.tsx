@@ -1,8 +1,10 @@
 "use client";
+import { User } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type AuthContextType = {
-  userId: string | null;
+  userId: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -10,17 +12,18 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [userId, setUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<User | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/me", {
-      credentials: "include", // <--- ESSENCIAL
-    }).then(async (res) => {
-      if (res.ok) {
-        const data = await res.json();
-        setUserId(data.userId);
-      }
-    });
+    fetch("/api/eu", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.userId) {
+          router.push("/login");
+        }
+      });
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -33,7 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (res.ok) {
       const data = await res.json();
-      setUserId(data.userId);
+      setUserId(data);
     } else {
       throw new Error("Erro ao fazer login");
     }

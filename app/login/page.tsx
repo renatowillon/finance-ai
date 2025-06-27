@@ -16,6 +16,7 @@ import {
   FormLabel,
 } from "../_components/ui/form";
 import { Input } from "../_components/ui/input";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const form = useForm<z.infer<typeof formSchemaUser>>({
@@ -26,13 +27,24 @@ const LoginPage = () => {
     },
   });
 
+  const router = useRouter();
   const onSubmit = async (values: z.infer<typeof formSchemaUser>) => {
     try {
-      await axios.post("../api/login", {
-        email: values.email,
-        senha: values.senha,
-      });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const response = await axios.post(
+        "/api/login",
+        {
+          email: values.email,
+          senha: values.senha,
+        },
+        { withCredentials: true },
+      );
+
+      if (response.status === 200) {
+        //Login realizado com sucesso
+        router.push("/");
+      } else {
+        console.error("Erro ao fazer login", response.data.error);
+      }
     } catch (error) {
       console.log(error);
     }

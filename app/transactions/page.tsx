@@ -5,17 +5,19 @@ import AddTransactionButton from "../_components/add-transactions-button";
 import Navbar from "../_components/navbar";
 import { ScrollArea } from "../_components/ui/scroll-area";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
-// import { useAuth } from "../context/AuthContext";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 const TransactionsPage = async () => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  // const { usrId } = useAuth();
-  // if (!userId) {
-  //   redirect("/login");
-  // }
+  const cookieStore = cookies();
+  const userIdString = cookieStore.get("userId")?.value;
+  const userId = userIdString ? Number(userIdString) : null;
+  if (!userId) {
+    redirect("/login");
+  }
 
   const transactions = await db.transaction.findMany({
-    // where: { userId },
+    where: { userId },
   });
   const userCanAddTransaction = await canUserAddTransaction();
   return (

@@ -9,6 +9,7 @@ import ExpensesPerCategory from "./_components/expenses-per-category";
 import LastTransactions from "./_components/last-transactions";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import AiReportButton from "./_components/ai-report-button";
+import { cookies } from "next/headers";
 
 interface HomeProps {
   searchParams: {
@@ -17,8 +18,15 @@ interface HomeProps {
 }
 
 const Home = async ({ searchParams: { month } }: HomeProps) => {
-  const currentMonth = String(new Date().getMonth() + 1).padStart(2, "0");
+  const cookieStore = cookies();
+  const userIdString = cookieStore.get("userId")?.value;
+  const userId = userIdString ? Number(userIdString) : null;
 
+  if (!userId) {
+    redirect("/login");
+  }
+
+  const currentMonth = String(new Date().getMonth() + 1).padStart(2, "0");
   const monthIsInvalid = !month || !isMatch(month, "MM");
   if (monthIsInvalid) {
     redirect(`/?month=${currentMonth}`);

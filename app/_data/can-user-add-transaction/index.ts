@@ -1,14 +1,16 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { cookies } from "next/headers";
 import { getCurrentMonthTransactions } from "../get-current-month-transaction";
 
 export const canUserAddTransaction = async () => {
-  const { userId } = await auth();
+  const cookieStore = cookies();
+  const userIdString = cookieStore.get("userId")?.value;
+  const userId = userIdString ? Number(userIdString) : null;
+  // const { userId } = await useAuth();
+  if (!userId) {
+    throw new Error("Usuário não autenticado");
+  }
   if (!userId) {
     throw new Error("usuario não autenticado");
-  }
-  const user = await clerkClient.users.getUser(userId);
-  if (user.publicMetadata.subscriptionPlan == "premium") {
-    return true;
   }
 
   const currentMonthTransactions = await getCurrentMonthTransactions();
