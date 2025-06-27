@@ -1,4 +1,3 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Navbar from "../_components/navbar";
 import SumaryCards from "./_components/summary-cards";
@@ -18,10 +17,6 @@ interface HomeProps {
 }
 
 const Home = async ({ searchParams: { month } }: HomeProps) => {
-  const { userId } = await auth();
-  if (!userId) {
-    redirect("/login");
-  }
   const currentMonth = String(new Date().getMonth() + 1).padStart(2, "0");
 
   const monthIsInvalid = !month || !isMatch(month, "MM");

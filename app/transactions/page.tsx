@@ -3,19 +3,19 @@ import { DataTable } from "../_components/ui/data-table";
 import { TransactionsColumns } from "./_columns";
 import AddTransactionButton from "../_components/add-transactions-button";
 import Navbar from "../_components/navbar";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { ScrollArea } from "../_components/ui/scroll-area";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
+// import { useAuth } from "../context/AuthContext";
 
 const TransactionsPage = async () => {
-  const { userId } = await auth();
-  if (!userId) {
-    redirect("/login");
-  }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  // const { usrId } = useAuth();
+  // if (!userId) {
+  //   redirect("/login");
+  // }
 
   const transactions = await db.transaction.findMany({
-    where: { userId },
+    // where: { userId },
   });
   const userCanAddTransaction = await canUserAddTransaction();
   return (

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Mulish } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
+import { AuthProvider } from "./context/AuthContext";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
@@ -21,13 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${mulish.className} dark antialiased`}>
-        <ClerkProvider
-          appearance={{
-            baseTheme: dark,
-          }}
-        >
+        <AuthProvider>
           <div className="flex h-full flex-col">{children}</div>
-        </ClerkProvider>
+        </AuthProvider>
       </body>
     </html>
   );
