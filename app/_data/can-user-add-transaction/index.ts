@@ -1,19 +1,28 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { getSession } from "@/app/_lib/session"; // Importe sua nova função
 import { getCurrentMonthTransactions } from "../get-current-month-transaction";
 
-export const canUserAddTransaction = async () => {
-  const { userId } = await auth();
-  if (!userId) {
-    throw new Error("usuario não autenticado");
+export const canUserAddTransaction = async (): Promise<boolean> => {
+  // Substitui o `auth()` do Clerk pela sua função
+  const session = await getSession();
+
+  if (!session?.userId) {
+    // O ideal é retornar false para verificações de permissão
+    return false;
   }
-  const user = await clerkClient.users.getUser(userId);
-  if (user.publicMetadata.subscriptionPlan == "premium") {
+
+  // Acessa o plano de assinatura diretamente da sessão
+  if (session.subscriptionPlan === "premium") {
     return true;
   }
 
-  const currentMonthTransactions = await getCurrentMonthTransactions();
+  // Passa o userId para a função que precisa dele
+  const currentMonthTransactions = await getCurrentMonthTransactions(
+    session.userId,
+  );
+
   if (currentMonthTransactions >= 10) {
     return false;
   }
+
   return true;
 };

@@ -25,10 +25,12 @@
     "@stripe/stripe-js": "^4.9.0",
     "@tanstack/react-table": "^8.20.5",
     "axios": "^1.10.0",
+    "bcrypt": "^6.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "git-commit-msg-linter": "^5.0.8",
+    "jose": "^6.0.12",
     "lucide-react": "^0.460.0",
     "next": "^14.2.30",
     "prisma": "^5.21.1",
@@ -44,6 +46,7 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

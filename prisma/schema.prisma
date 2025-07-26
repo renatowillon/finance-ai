@@ -38,6 +38,7 @@ model User{
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
   status Boolean @default(true)
+  plano Planos
   transactions Transaction[]
 
   @@map("users")
@@ -47,6 +48,11 @@ enum TransactionType {
   DEPOSITO
   DESPESA
   INVESTIMENTO
+}
+
+enum Planos {
+  FREE
+  PREMIUM
 }
 
 enum TransactionCategory {

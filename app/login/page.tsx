@@ -16,8 +16,10 @@ import {
   FormLabel,
 } from "../_components/ui/form";
 import { Input } from "../_components/ui/input";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchemaUser>>({
     resolver: zodResolver(formSchemaUser),
     defaultValues: {
@@ -28,13 +30,18 @@ const LoginPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchemaUser>) => {
     try {
-      await axios.post("../api/login", {
+      const res = await axios.post("/api/login", {
         email: values.email,
         senha: values.senha,
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      console.log(error);
+      console.log("✅ Login sucesso:", res.data);
+      router.push("/");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error(
+        "❌ erro no Login: ",
+        error.response?.data || error.message,
+      );
     }
     console.log(values);
   };

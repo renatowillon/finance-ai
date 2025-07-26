@@ -1,5 +1,4 @@
 "use client";
-import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -46,7 +45,6 @@ const Navbar = () => {
           Assinatura
         </Link>
       </div>
-      <UserButton showName />
     </nav>
   );
 };
