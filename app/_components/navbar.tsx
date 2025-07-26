@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const pathname = usePathname();
+
   return (
     <nav className="flex justify-between border-b border-solid px-8 py-4">
       <div className="flex items-center gap-10">
@@ -48,5 +49,4 @@ const Navbar = () => {
     </nav>
   );
 };
-
 export default Navbar;

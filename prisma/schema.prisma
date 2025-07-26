@@ -40,8 +40,14 @@ model User{
   status Boolean @default(true)
   plano Planos
   transactions Transaction[]
+  plano Planos @default(FREE)
 
   @@map("users")
+}
+
+enum Planos {
+  FREE
+  PREMIUM
 }
 
 enum TransactionType {
