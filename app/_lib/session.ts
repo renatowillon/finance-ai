@@ -10,6 +10,11 @@ interface UserJWTPayload {
   exp: number; // Expiration time
 }
 
+interface UserPayload {
+  userId: number;
+  email: string;
+  subscriptionPlan?: string;
+}
 /**
  * Verifica o cookie de sessão e retorna o payload do usuário se for válido.
  * Esta função substitui o `auth()` do Clerk no lado do servidor.
@@ -25,6 +30,19 @@ export async function getSession() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     // Token inválido (expirado, malformado, etc.)
+    return null;
+  }
+}
+
+const secret = new TextEncoder().encode(process.env.JWT_SECRET_KEY);
+
+export async function pegarUsuarioToken(
+  token: string,
+): Promise<UserPayload | null> {
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    return payload as unknown as UserPayload; // faz cast seguro
+  } catch {
     return null;
   }
 }

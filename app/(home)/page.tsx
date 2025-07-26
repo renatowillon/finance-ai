@@ -10,6 +10,7 @@ import LastTransactions from "./_components/last-transactions";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import AiReportButton from "./_components/ai-report-button";
 import { cookies } from "next/headers";
+import { pegarUsuarioToken } from "../_lib/session";
 
 interface HomeProps {
   searchParams: {
@@ -19,12 +20,17 @@ interface HomeProps {
 
 const Home = async ({ searchParams: { month } }: HomeProps) => {
   const cookieStore = cookies();
-  const userIdString = cookieStore.get("userId")?.value;
-  const userId = userIdString ? Number(userIdString) : null;
+  const token = cookieStore.get("session_token")?.value;
 
-  if (!userId) {
+  if (!token) {
     redirect("/login");
   }
+
+  const user = await pegarUsuarioToken(token);
+  if (!user) {
+    redirect("/login");
+  }
+  console.log("Usuario Logado: ", user.userId, user.email);
 
   const currentMonth = String(new Date().getMonth() + 1).padStart(2, "0");
   const monthIsInvalid = !month || !isMatch(month, "MM");

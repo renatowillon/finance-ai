@@ -7,19 +7,28 @@ import { ScrollArea } from "../_components/ui/scroll-area";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import { pegarUsuarioToken } from "../_lib/session";
 
 const TransactionsPage = async () => {
   const cookieStore = cookies();
-  const userIdString = cookieStore.get("userId")?.value;
-  const userId = userIdString ? Number(userIdString) : null;
-  if (!userId) {
+  const token = cookieStore.get("session_token")?.value;
+
+  if (!token) {
+    redirect("/login");
+  }
+
+  const user = await pegarUsuarioToken(token!);
+  if (!user) {
     redirect("/login");
   }
 
   const transactions = await db.transaction.findMany({
-    where: { userId },
+    where: { userId: user.userId },
+    orderBy: { createAt: "desc" },
   });
+
   const userCanAddTransaction = await canUserAddTransaction();
+
   return (
     <>
       <Navbar />
