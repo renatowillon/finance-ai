@@ -5,6 +5,9 @@ import { jwtVerify } from "jose";
 interface UserJWTPayload {
   userId: string;
   email: string;
+  name: string;
+  status: boolean;
+  plano: string;
   subscriptionPlan: string;
   iat: number; // Issued at
   exp: number; // Expiration time
@@ -12,8 +15,10 @@ interface UserJWTPayload {
 
 interface UserPayload {
   userId: number;
+  name: string;
+  status: boolean;
+  plano: string;
   email: string;
-  subscriptionPlan?: string;
 }
 /**
  * Verifica o cookie de sessão e retorna o payload do usuário se for válido.

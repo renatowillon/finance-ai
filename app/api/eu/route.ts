@@ -11,6 +11,8 @@ export async function GET() {
   return NextResponse.json({
     userId: session.userId,
     email: session.email,
-    subscriptionPlan: session.subscriptionPlan,
+    name: session.name,
+    plano: session.plano,
+    status: session.status,
   });
 }

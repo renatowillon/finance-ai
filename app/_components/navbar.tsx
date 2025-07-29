@@ -2,12 +2,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import UserMenu from "./user-menu";
 
 const Navbar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="flex justify-between border-b border-solid px-8 py-4">
+    <nav className="flex items-center justify-between border-b border-solid px-8 py-4">
       <div className="flex items-center gap-10">
         <Image
           src="/logo-wfinance.png"
@@ -46,6 +47,7 @@ const Navbar = () => {
           Assinatura
         </Link>
       </div>
+      <UserMenu />
     </nav>
   );
 };

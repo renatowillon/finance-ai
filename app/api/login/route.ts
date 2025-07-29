@@ -41,10 +41,12 @@ export async function POST(req: NextRequest) {
     const token = await new SignJWT({
       userId: user.id,
       email: user.email,
+      name: user.name,
+      status: user.status,
+      plano: user.plano,
       // IMPORTANTE: Inclua os dados que você precisa na sessão!
       // Você mencionou 'subscriptionPlan' antes. Adicione-o aqui.
       // Supondo que esteja em `publicMetadata` como no Clerk. Adapte se necessário.
-      subscriptionPlan: user.plano || "free",
     })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
