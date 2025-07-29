@@ -1,11 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { getSession } from "@/app/_lib/session"; // ou ajuste o caminho se necessário
 
-export async function GET(req: NextRequest) {
-  const userId = req.cookies.get("userId")?.value;
+export async function GET() {
+  const session = await getSession();
 
-  if (!userId) {
+  if (!session) {
     return NextResponse.json({ userId: null });
   }
 
-  return NextResponse.json({ userId });
+  return NextResponse.json({
+    userId: session.userId,
+    email: session.email,
+    subscriptionPlan: session.subscriptionPlan,
+  });
 }

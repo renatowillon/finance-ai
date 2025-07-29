@@ -22,9 +22,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       .then((data) => {
         if (!data.userId) {
           router.push("/login");
+        } else {
+          setUserId(data.userId);
         }
       });
-  });
+  }, []);
 
   const login = async (email: string, password: string) => {
     const res = await fetch("/api/login", {

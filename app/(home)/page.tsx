@@ -25,8 +25,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
   if (!token) {
     redirect("/login");
   }
-
-  const user = await pegarUsuarioToken(token);
+  const user = await pegarUsuarioToken(token!);
   if (!user) {
     redirect("/login");
   }

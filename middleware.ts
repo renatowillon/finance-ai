@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const userId = req.cookies.get("session_token")?.value;
+  const token = req.cookies.get("session_token")?.value;
   const path = req.nextUrl.pathname;
   const isPublicPath =
     path.startsWith("/login") ||
     path.startsWith("/cadastro") ||
     path.startsWith("/api/login") ||
     path.startsWith("/api/cadastro") ||
-    path.startsWith("/api/me") ||
+    path.startsWith("/api/eu") ||
     path.startsWith("/api/logout");
 
-  if (!userId && !isPublicPath) {
+  if (!token && !isPublicPath) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 

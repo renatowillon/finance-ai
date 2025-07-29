@@ -6,20 +6,24 @@ import AcquirePlanButton from "./_components/acquire-plan-button";
 import { Badge } from "../_components/ui/badge";
 import { getCurrentMonthTransactions } from "../_data/get-current-month-transaction";
 import { cookies } from "next/headers";
+import { pegarUsuarioToken } from "../_lib/session";
 
 const SubscriptionsPage = async () => {
   const cookieStore = cookies();
-  const userIdString = cookieStore.get("userId")?.value;
-  const userId = userIdString ? Number(userIdString) : null;
-  // const { userId } = await useAuth();
-  if (!userId) {
-    throw new Error("Usuário não autenticado");
-  }
-  if (!userId) {
+  const token = cookieStore.get("session_token")?.value;
+
+  if (!token) {
     redirect("/login");
   }
 
-  const currentMonthTransactions = await getCurrentMonthTransactions();
+  const user = await pegarUsuarioToken(token!);
+  if (!user) {
+    redirect("/login");
+  }
+
+  const currentMonthTransactions = await getCurrentMonthTransactions(
+    String(user.userId),
+  );
 
   return (
     <>
