@@ -9,6 +9,7 @@ import {
   TRANSACTION_PAYMENT_METHOD_LABEL,
 } from "@/app/_constants/transactions";
 import EditTransactionButton from "../_components/edit-transaction-button";
+import { deleteTransaction } from "@/app/_actions/delete-transaction";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -63,7 +64,11 @@ export const TransactionsColumns: ColumnDef<Transaction>[] = [
       return (
         <div className="space-x-1">
           <EditTransactionButton transaction={transaction} />
-          <Button variant="ghost" size="icon">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => deleteTransaction(transaction.id)}
+          >
             <Trash2Icon />
           </Button>
         </div>
