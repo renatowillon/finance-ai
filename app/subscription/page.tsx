@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import Navbar from "../_components/navbar";
 import { Card, CardContent, CardHeader } from "../_components/ui/card";
 import { CheckIcon, X } from "lucide-react";
 import AcquirePlanButton from "./_components/acquire-plan-button";
@@ -27,7 +26,6 @@ const SubscriptionsPage = async () => {
 
   return (
     <>
-      <Navbar />
       <div className="space-y-6 p-6">
         <h1 className="text-2xl font-bold">Assinatura</h1>
         <div className="flex gap-6">

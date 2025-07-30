@@ -2,7 +2,6 @@ import { db } from "../_lib/prisma";
 import { DataTable } from "../_components/ui/data-table";
 import { TransactionsColumns } from "./_columns";
 import AddTransactionButton from "../_components/add-transactions-button";
-import Navbar from "../_components/navbar";
 import { ScrollArea } from "../_components/ui/scroll-area";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import { redirect } from "next/navigation";
@@ -31,7 +30,6 @@ const TransactionsPage = async () => {
 
   return (
     <>
-      <Navbar />
       <div className="space-y-6 p-6">
         {/* titulo e botão */}
         <div className="flex w-full items-center justify-between">

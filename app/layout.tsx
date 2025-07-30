@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Mulish } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
+import { Sidebar } from "./_components/nav-bar";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
@@ -19,9 +20,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${mulish.className} dark antialiased`}>
+      <body className={`${mulish.className} dark flex antialiased`}>
         <AuthProvider>
-          <div className="flex h-full flex-col">{children}</div>
+          <Sidebar />
+          <div className="flex h-full w-full flex-col overflow-scroll p-5">
+            {children}
+          </div>
         </AuthProvider>
       </body>
     </html>
