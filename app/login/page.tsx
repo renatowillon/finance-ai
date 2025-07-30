@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Button } from "../_components/ui/button";
-import { LogInIcon } from "lucide-react";
+import { InfoIcon, LogInIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { formSchemaUser } from "./components/formSchemaUser";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,12 @@ import {
 } from "../_components/ui/form";
 import { Input } from "../_components/ui/input";
 import { useRouter } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../_components/ui/tooltip";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -71,7 +77,30 @@ const LoginPage = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="flex justify-between">
+                    <p>Email</p>
+                    <p>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <InfoIcon
+                              className="text-muted-foreground"
+                              size={20}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-center font-bold">
+                              Acesso Demontração
+                            </p>
+                            <p className="text-muted-foreground">
+                              Usuario: demo@wdev.com
+                            </p>
+                            <p className="text-muted-foreground">Senha: 123</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </p>
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="Digite seu email" {...field} />
                   </FormControl>
