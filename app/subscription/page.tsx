@@ -1,24 +1,31 @@
 import { redirect } from "next/navigation";
-import Navbar from "../_components/navbar";
-import { auth, clerkClient } from "@clerk/nextjs/server";
 import { Card, CardContent, CardHeader } from "../_components/ui/card";
 import { CheckIcon, X } from "lucide-react";
-
 import AcquirePlanButton from "./_components/acquire-plan-button";
 import { Badge } from "../_components/ui/badge";
 import { getCurrentMonthTransactions } from "../_data/get-current-month-transaction";
+import { cookies } from "next/headers";
+import { pegarUsuarioToken } from "../_lib/session";
 
 const SubscriptionsPage = async () => {
-  const { userId } = await auth();
-  if (!userId) {
+  const cookieStore = cookies();
+  const token = cookieStore.get("session_token")?.value;
+
+  if (!token) {
     redirect("/login");
   }
-  const user = await clerkClient().users.getUser(userId);
-  const currentMonthTransactions = await getCurrentMonthTransactions();
-  const hasPremiumPlan = user?.publicMetadata.subscriptionPlan == "premium";
+
+  const user = await pegarUsuarioToken(token!);
+  if (!user) {
+    redirect("/login");
+  }
+
+  const currentMonthTransactions = await getCurrentMonthTransactions(
+    String(user.userId),
+  );
+
   return (
     <>
-      <Navbar />
       <div className="space-y-6 p-6">
         <h1 className="text-2xl font-bold">Assinatura</h1>
         <div className="flex gap-6">
@@ -48,12 +55,11 @@ const SubscriptionsPage = async () => {
           </Card>
           <Card className="w-[450px]">
             <CardHeader className="relative border-b border-solid py-8">
-              {hasPremiumPlan && (
-                <Badge className="absolute left-4 top-4 bg-primary/20 text-primary">
-                  Ativo
-                </Badge>
-              )}
-              <h2 className="text-center text-2xl font-semibold">
+              <Badge className="absolute left-4 top-4 bg-primary/20 text-primary">
+                Ativo
+              </Badge>
+
+              <h2 className="pointer-events-none text-center text-2xl font-semibold">
                 Plano Premium
               </h2>
               <div className="flex items-center justify-center gap-3">

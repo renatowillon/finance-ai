@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Mulish } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
+import { AuthProvider } from "./context/AuthContext";
+import { SidebarClient } from "./_components/sidebarClient";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
@@ -20,14 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${mulish.className} dark antialiased`}>
-        <ClerkProvider
-          appearance={{
-            baseTheme: dark,
-          }}
-        >
-          <div className="flex h-full flex-col">{children}</div>
-        </ClerkProvider>
+      <body className={`${mulish.className} dark flex antialiased`}>
+        <AuthProvider>
+          <SidebarClient />
+          <div className="flex h-full w-full flex-col overflow-scroll p-5">
+            {children}
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

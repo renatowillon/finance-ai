@@ -1,6 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Navbar from "../_components/navbar";
 import SumaryCards from "./_components/summary-cards";
 import TimeSelect from "./_components/time-selects";
 import { isMatch } from "date-fns";
@@ -10,6 +8,8 @@ import ExpensesPerCategory from "./_components/expenses-per-category";
 import LastTransactions from "./_components/last-transactions";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import AiReportButton from "./_components/ai-report-button";
+import { cookies } from "next/headers";
+import { pegarUsuarioToken } from "../_lib/session";
 
 interface HomeProps {
   searchParams: {
@@ -18,12 +18,19 @@ interface HomeProps {
 }
 
 const Home = async ({ searchParams: { month } }: HomeProps) => {
-  const { userId } = await auth();
-  if (!userId) {
+  const cookieStore = cookies();
+  const token = cookieStore.get("session_token")?.value;
+
+  if (!token) {
     redirect("/login");
   }
-  const currentMonth = String(new Date().getMonth() + 1).padStart(2, "0");
+  const user = await pegarUsuarioToken(token!);
+  if (!user) {
+    redirect("/login");
+  }
+  console.log("Usuario Logado: ", user.userId, user.email);
 
+  const currentMonth = String(new Date().getMonth() + 1).padStart(2, "0");
   const monthIsInvalid = !month || !isMatch(month, "MM");
   if (monthIsInvalid) {
     redirect(`/?month=${currentMonth}`);
@@ -32,7 +39,6 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
   const userCanAddTransaction = await canUserAddTransaction();
   return (
     <>
-      <Navbar />
       <div className="flex flex-col space-y-6 p-6">
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold">Dashboard</h1>

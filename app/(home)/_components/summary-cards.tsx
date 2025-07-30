@@ -5,8 +5,6 @@ import {
   WalletIcon,
 } from "lucide-react";
 import SumaryCard from "./summary-card";
-import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
 
 interface SumaryProps {
   month: string;
@@ -24,11 +22,6 @@ const SumaryCards = async ({
   investimentsTotal,
   userCanAddTransaction,
 }: SumaryProps) => {
-  const { userId } = await auth();
-  if (!userId) {
-    redirect("/login");
-  }
-
   return (
     <div className="space-y-6">
       <div>
