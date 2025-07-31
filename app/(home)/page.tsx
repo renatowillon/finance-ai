@@ -39,30 +39,44 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
   const userCanAddTransaction = await canUserAddTransaction();
   return (
     <>
-      <div className="flex flex-col space-y-6 p-6">
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <div className="flex items-center gap-4">
+      <div className="flex flex-col space-y-4 p-4 sm:space-y-6 sm:p-6">
+        {/* Header responsivo */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:gap-0">
+          <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
             <AiReportButton />
             <TimeSelect />
           </div>
         </div>
-        <div className="grid grid-cols-[2fr,1fr] gap-6 overflow-hidden">
-          <div className="flex flex-col gap-6 overflow-hidden">
+
+        {/* Layout principal responsivo */}
+        <div className="grid grid-cols-1 gap-4 overflow-hidden sm:gap-6 xl:grid-cols-[2fr,1fr]">
+          {/* Coluna principal */}
+          <div className="flex flex-col gap-4 overflow-hidden sm:gap-6">
+            {/* Cards de resumo */}
             <SumaryCards
               month={month}
               {...dashboard}
               userCanAddTransaction={userCanAddTransaction}
             />
-            <div className="grid grid-cols-3 grid-rows-1 gap-6">
-              <TransactionsPieChats {...dashboard} />
-              <ExpensesPerCategory
-                expensesPerCategory={dashboard.totalExpensePerCategory}
-              />
+
+            {/* Gráficos responsivos */}
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <div className="md:col-span-2 xl:col-span-1">
+                <TransactionsPieChats {...dashboard} />
+              </div>
+              <div className="md:col-span-2 xl:col-span-2">
+                <ExpensesPerCategory
+                  expensesPerCategory={dashboard.totalExpensePerCategory}
+                />
+              </div>
             </div>
           </div>
 
-          <LastTransactions lastTransactions={dashboard.lastTransactions} />
+          {/* Últimas transações - responsivo */}
+          <div className="xl:max-h-screen xl:overflow-y-auto">
+            <LastTransactions lastTransactions={dashboard.lastTransactions} />
+          </div>
         </div>
       </div>
     </>

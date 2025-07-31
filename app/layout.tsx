@@ -21,11 +21,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${mulish.className} dark flex antialiased`}>
+      <body
+        className={`${mulish.className} dark flex flex-col antialiased md:flex-row`}
+      >
         <Toaster richColors position="top-right" duration={2000} />
         <AuthProvider>
           <SidebarClient />
-          <div className="flex h-full w-full flex-col overflow-scroll p-5">
+          <div className="flex h-full w-full flex-col overflow-scroll lg:p-5">
             {children}
           </div>
         </AuthProvider>

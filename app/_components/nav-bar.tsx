@@ -10,6 +10,8 @@ import {
   ChevronRight,
   TrendingUp,
   Wallet,
+  Menu,
+  X,
 } from "lucide-react";
 
 import {
@@ -76,6 +78,7 @@ const menuItems: MenuItem[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const [expandedItems, setExpandedItems] = useState<string[]>(["carteira"]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleExpanded = (itemId: string) => {
     setExpandedItems((prev) =>
@@ -83,6 +86,14 @@ export function Sidebar() {
         ? prev.filter((id) => id !== itemId)
         : [...prev, itemId],
     );
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
   };
 
   const isPathActive = (href?: string) => {
@@ -131,7 +142,7 @@ export function Sidebar() {
     }
 
     return (
-      <Link href={item.href!} key={item.id}>
+      <Link href={item.href!} key={item.id} onClick={closeMobileMenu}>
         <Button
           variant="ghost"
           className={cn(
@@ -148,30 +159,103 @@ export function Sidebar() {
   };
 
   return (
-    <div className="flex h-screen w-64 flex-col rounded-md border shadow-sm">
-      {/* Header */}
-      <div className="border-b p-6">
-        <div className="flex items-center justify-center">
+    <>
+      {/* Mobile Header */}
+      <div className="flex items-center justify-between border-b bg-background p-4 md:hidden">
+        <div className="flex items-center">
           <Image
             src="/logo-wfinance.png"
-            width={173}
-            height={39}
+            width={120}
+            height={27}
             alt="Wfinance"
           />
         </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleMobileMenu}
+          className="h-9 w-9 p-0"
+        >
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
       </div>
 
-      {/* Menu */}
-      <nav className="flex-1 overflow-y-auto py-4">
-        <div className="space-y-1 px-2">
-          {menuItems.map((item) => renderMenuItem(item))}
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={closeMobileMenu}
+        />
+      )}
+
+      {/* Desktop Sidebar */}
+      <div className="hidden h-screen w-64 flex-col rounded-md border shadow-sm md:flex">
+        {/* Header */}
+        <div className="border-b p-6">
+          <div className="flex items-center justify-center">
+            <Image
+              src="/logo-wfinance.png"
+              width={173}
+              height={39}
+              alt="Wfinance"
+            />
+          </div>
         </div>
-      </nav>
 
-      {/* Footer */}
-      <div className="border-t p-4">
-        <UserMenu />
+        {/* Menu */}
+        <nav className="flex-1 overflow-y-auto py-4">
+          <div className="space-y-1 px-2">
+            {menuItems.map((item) => renderMenuItem(item))}
+          </div>
+        </nav>
+
+        {/* Footer */}
+        <div className="border-t p-4">
+          <UserMenu />
+        </div>
       </div>
-    </div>
+
+      {/* Mobile Sidebar */}
+      <div
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-64 transform bg-background shadow-lg transition-transform duration-300 ease-in-out md:hidden",
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between border-b p-4">
+          <div className="flex items-center">
+            <Image
+              src="/logo-wfinance.png"
+              width={120}
+              height={27}
+              alt="Wfinance"
+            />
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={closeMobileMenu}
+            className="h-9 w-9 p-0"
+          >
+            <X className="h-5 w-5" />
+            <span className="sr-only">Close menu</span>
+          </Button>
+        </div>
+
+        {/* Mobile Menu */}
+        <nav className="flex-1 overflow-y-auto py-4">
+          <div className="space-y-1 px-2">
+            {menuItems.map((item) => renderMenuItem(item))}
+          </div>
+        </nav>
+
+        {/* Mobile Footer */}
+        <div className="border-t p-4">
+          <UserMenu />
+        </div>
+      </div>
+    </>
   );
 }

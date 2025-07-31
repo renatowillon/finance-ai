@@ -27,9 +27,9 @@ const SumaryCard = ({
           {title}
         </p>
       </CardHeader>
-      <CardContent className="flex justify-between">
+      <CardContent className="flex flex-col justify-between sm:flex-row">
         <p
-          className={`font-bold ${size === "small" ? "text-2xl" : "text-4xl"}`}
+          className={`pb-5 font-bold ${size === "small" ? "text-2xl" : "text-4xl"}`}
         >
           {Intl.NumberFormat("pt-BR", {
             style: "currency",
