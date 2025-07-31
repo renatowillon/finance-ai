@@ -21,6 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="apple-mobile-web-app-title" content="wFinance" />
+      </head>
       <body
         className={`${mulish.className} dark flex flex-col antialiased md:flex-row`}
       >
