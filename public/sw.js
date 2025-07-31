@@ -1,12 +1,7 @@
-self.addEventListener('install', (event) => {
-  console.log('[SW] Instalado');
-  self.skipWaiting();
+self.addEventListener('install', () => {
+  console.log('Service Worker instalado ✅');
 });
 
-self.addEventListener('activate', (event) => {
-  console.log('[SW] Ativado');
-});
-
-self.addEventListener('fetch', (event) => {
-  // Apenas obrigatório para o Chrome ativar como "PWA instalável"
+self.addEventListener('activate', () => {
+  console.log('Service Worker ativado ✅');
 });
