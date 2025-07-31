@@ -257,11 +257,11 @@ export function Sidebar() {
         </nav>
 
         {/* Mobile Footer */}
-        <div>
-          <InstallButton />
-        </div>
         <div className="border-t p-4">
           <UserMenu />
+        </div>
+        <div className="border-t">
+          <InstallButton />
         </div>
       </div>
     </>
