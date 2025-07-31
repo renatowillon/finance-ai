@@ -2,7 +2,6 @@ import { getSession } from "@/app/_lib/session"; // Importe sua nova função
 import { getCurrentMonthTransactions } from "../get-current-month-transaction";
 
 export const canUserAddTransaction = async (): Promise<boolean> => {
-  // Substitui o `auth()` do Clerk pela sua função
   const session = await getSession();
 
   if (!session?.userId) {
@@ -11,7 +10,7 @@ export const canUserAddTransaction = async (): Promise<boolean> => {
   }
 
   // Acessa o plano de assinatura diretamente da sessão
-  if (session.subscriptionPlan === "premium") {
+  if (session.plano === "PREMIUM") {
     return true;
   }
 
@@ -20,7 +19,7 @@ export const canUserAddTransaction = async (): Promise<boolean> => {
     session.userId,
   );
 
-  if (currentMonthTransactions >= 10) {
+  if (currentMonthTransactions >= 10 && session.plano === "FREE") {
     return false;
   }
 

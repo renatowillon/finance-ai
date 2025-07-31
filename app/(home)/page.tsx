@@ -37,6 +37,7 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
   }
   const dashboard = await getDashboard(month);
   const userCanAddTransaction = await canUserAddTransaction();
+
   return (
     <>
       <div className="flex flex-col space-y-4 p-4 sm:space-y-6 sm:p-6">
