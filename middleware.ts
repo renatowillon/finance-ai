@@ -19,5 +19,7 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|logo-wfinance.png).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|logo-wfinance.png|web-app-manifest-192x192.png|web-app-manifest-512x512.png).*)",
+  ],
 };

@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Mulish } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
@@ -8,11 +7,6 @@ import { Toaster } from "sonner";
 const mulish = Mulish({
   subsets: ["latin-ext"],
 });
-
-export const metadata: Metadata = {
-  title: "Finance AI",
-  description: "Finance AI",
-};
 
 export default function RootLayout({
   children,
