@@ -6,6 +6,7 @@ import { Badge } from "../_components/ui/badge";
 import { getCurrentMonthTransactions } from "../_data/get-current-month-transaction";
 import { cookies } from "next/headers";
 import { pegarUsuarioToken } from "../_lib/session";
+import PlanoAdquirido from "./_components/planoAdquirido";
 
 const SubscriptionsPage = async () => {
   const cookieStore = cookies();
@@ -30,7 +31,12 @@ const SubscriptionsPage = async () => {
         <h1 className="text-2xl font-bold">Assinatura</h1>
         <div className="flex flex-col gap-6 sm:flex-row">
           <Card className="sm:w-[450px]">
-            <CardHeader className="border-b border-solid py-8">
+            <CardHeader className="relative border-b border-solid py-8">
+              {user.plano === "FREE" && (
+                <Badge className="absolute left-4 top-4 bg-primary/20 text-primary">
+                  Ativo
+                </Badge>
+              )}
               <h2 className="text-center text-2xl font-semibold">
                 Plano Básico
               </h2>
@@ -55,9 +61,11 @@ const SubscriptionsPage = async () => {
           </Card>
           <Card className="sm:w-[450px]">
             <CardHeader className="relative border-b border-solid py-8">
-              <Badge className="absolute left-4 top-4 bg-primary/20 text-primary">
-                Ativo
-              </Badge>
+              {user.plano === "PREMIUM" && (
+                <Badge className="absolute left-4 top-4 bg-primary/20 text-primary">
+                  Ativo
+                </Badge>
+              )}
 
               <h2 className="pointer-events-none text-center text-2xl font-semibold">
                 Plano Premium
@@ -77,7 +85,8 @@ const SubscriptionsPage = async () => {
                 <CheckIcon className="text-primary" />
                 <p>Relatório de IA</p>
               </div>
-              <AcquirePlanButton />
+              {user.plano === "FREE" && <AcquirePlanButton />}
+              {user.plano === "PREMIUM" && <PlanoAdquirido />}
             </CardContent>
           </Card>
         </div>
