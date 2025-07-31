@@ -102,7 +102,7 @@ const LoginPage = () => {
                     </p>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite seu email" {...field} />
+                    <Input placeholder="demo@wdev.com" {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -114,7 +114,7 @@ const LoginPage = () => {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input placeholder="*********" {...field} type="password" />
+                    <Input placeholder="123" {...field} type="password" />
                   </FormControl>
                 </FormItem>
               )}
