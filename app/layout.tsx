@@ -3,6 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import { SidebarClient } from "./_components/sidebarClient";
 import { Toaster } from "sonner";
+import RegisterSW from "./_components/RegisterSW";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
@@ -18,10 +19,13 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="apple-mobile-web-app-title" content="wFinance" />
+        <meta name="theme-color" content="#233b6a" />
       </head>
       <body
         className={`${mulish.className} dark flex flex-col antialiased md:flex-row`}
       >
+        {" "}
+        <RegisterSW />
         <Toaster richColors position="top-right" duration={2000} />
         <AuthProvider>
           <SidebarClient />

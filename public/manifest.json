@@ -1,6 +1,12 @@
 {
   "name": "wFinance",
   "short_name": "wFinance",
+  "scope": "/",
+  "start_url": "/",
+  "theme_color": "#233b6a",
+  "background_color": "#233b6a",
+  "display": "standalone",
+  "description": "Gerencie suas finanças com o wFinance de forma simples e segura.",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -14,8 +20,5 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "theme_color": "#233b6a",
-  "background_color": "#233b6a",
-  "display": "standalone"
+  ]
 }

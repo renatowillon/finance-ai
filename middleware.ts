@@ -20,6 +20,6 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|manifest.json|logo-wfinance.png|web-app-manifest-192x192.png|web-app-manifest-512x512.png).*)",
+    "/((?!_next/static|_next/image|favicon.ico|manifest.json|sw.js|logo-wfinance.png|web-app-manifest-192x192.png|web-app-manifest-512x512.png).*)",
   ],
 };
