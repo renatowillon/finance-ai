@@ -52,8 +52,8 @@ export default function InstallButton() {
   if (!showInstallButton) return null;
 
   return (
-    <div className="flex items-center justify-start px-1 py-3">
-      <Button onClick={handleInstallClick}>
+    <div className="flex items-center justify-center px-4 py-4">
+      <Button onClick={handleInstallClick} className="rounded-full">
         <Download className="mr-2 h-4 w-4" /> Instalar app
       </Button>
     </div>
