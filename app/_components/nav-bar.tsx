@@ -26,6 +26,7 @@ import UserMenu from "./user-menu";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import InstallButton from "./InstallButton";
 
 interface MenuItem {
   id: string;
@@ -211,6 +212,9 @@ export function Sidebar() {
         </nav>
 
         {/* Footer */}
+        <div>
+          <InstallButton />
+        </div>
         <div className="border-t p-4">
           <UserMenu />
         </div>
@@ -252,6 +256,9 @@ export function Sidebar() {
         </nav>
 
         {/* Mobile Footer */}
+        <div>
+          <InstallButton />
+        </div>
         <div className="border-t p-4">
           <UserMenu />
         </div>
