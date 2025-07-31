@@ -1,7 +1,6 @@
 {
   "name": "wFinance",
   "short_name": "wFinance",
-  "scope": "/",
   "start_url": "/",
   "theme_color": "#233b6a",
   "background_color": "#233b6a",
