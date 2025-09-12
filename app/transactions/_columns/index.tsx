@@ -5,11 +5,11 @@ import TransactionTypeBadge from "../_components/type-badge";
 import { Button } from "@/app/_components/ui/button";
 import { Trash2Icon } from "lucide-react";
 import {
-  TRANSACTION_CATEGORY_LABELS,
-  TRANSACTION_PAYMENT_METHOD_LABEL,
+  ROTULOS_CATEGORIAS_TRANSACAO,
+  ROTULOS_METODOS_PAGAMENTO_TRANSACAO,
 } from "@/app/_constants/transactions";
 import EditTransactionButton from "../_components/edit-transaction-button";
-import { deleteTransaction } from "@/app/_actions/delete-transaction";
+import { excluirTransacao } from "@/app/_actions/delete-transaction";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -30,13 +30,13 @@ export const TransactionsColumns: ColumnDef<Transaction>[] = [
     accessorKey: "category",
     header: "Categoria",
     cell: ({ row: { original: transaction } }) =>
-      TRANSACTION_CATEGORY_LABELS[transaction.category],
+      ROTULOS_CATEGORIAS_TRANSACAO[transaction.category],
   },
   {
     accessorKey: "paymentMethod",
     header: "Método de Pagamento",
     cell: ({ row: { original: transaction } }) =>
-      TRANSACTION_PAYMENT_METHOD_LABEL[transaction.paymentMethod],
+      ROTULOS_METODOS_PAGAMENTO_TRANSACAO[transaction.paymentMethod],
   },
   {
     accessorKey: "date",
@@ -63,11 +63,11 @@ export const TransactionsColumns: ColumnDef<Transaction>[] = [
     cell: ({ row: { original: transaction } }) => {
       return (
         <div className="space-x-1">
-          <EditTransactionButton transaction={transaction} />
+          <EditTransactionButton transacao={transaction} />
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => deleteTransaction(transaction.id)}
+            onClick={() => excluirTransacao(transaction.id)}
           >
             <Trash2Icon />
           </Button>

@@ -6,27 +6,27 @@ import { ScrollArea } from "../_components/ui/scroll-area";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { pegarUsuarioToken } from "../_lib/session";
+import { obterUsuarioPorToken } from "../_lib/session";
 
 const TransactionsPage = async () => {
-  const cookieStore = cookies();
-  const token = cookieStore.get("session_token")?.value;
+  const armazenadorCookie = cookies();
+  const token = armazenadorCookie.get("session_token")?.value;
 
   if (!token) {
     redirect("/login");
   }
 
-  const user = await pegarUsuarioToken(token!);
-  if (!user) {
+  const usuario = await obterUsuarioPorToken(token!);
+  if (!usuario) {
     redirect("/login");
   }
 
-  const transactions = await db.transaction.findMany({
-    where: { userId: user.userId },
+  const transacoes = await db.transaction.findMany({
+    where: { userId: usuario.userId },
     orderBy: { createAt: "desc" },
   });
 
-  const userCanAddTransaction = await canUserAddTransaction();
+  const usuarioPodeAdicionarTransacao = await canUserAddTransaction();
 
   return (
     <>
@@ -34,13 +34,15 @@ const TransactionsPage = async () => {
         {/* titulo e botão */}
         <div className="flex w-full items-center justify-between">
           <h1 className="text-2xl font-bold">Transações</h1>
-          <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
+          <AddTransactionButton
+            usuarioPodeAdicionarTransacao={usuarioPodeAdicionarTransacao}
+          />
         </div>
 
         <ScrollArea>
           <DataTable
             columns={TransactionsColumns}
-            data={JSON.parse(JSON.stringify(transactions))}
+            data={JSON.parse(JSON.stringify(transacoes))}
           />
         </ScrollArea>
       </div>

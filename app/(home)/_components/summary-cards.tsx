@@ -6,22 +6,22 @@ import {
 } from "lucide-react";
 import SumaryCard from "./summary-card";
 
-interface SumaryProps {
+interface PropriedadesResumo {
   month: string;
-  balance: number;
-  depositTotal: number;
-  investimentsTotal: number;
-  expensesTotal: number;
+  saldo: number;
+  totalDepositos: number;
+  totalInvestimentos: number;
+  totalDespesas: number;
   userCanAddTransaction?: boolean;
 }
 
 const SumaryCards = async ({
-  balance,
-  depositTotal,
-  expensesTotal,
-  investimentsTotal,
+  saldo,
+  totalDepositos,
+  totalDespesas,
+  totalInvestimentos,
   userCanAddTransaction,
-}: SumaryProps) => {
+}: PropriedadesResumo) => {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Card de Saldo - sempre ocupa toda largura */}
@@ -29,7 +29,7 @@ const SumaryCards = async ({
         <SumaryCard
           icon={<WalletIcon size={16} />}
           title="Saldo"
-          amount={balance}
+          amount={saldo}
           size="large"
           userCanAddTransaction={userCanAddTransaction}
         />
@@ -43,7 +43,7 @@ const SumaryCards = async ({
             <SumaryCard
               icon={<TrendingUpIcon size={16} className="text-primary" />}
               title="Receitas"
-              amount={depositTotal}
+              amount={totalDepositos}
               size="small"
             />
           </div>
@@ -56,7 +56,7 @@ const SumaryCards = async ({
                 />
               }
               title="Despesas"
-              amount={expensesTotal}
+              amount={totalDespesas}
               size="small"
             />
           </div>
@@ -67,7 +67,7 @@ const SumaryCards = async ({
           <SumaryCard
             icon={<PiggyBankIcon size={16} />}
             title="Investido"
-            amount={investimentsTotal}
+            amount={totalInvestimentos}
             size="small"
           />
         </div>

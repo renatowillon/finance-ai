@@ -5,24 +5,24 @@ import AcquirePlanButton from "./_components/acquire-plan-button";
 import { Badge } from "../_components/ui/badge";
 import { getCurrentMonthTransactions } from "../_data/get-current-month-transaction";
 import { cookies } from "next/headers";
-import { pegarUsuarioToken } from "../_lib/session";
+import { obterUsuarioPorToken } from "../_lib/session";
 import PlanoAdquirido from "./_components/planoAdquirido";
 
 const SubscriptionsPage = async () => {
-  const cookieStore = cookies();
-  const token = cookieStore.get("session_token")?.value;
+  const armazenadorCookie = cookies();
+  const token = armazenadorCookie.get("session_token")?.value;
 
   if (!token) {
     redirect("/login");
   }
 
-  const user = await pegarUsuarioToken(token!);
-  if (!user) {
+  const usuario = await obterUsuarioPorToken(token!);
+  if (!usuario) {
     redirect("/login");
   }
 
-  const currentMonthTransactions = await getCurrentMonthTransactions(
-    String(user.userId),
+  const transacoesDoMesAtual = await getCurrentMonthTransactions(
+    String(usuario.userId),
   );
 
   return (
@@ -32,7 +32,7 @@ const SubscriptionsPage = async () => {
         <div className="flex flex-col gap-6 sm:flex-row">
           <Card className="sm:w-[450px]">
             <CardHeader className="relative border-b border-solid py-8">
-              {user.plano === "FREE" && (
+              {usuario.plano === "FREE" && (
                 <Badge className="absolute left-4 top-4 bg-primary/20 text-primary">
                   Ativo
                 </Badge>
@@ -49,9 +49,7 @@ const SubscriptionsPage = async () => {
             <CardContent className="space-y-6 py-8">
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
-                <p>
-                  Apenas 10 transações por mês ({currentMonthTransactions}/10)
-                </p>
+                <p>Apenas 10 transações por mês ({transacoesDoMesAtual}/10)</p>
               </div>
               <div className="flex items-center gap-2">
                 <X className="" />
@@ -61,7 +59,7 @@ const SubscriptionsPage = async () => {
           </Card>
           <Card className="sm:w-[450px]">
             <CardHeader className="relative border-b border-solid py-8">
-              {user.plano === "PREMIUM" && (
+              {usuario.plano === "PREMIUM" && (
                 <Badge className="absolute left-4 top-4 bg-primary/20 text-primary">
                   Ativo
                 </Badge>
@@ -85,8 +83,8 @@ const SubscriptionsPage = async () => {
                 <CheckIcon className="text-primary" />
                 <p>Relatório de IA</p>
               </div>
-              {user.plano === "FREE" && <AcquirePlanButton />}
-              {user.plano === "PREMIUM" && <PlanoAdquirido />}
+              {usuario.plano === "FREE" && <AcquirePlanButton />}
+              {usuario.plano === "PREMIUM" && <PlanoAdquirido />}
             </CardContent>
           </Card>
         </div>

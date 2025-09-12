@@ -37,7 +37,9 @@ const SumaryCard = ({
           }).format(amount)}
         </p>
         {size === "large" && (
-          <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
+          <AddTransactionButton
+            usuarioPodeAdicionarTransacao={userCanAddTransaction}
+          />
         )}
       </CardContent>
     </Card>
