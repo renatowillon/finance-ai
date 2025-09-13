@@ -5,17 +5,6 @@ import { useState } from "react";
 import { Formbanco } from "../_components/bancos/formBanco";
 import { TypeBanco } from "../types";
 
-export const CorBanco = [
-  "#3B82F6", // blue
-  "#10B981", // emerald
-  "#8B5CF6", // violet
-  "#F59E0B", // amber
-  "#EF4444", // red
-  "#06B6D4", // cyan
-  "#84CC16", // lime
-  "#F97316", // orange
-];
-
 const Bancos = () => {
   const [abrirFormBanco, setAbrirFormBanco] = useState(false);
   const [banco, setBanco] = useState<TypeBanco[]>([]);

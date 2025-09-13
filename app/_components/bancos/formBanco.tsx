@@ -1,4 +1,3 @@
-import { CorBanco } from "@/app/bancos/page";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useState } from "react";
 import { Label } from "../ui/label";
@@ -12,6 +11,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { TypeBanco } from "@/app/types";
+import { CorBanco } from "@/app/models";
 
 interface FormBancoProps {
   open: boolean;
