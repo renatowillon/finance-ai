@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   const bancos = await db.banco.findMany();
-  return NextResponse.json({ bancos });
+  return NextResponse.json(bancos);
 }
 
 export async function POST(req: NextRequest) {

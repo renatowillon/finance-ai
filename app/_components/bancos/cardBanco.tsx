@@ -1,22 +1,37 @@
-import { Plus } from "lucide-react";
+import { Building2, EllipsisVertical } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
+import { TypeBanco } from "@/app/types";
+import { formatCurrency } from "@/app/_utils/currency";
 
 interface Props {
-  onClick: () => void;
+  data: TypeBanco;
 }
 
-export const CardBanco = ({ onClick }: Props) => {
+export const CardBanco = ({ data }: Props) => {
   return (
     <>
-      <Card className="flex flex-col items-center justify-center gap-2 bg-secondary/25 p-10">
-        <p className="text-xl font-semibold">Nenhum banco cadastrado</p>
-        <p className="text-base text-gray-500">
-          Comece adicionando sua primeira conta bancária
-        </p>
-        <Button onClick={onClick}>
-          <Plus /> Adicionar Banco
-        </Button>
+      <Card key={data.id} className="space-y-4 bg-secondary/25 p-8 lg:w-1/2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <span className="rounded-lg bg-primary/20 p-2 text-primary/80">
+              <Building2 />
+            </span>
+            <div>
+              <p className="text-lg font-bold">{data.nome}</p>
+              <p className="text-sm text-gray-500">{data.tipo}</p>
+            </div>
+          </div>
+          <Button className="bg-secondary/25 hover:bg-secondary">
+            <EllipsisVertical />
+          </Button>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-gray-500">Saldo Atual</div>
+          <div className="text.lg font-bold text-green-500">
+            {formatCurrency(data.saldoAtual)}
+          </div>
+        </div>
       </Card>
     </>
   );

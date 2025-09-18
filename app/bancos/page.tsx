@@ -8,13 +8,14 @@ import { fetchBanco } from "../fetche/bancoFetch";
 import { useQuery } from "@tanstack/react-query";
 import { useMutations } from "../mutetions/bancoMutation";
 import { CardBanco } from "../_components/bancos/cardBanco";
+import { InfoSemBanco } from "../_components/bancos/infoSemBanco";
 
 const Bancos = () => {
   const { criarMutation } = useMutations();
   const [abrirFormBanco, setAbrirFormBanco] = useState(false);
   //const [banco, setBanco] = useState<TypeBanco[]>([]);
 
-  const {} = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["bancos"],
     queryFn: fetchBanco,
     staleTime: 5 * (60 * 1000), //5 minutos
@@ -42,7 +43,11 @@ const Bancos = () => {
         onOpenChange={setAbrirFormBanco}
         onSubmit={AdicionarBanco}
       />
-      <CardBanco onClick={() => setAbrirFormBanco(true)} />
+      {isLoading && <InfoSemBanco onClick={() => setAbrirFormBanco(true)} />}
+
+      {data?.map((banco: TypeBanco) => (
+        <CardBanco key={banco.id} data={banco} />
+      ))}
     </div>
   );
 };
