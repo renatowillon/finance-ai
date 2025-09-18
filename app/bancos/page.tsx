@@ -42,7 +42,7 @@ const Bancos = () => {
         onOpenChange={setAbrirFormBanco}
         onSubmit={AdicionarBanco}
       />
-      <CardBanco />
+      <CardBanco onClick={() => setAbrirFormBanco(true)} />
     </div>
   );
 };
