@@ -64,7 +64,12 @@ const Home = async ({ searchParams: { month } }: PropriedadesHome) => {
             {/* Gráficos responsivos */}
             <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
               <div className="md:col-span-2 xl:col-span-1">
-                <TransactionsPieChats {...painelControle} />
+                <TransactionsPieChats
+                  totalDepositos={painelControle.totalDepositos}
+                  totalDespesas={painelControle.totalDespesas}
+                  totalInvestimentos={painelControle.totalInvestimentos}
+                  porcentagemPorTipo={painelControle.porcentagemPorTipo}
+                />
               </div>
               <div className="md:col-span-2 xl:col-span-2">
                 <ExpensesPerCategory

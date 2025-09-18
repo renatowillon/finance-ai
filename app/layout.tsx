@@ -4,6 +4,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { SidebarClient } from "./_components/sidebarClient";
 import { Toaster } from "sonner";
 import RegisterSW from "./_components/RegisterSW";
+import { Provider } from "./context/Provider";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
@@ -24,15 +25,16 @@ export default function RootLayout({
       <body
         className={`${mulish.className} dark flex flex-col antialiased md:flex-row`}
       >
-        {" "}
-        <RegisterSW />
-        <Toaster richColors position="top-right" duration={2000} />
-        <AuthProvider>
-          <SidebarClient />
-          <div className="flex h-full w-full flex-col overflow-y-scroll lg:p-5">
-            {children}
-          </div>
-        </AuthProvider>
+        <Provider>
+          <RegisterSW />
+          <Toaster richColors position="top-right" duration={2000} />
+          <AuthProvider>
+            <SidebarClient />
+            <div className="flex h-full w-full flex-col overflow-y-scroll lg:p-5">
+              {children}
+            </div>
+          </AuthProvider>
+        </Provider>
       </body>
     </html>
   );

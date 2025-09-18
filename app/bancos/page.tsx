@@ -3,24 +3,29 @@ import { Plus } from "lucide-react";
 import { Button } from "../_components/ui/button";
 import { useState } from "react";
 import { Formbanco } from "../_components/bancos/formBanco";
-import { TypeBanco } from "../types";
+import { TypeBanco, TypeBancoInput } from "../types";
+import { fetchBanco } from "../fetche/bancoFetch";
+import { useQuery } from "@tanstack/react-query";
+import { useMutations } from "../mutetions/bancoMutation";
+import { CardBanco } from "../_components/bancos/cardBanco";
 
 const Bancos = () => {
+  const { criarMutation } = useMutations();
   const [abrirFormBanco, setAbrirFormBanco] = useState(false);
-  const [banco, setBanco] = useState<TypeBanco[]>([]);
+  //const [banco, setBanco] = useState<TypeBanco[]>([]);
+
+  const {} = useQuery({
+    queryKey: ["bancos"],
+    queryFn: fetchBanco,
+    staleTime: 5 * (60 * 1000), //5 minutos
+  });
 
   function AdicionarBanco(values: Omit<TypeBanco, "id" | "saldoAtual">) {
-    const bancoNovo: TypeBanco = {
+    const bancoNovo: TypeBancoInput = {
       ...values,
-      id: "1",
       saldoAtual: values.saldoInicial,
     };
-
-    setBanco((prev) => [...prev, bancoNovo]);
-    localStorage.setItem("bancos", JSON.stringify(bancoNovo));
-
-    console.log(localStorage.getItem("bancos"));
-    console.log(banco);
+    criarMutation.mutate(bancoNovo);
   }
 
   return (
@@ -37,6 +42,7 @@ const Bancos = () => {
         onOpenChange={setAbrirFormBanco}
         onSubmit={AdicionarBanco}
       />
+      <CardBanco />
     </div>
   );
 };

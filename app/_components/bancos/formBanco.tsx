@@ -22,7 +22,7 @@ interface FormBancoProps {
 export const Formbanco = ({ open, onOpenChange, onSubmit }: FormBancoProps) => {
   const [formData, setFormData] = useState({
     nome: "",
-    tipo: "polpanca" as TypeBanco["tipo"],
+    tipo: "POUPANCA" as TypeBanco["tipo"],
     saldoInicial: "",
     cor: CorBanco[0],
   });
@@ -39,7 +39,7 @@ export const Formbanco = ({ open, onOpenChange, onSubmit }: FormBancoProps) => {
     });
     setFormData({
       nome: "",
-      tipo: "polpanca" as TypeBanco["tipo"],
+      tipo: "POUPANCA" as TypeBanco["tipo"],
       saldoInicial: "",
       cor: CorBanco[0],
     });
@@ -78,9 +78,9 @@ export const Formbanco = ({ open, onOpenChange, onSubmit }: FormBancoProps) => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="polpanca">Conta Polpança</SelectItem>
-                  <SelectItem value="contaCorrente">Conta Corrente</SelectItem>
-                  <SelectItem value="cartaoCredito">
+                  <SelectItem value="POUPANCA">Conta Poupança</SelectItem>
+                  <SelectItem value="CONTA_CORRENTE">Conta Corrente</SelectItem>
+                  <SelectItem value="CARTAO_CREDITO">
                     Cartão de Crédito
                   </SelectItem>
                 </SelectContent>
