@@ -8,7 +8,8 @@ import { fetchBanco } from "../fetche/bancoFetch";
 import { useQuery } from "@tanstack/react-query";
 import { useMutations } from "../mutetions/bancoMutation";
 import { CardBanco } from "../_components/bancos/cardBanco";
-import { InfoSemBanco } from "../_components/bancos/infoSemBanco";
+import { InfoSemDados } from "../_components/bancos/infoSemDados";
+import { Loading } from "../_components/loading";
 
 const Bancos = () => {
   const { criarMutation } = useMutations();
@@ -43,8 +44,15 @@ const Bancos = () => {
         onOpenChange={setAbrirFormBanco}
         onSubmit={AdicionarBanco}
       />
-      {isLoading && <InfoSemBanco onClick={() => setAbrirFormBanco(true)} />}
-
+      {isLoading && <Loading />}
+      {data?.lenght < 1 && (
+        <InfoSemDados
+          titulo="Nenhum banco cadastrado"
+          subtitulo="Comece adicionando sua primeira conta bancária"
+          tituloBotao="Adicionar Banco"
+          onClick={() => setAbrirFormBanco(true)}
+        />
+      )}
       {data?.map((banco: TypeBanco) => (
         <CardBanco key={banco.id} data={banco} />
       ))}

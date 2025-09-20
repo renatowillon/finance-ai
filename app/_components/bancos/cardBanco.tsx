@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { TypeBanco } from "@/app/types";
 import { formatCurrency } from "@/app/_utils/currency";
+import { ROTULOS_TIPO_CONTA } from "@/app/_constants/transactions";
 
 interface Props {
   data: TypeBanco;
@@ -19,7 +20,9 @@ export const CardBanco = ({ data }: Props) => {
             </span>
             <div>
               <p className="text-lg font-bold">{data.nome}</p>
-              <p className="text-sm text-gray-500">{data.tipo}</p>
+              <p className="text-sm text-gray-500">
+                {ROTULOS_TIPO_CONTA[data.tipo]}
+              </p>
             </div>
           </div>
           <Button className="bg-secondary/25 hover:bg-secondary">

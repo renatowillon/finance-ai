@@ -133,3 +133,9 @@ export const OPCOES_CATEGORIAS_TRANSACAO = [
     label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.OUTROS],
   },
 ];
+
+export const ROTULOS_TIPO_CONTA = {
+  POUPANCA: "Poupança",
+  CONTA_CORRENTE: "Conta Corrente",
+  CARTAO_CREDITO: "Cartão de Crédito",
+};
