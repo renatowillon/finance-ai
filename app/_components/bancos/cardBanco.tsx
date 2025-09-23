@@ -12,10 +12,22 @@ interface Props {
 export const CardBanco = ({ data }: Props) => {
   return (
     <>
-      <Card key={data.id} className="space-y-4 bg-secondary/25 p-8 lg:w-1/2">
+      <Card
+        key={data.id}
+        className={`space-y-4 p-8`}
+        style={{
+          background: `linear-gradient(135deg, hsl(var(--card)), ${data.cor}30)`,
+        }}
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span className="rounded-lg bg-primary/20 p-2 text-primary/80">
+            <span
+              className="rounded-lg p-2"
+              style={{
+                backgroundColor: `${data.cor}30`,
+                color: `${data.cor}`,
+              }}
+            >
               <Building2 />
             </span>
             <div>

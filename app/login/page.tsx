@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Button } from "../_components/ui/button";
-import { InfoIcon, LogInIcon } from "lucide-react";
+import { InfoIcon, Loader2Icon, LogInIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { formSchemaUser } from "./components/formSchemaUser";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -120,7 +120,17 @@ const LoginPage = () => {
               )}
             />
             <Button type="submit" className="w-full" variant={"outline"}>
-              <LogInIcon className="mr-2" /> Fazer Login
+              {form.formState.isSubmitting ? (
+                <div className="flex items-center justify-center">
+                  <Loader2Icon className="mr-2 animate-spin" />
+                  Entrando
+                </div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <LogInIcon className="mr-2" />
+                  Fazer Login
+                </div>
+              )}
             </Button>
           </form>
         </Form>
