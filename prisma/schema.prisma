@@ -25,6 +25,8 @@ model Transaction {
   updateAt      DateTime                  @updatedAt
   userId        Int
   author User @relation(fields: [userId], references: [id])
+  bancoId       Int @default(1)
+  transactionBanco Banco @relation(fields: [bancoId], references: [id])
   
   @@map("transactions")
 
@@ -51,6 +53,7 @@ model Banco {
   saldoInicial  Decimal @db.Decimal(10, 2)
   saldoAtual  Decimal @db.Decimal(10, 2)
   cor String
+  transactionsBanco Transaction[]
 
   @@map("bancos")
 }
