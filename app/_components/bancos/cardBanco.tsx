@@ -41,10 +41,18 @@ export const CardBanco = ({ data }: Props) => {
             <EllipsisVertical />
           </Button>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-500">Saldo Atual</div>
-          <div className="text.lg font-bold text-green-500">
-            {formatCurrency(data.saldoAtual)}
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <div className="text-lg text-gray-500">Saldo Atual</div>
+            <div className="text.lg font-bold text-green-500">
+              {formatCurrency(data.saldoAtual)}
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-500">Saldo Inicial</div>
+            <div className="text-sm font-bold text-green-500">
+              {formatCurrency(data.saldoInicial)}
+            </div>
           </div>
         </div>
       </Card>
