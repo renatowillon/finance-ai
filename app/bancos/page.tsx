@@ -55,7 +55,7 @@ const Bancos = () => {
       )}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {data?.map((banco: TypeBanco) => (
-          <CardBanco key={banco.id} data={banco} />
+          <CardBanco key={banco.id} dataBanco={banco} />
         ))}
       </div>
     </div>

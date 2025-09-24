@@ -40,6 +40,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { inserirOuAtualizarTransacao } from "../_actions/upsert-transaction";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchBanco } from "../fetche/bancoFetch";
+import { TypeBanco } from "../types";
 
 interface PropriedadesDialogoInserirOuAtualizarTransacao {
   estaAberto: boolean;
@@ -63,6 +66,7 @@ const esquemaFormulario = z.object({
     required_error: "O método de pagamento é obrigatório",
   }),
   data: z.date({ required_error: "A data é obrigatória" }),
+  bancoId: z.number({ required_error: "Banco é Obrigatorio" }),
 });
 
 type EsquemaFormulario = z.infer<typeof esquemaFormulario>;
@@ -83,20 +87,30 @@ const DialogoInserirOuAtualizarTransacao = ({
       tipo: "DEPOSITO",
       metodoPagamento: "DINHEIRO",
       data: new Date(),
+      bancoId: 1,
     },
   });
 
+  const queryCliente = useQueryClient();
   const aoEnviar = async (dados: EsquemaFormulario) => {
     try {
       await inserirOuAtualizarTransacao({ ...dados, id: idTransacao });
       definirSeEstaAberto(false);
       formulario.reset();
+      queryCliente.invalidateQueries({
+        queryKey: ["saldo"],
+      });
     } catch (erro) {
       console.error(erro);
     }
   };
 
   const eAtualizacao = Boolean(idTransacao);
+  const { data } = useQuery({
+    queryKey: ["bancos"],
+    queryFn: fetchBanco,
+    staleTime: 5 * (60 * 1000), //5 minutos
+  });
   return (
     <Dialog
       open={estaAberto}
@@ -118,7 +132,7 @@ const DialogoInserirOuAtualizarTransacao = ({
         <Form {...formulario}>
           <form
             onSubmit={formulario.handleSubmit(aoEnviar)}
-            className="space-y-8"
+            className="space-y-4"
           >
             <FormField
               control={formulario.control}
@@ -156,23 +170,23 @@ const DialogoInserirOuAtualizarTransacao = ({
             />
             <FormField
               control={formulario.control}
-              name="tipo"
+              name="bancoId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tipo</FormLabel>
+                  <FormLabel>Escolha o Banco</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    onValueChange={(val) => field.onChange(Number(val))}
+                    defaultValue={field.value ? String(field.value) : ""}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione um tipo"></SelectValue>
+                        <SelectValue placeholder="Selecione o banco"></SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {OPCOES_TIPOS_TRANSACAO.map((opcoes) => (
-                        <SelectItem key={opcoes.value} value={opcoes.value}>
-                          {opcoes.label}
+                      {data?.map((bancos: TypeBanco) => (
+                        <SelectItem key={bancos.id} value={String(bancos.id)}>
+                          {bancos.nome}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -181,6 +195,62 @@ const DialogoInserirOuAtualizarTransacao = ({
                 </FormItem>
               )}
             />
+            <div className="flex w-full items-center justify-center gap-4">
+              <FormField
+                control={formulario.control}
+                name="tipo"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Tipo</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um tipo"></SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {OPCOES_TIPOS_TRANSACAO.map((opcoes) => (
+                          <SelectItem key={opcoes.value} value={opcoes.value}>
+                            {opcoes.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={formulario.control}
+                name="categoria"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Categoria</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a categoria"></SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {OPCOES_CATEGORIAS_TRANSACAO.map((opcoes) => (
+                          <SelectItem key={opcoes.value} value={opcoes.value}>
+                            {opcoes.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={formulario.control}
@@ -199,34 +269,6 @@ const DialogoInserirOuAtualizarTransacao = ({
                     </FormControl>
                     <SelectContent>
                       {OPCOES_METODOS_PAGAMENTO_TRANSACAO.map((opcoes) => (
-                        <SelectItem key={opcoes.value} value={opcoes.value}>
-                          {opcoes.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={formulario.control}
-              name="categoria"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categoria</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione a categoria"></SelectValue>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {OPCOES_CATEGORIAS_TRANSACAO.map((opcoes) => (
                         <SelectItem key={opcoes.value} value={opcoes.value}>
                           {opcoes.label}
                         </SelectItem>
