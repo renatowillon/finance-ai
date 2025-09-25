@@ -31,6 +31,7 @@ export const Formbanco = ({ open, onOpenChange, onSubmit }: FormBancoProps) => {
     e.preventDefault();
 
     if (!formData.nome || !formData.saldoInicial) return;
+
     onSubmit({
       nome: formData.nome,
       tipo: formData.tipo,

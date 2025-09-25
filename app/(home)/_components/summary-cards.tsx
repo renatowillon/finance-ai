@@ -5,6 +5,7 @@ import {
   WalletIcon,
 } from "lucide-react";
 import SumaryCard from "./summary-card";
+import { CardBancosDashboard } from "@/app/_components/bancos/cardBancosDashboard";
 
 interface PropriedadesResumo {
   month: string;
@@ -25,10 +26,11 @@ const SumaryCards = async ({
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Card de Saldo - sempre ocupa toda largura */}
+      <CardBancosDashboard />
       <div>
         <SumaryCard
           icon={<WalletIcon size={16} />}
-          title="Saldo"
+          title="Saldo mensal"
           amount={saldo}
           size="large"
           userCanAddTransaction={userCanAddTransaction}
@@ -36,6 +38,7 @@ const SumaryCards = async ({
       </div>
 
       {/* Cards pequenos com layout responsivo */}
+
       <div className="space-y-4 sm:grid sm:grid-cols-3 sm:gap-6 sm:space-y-0">
         {/* Mobile: Receitas e Despesas lado a lado */}
         <div className="grid grid-cols-2 gap-4 sm:contents">

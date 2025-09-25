@@ -14,6 +14,7 @@ import { Loading } from "../_components/loading";
 const Bancos = () => {
   const { criarMutation } = useMutations();
   const [abrirFormBanco, setAbrirFormBanco] = useState(false);
+
   //const [banco, setBanco] = useState<TypeBanco[]>([]);
 
   const { data, isLoading } = useQuery({
@@ -28,6 +29,9 @@ const Bancos = () => {
       saldoAtual: values.saldoInicial,
     };
     criarMutation.mutate(bancoNovo);
+  }
+  function EditarBanco(values: TypeBanco) {
+    console.log(values);
   }
 
   return (
@@ -55,7 +59,7 @@ const Bancos = () => {
       )}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {data?.map((banco: TypeBanco) => (
-          <CardBanco key={banco.id} dataBanco={banco} />
+          <CardBanco key={banco.id} dataBanco={banco} editBanco={EditarBanco} />
         ))}
       </div>
     </div>

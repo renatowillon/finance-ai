@@ -55,6 +55,7 @@ const Home = async ({ searchParams: { month } }: PropriedadesHome) => {
           {/* Coluna principal */}
           <div className="flex flex-col gap-4 overflow-hidden sm:gap-6">
             {/* Cards de resumo */}
+
             <SumaryCards
               month={month}
               {...painelControle}
@@ -80,7 +81,7 @@ const Home = async ({ searchParams: { month } }: PropriedadesHome) => {
           </div>
 
           {/* Últimas transações - responsivo */}
-          <div className="xl:max-h-screen xl:overflow-y-auto">
+          <div className="space-y-6 xl:max-h-screen xl:overflow-y-auto">
             <LastTransactions
               lastTransactions={painelControle.ultimasTransacoes}
             />

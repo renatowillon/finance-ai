@@ -9,9 +9,10 @@ import axios from "axios";
 
 interface Props {
   dataBanco: TypeBanco;
+  editBanco: (banco: TypeBanco) => void;
 }
 
-export const CardBanco = ({ dataBanco }: Props) => {
+export const CardBanco = ({ dataBanco, editBanco }: Props) => {
   const { data, isLoading } = useQuery({
     queryKey: ["saldo", dataBanco.id],
     queryFn: async () => {
@@ -47,7 +48,10 @@ export const CardBanco = ({ dataBanco }: Props) => {
               </p>
             </div>
           </div>
-          <Button className="bg-secondary/25 hover:bg-secondary">
+          <Button
+            onClick={() => editBanco(dataBanco)}
+            className="bg-secondary/25 hover:bg-secondary"
+          >
             <EllipsisVertical />
           </Button>
         </div>
