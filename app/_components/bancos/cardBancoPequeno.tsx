@@ -54,7 +54,9 @@ export const CardBancoPequeno = ({ dataBanco }: Props) => {
               {data && <p>{formatCurrency(Number(data?.toFixed(2)))}</p>}
               {isLoading && (
                 <>
-                  <p className="flex gap-2 text-sm font-semibold">
+                  <p
+                    className={`flex gap-2 text-sm font-semibold text-green-500`}
+                  >
                     <Loader2 className="animate-spin duration-1000" />
                   </p>
                 </>
