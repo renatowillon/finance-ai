@@ -35,6 +35,7 @@ const Bancos = () => {
           cor: values.cor,
           tipo: values.tipo,
           saldoInicial: values.saldoInicial,
+          saldoAtual: 0,
         },
       });
     } else {
