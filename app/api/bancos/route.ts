@@ -4,7 +4,7 @@ import { TypeBanco } from "@/app/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
-  const bancos = await db.banco.findMany();
+  const bancos = await db.banco.findMany({ orderBy: { id: "asc" } });
   return NextResponse.json(bancos);
 }
 

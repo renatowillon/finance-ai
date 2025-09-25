@@ -12,8 +12,9 @@ import { InfoSemDados } from "../_components/bancos/infoSemDados";
 import { Loading } from "../_components/loading";
 
 const Bancos = () => {
-  const { criarMutation } = useMutations();
+  const { criarMutation, atualizarMutation } = useMutations();
   const [abrirFormBanco, setAbrirFormBanco] = useState(false);
+  const [bancoSelecionado, setBancoSelecionado] = useState<TypeBanco>();
 
   //const [banco, setBanco] = useState<TypeBanco[]>([]);
 
@@ -24,13 +25,28 @@ const Bancos = () => {
   });
 
   function AdicionarBanco(values: Omit<TypeBanco, "id" | "saldoAtual">) {
-    const bancoNovo: TypeBancoInput = {
-      ...values,
-      saldoAtual: values.saldoInicial,
-    };
-    criarMutation.mutate(bancoNovo);
+    if (bancoSelecionado) {
+      const bancoParaAtualizar = bancoSelecionado;
+      atualizarMutation.mutate({
+        id: bancoSelecionado.id,
+        banco: {
+          id: bancoParaAtualizar.id,
+          nome: values.nome,
+          cor: values.cor,
+          tipo: values.tipo,
+          saldoInicial: values.saldoInicial,
+        },
+      });
+    } else {
+      const bancoNovo: TypeBancoInput = {
+        ...values,
+      };
+      criarMutation.mutate(bancoNovo);
+    }
   }
   function EditarBanco(values: TypeBanco) {
+    setBancoSelecionado(values);
+    setAbrirFormBanco(true);
     console.log(values);
   }
 
@@ -39,7 +55,12 @@ const Bancos = () => {
       {/* titulo e botão */}
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Meus Bancos</h1>
-        <Button onClick={() => setAbrirFormBanco(true)}>
+        <Button
+          onClick={() => {
+            setBancoSelecionado(undefined);
+            setAbrirFormBanco(true);
+          }}
+        >
           <Plus /> Adicionar Banco
         </Button>
       </div>
@@ -47,6 +68,7 @@ const Bancos = () => {
         open={abrirFormBanco}
         onOpenChange={setAbrirFormBanco}
         onSubmit={AdicionarBanco}
+        bancoSelecionado={bancoSelecionado}
       />
       {isLoading && <Loading />}
       {data?.lenght < 1 && (

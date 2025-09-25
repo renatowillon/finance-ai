@@ -3,7 +3,7 @@ export interface TypeBanco {
   nome: string;
   tipo: "POUPANCA" | "CONTA_CORRENTE" | "CARTAO_CREDITO";
   saldoInicial: number;
-  saldoAtual: number;
+  saldoAtual?: number;
   cor: string;
 }
 

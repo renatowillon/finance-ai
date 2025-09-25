@@ -3,7 +3,7 @@ import { db } from "../_lib/prisma";
 import { TypeBanco } from "../types";
 
 export const PegarBancos = async () => {
-  return db.banco.findMany();
+  return db.banco.findMany({ orderBy: { id: "asc" } });
 };
 
 export const PegarUmBanco = async (id: number) => {

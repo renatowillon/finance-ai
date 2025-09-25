@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -17,15 +17,43 @@ interface FormBancoProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (banco: Omit<TypeBanco, "id" | "saldoAtual">) => void;
+  bancoSelecionado?: TypeBanco;
 }
 
-export const Formbanco = ({ open, onOpenChange, onSubmit }: FormBancoProps) => {
+export const Formbanco = ({
+  open,
+  onOpenChange,
+  onSubmit,
+  bancoSelecionado,
+}: FormBancoProps) => {
   const [formData, setFormData] = useState({
     nome: "",
     tipo: "POUPANCA" as TypeBanco["tipo"],
     saldoInicial: "",
     cor: CorBanco[0],
   });
+
+  useEffect(() => {
+    if (open) {
+      if (bancoSelecionado) {
+        // Editar: preenche com os dados
+        setFormData({
+          nome: bancoSelecionado.nome,
+          tipo: bancoSelecionado.tipo,
+          saldoInicial: String(bancoSelecionado.saldoInicial),
+          cor: bancoSelecionado.cor,
+        });
+      } else {
+        // Criar: limpa o formulário
+        setFormData({
+          nome: "",
+          tipo: "POUPANCA",
+          saldoInicial: "",
+          cor: CorBanco[0],
+        });
+      }
+    }
+  }, [open, bancoSelecionado]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,13 +74,15 @@ export const Formbanco = ({ open, onOpenChange, onSubmit }: FormBancoProps) => {
     });
     onOpenChange(false);
   };
-
+  console.log("Banco Selecionado", bancoSelecionado);
   return (
     <div>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Adicionar Novo Banco</DialogTitle>
+            <DialogTitle>
+              {bancoSelecionado ? "Atualizar Banco" : "Adicionar Novo Banco"}
+            </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -130,7 +160,7 @@ export const Formbanco = ({ open, onOpenChange, onSubmit }: FormBancoProps) => {
                 Cancelar
               </Button>
               <Button type="submit" className="flex-1">
-                Criar
+                {bancoSelecionado ? "Atualizar" : "Criar"}
               </Button>
             </div>
           </form>
