@@ -10,13 +10,13 @@ import { useMutations } from "../mutetions/bancoMutation";
 import { CardBanco } from "../_components/bancos/cardBanco";
 import { InfoSemDados } from "../_components/bancos/infoSemDados";
 import { Loading } from "../_components/loading";
+import { useAuth } from "../context/AuthContext";
 
 const Bancos = () => {
   const { criarMutation, atualizarMutation } = useMutations();
   const [abrirFormBanco, setAbrirFormBanco] = useState(false);
   const [bancoSelecionado, setBancoSelecionado] = useState<TypeBanco>();
-
-  //const [banco, setBanco] = useState<TypeBanco[]>([]);
+  const { userId } = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: ["bancos"],
@@ -36,6 +36,7 @@ const Bancos = () => {
           tipo: values.tipo,
           saldoInicial: values.saldoInicial,
           saldoAtual: 0,
+          userId: Number(userId),
         },
       });
     } else {
@@ -72,7 +73,7 @@ const Bancos = () => {
         bancoSelecionado={bancoSelecionado}
       />
       {isLoading && <Loading />}
-      {data?.lenght < 1 && (
+      {data?.length < 1 && (
         <InfoSemDados
           titulo="Nenhum banco cadastrado"
           subtitulo="Comece adicionando sua primeira conta bancária"

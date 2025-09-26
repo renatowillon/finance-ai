@@ -1,14 +1,22 @@
 import { Banco } from "@prisma/client";
 import { db } from "../_lib/prisma";
 import { TypeBanco } from "../types";
+import { obterSessao } from "../_lib/session";
 
 export const PegarBancos = async () => {
-  return db.banco.findMany({ orderBy: { id: "asc" } });
+  const sessao = await obterSessao();
+  const usuarioLogado = sessao?.userId;
+  return db.banco.findMany({
+    where: { userId: Number(usuarioLogado) },
+    orderBy: { id: "asc" },
+  });
 };
 
 export const PegarUmBanco = async (id: number) => {
+  const sessao = await obterSessao();
+  const usuarioLogado = sessao?.userId;
   return db.banco.findUnique({
-    where: { id },
+    where: { id, userId: Number(usuarioLogado) },
   });
 };
 

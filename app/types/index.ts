@@ -5,6 +5,7 @@ export interface TypeBanco {
   saldoInicial: number;
   saldoAtual: number;
   cor: string;
+  userId: number;
 }
 
 export type TypeBancoInput = Omit<TypeBanco, "id" | "saldoAtual">;

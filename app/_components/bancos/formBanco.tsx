@@ -12,11 +12,12 @@ import {
 } from "../ui/select";
 import { TypeBanco } from "@/app/types";
 import { CorBanco } from "@/app/models";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface FormBancoProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (banco: Omit<TypeBanco, "id" | "saldoAtual">) => void;
+  onSubmit: (banco: Omit<TypeBanco, "id">) => void;
   bancoSelecionado?: TypeBanco;
 }
 
@@ -26,11 +27,15 @@ export const Formbanco = ({
   onSubmit,
   bancoSelecionado,
 }: FormBancoProps) => {
+  const { userId } = useAuth();
+
   const [formData, setFormData] = useState({
     nome: "",
     tipo: "POUPANCA" as TypeBanco["tipo"],
     saldoInicial: "",
     cor: CorBanco[0],
+    userId: undefined as number | undefined,
+    saldoAtual: 0,
   });
 
   useEffect(() => {
@@ -42,6 +47,8 @@ export const Formbanco = ({
           tipo: bancoSelecionado.tipo,
           saldoInicial: String(bancoSelecionado.saldoInicial),
           cor: bancoSelecionado.cor,
+          userId: Number(userId),
+          saldoAtual: bancoSelecionado.saldoAtual,
         });
       } else {
         // Criar: limpa o formulário
@@ -50,10 +57,12 @@ export const Formbanco = ({
           tipo: "POUPANCA",
           saldoInicial: "",
           cor: CorBanco[0],
+          userId: Number(userId),
+          saldoAtual: 0,
         });
       }
     }
-  }, [open, bancoSelecionado]);
+  }, [open, bancoSelecionado, userId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,16 +74,20 @@ export const Formbanco = ({
       tipo: formData.tipo,
       saldoInicial: parseFloat(formData.saldoInicial),
       cor: formData.cor,
+      userId: Number(userId),
+      saldoAtual: 0,
     });
     setFormData({
       nome: "",
       tipo: "POUPANCA" as TypeBanco["tipo"],
       saldoInicial: "",
       cor: CorBanco[0],
+      userId: Number(userId),
+      saldoAtual: 0,
     });
     onOpenChange(false);
   };
-  console.log("Banco Selecionado", bancoSelecionado);
+
   return (
     <div>
       <Dialog open={open} onOpenChange={onOpenChange}>

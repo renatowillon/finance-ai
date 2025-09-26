@@ -1,10 +1,17 @@
 import { db } from "@/app/_lib/prisma";
+import { obterSessao } from "@/app/_lib/session";
 import { Adicionarbanco } from "@/app/controller/bancosController";
 import { TypeBanco } from "@/app/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
-  const bancos = await db.banco.findMany({ orderBy: { id: "asc" } });
+  const sessao = await obterSessao();
+  const usuarioLogado = sessao?.userId;
+
+  const bancos = await db.banco.findMany({
+    where: { userId: Number(usuarioLogado) },
+    orderBy: { id: "asc" },
+  });
   return NextResponse.json(bancos);
 }
 
@@ -27,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(bancoConvertido, { status: 201 });
   } catch (error) {
-    console.error("erro ao criar banco: ", error);
+    console.log("erro ao criar banco: ", error);
     return NextResponse.json(
       { error: "Erro ao criar o banco" },
       { status: 500 },

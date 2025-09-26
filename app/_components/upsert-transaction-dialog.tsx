@@ -77,17 +77,21 @@ const DialogoInserirOuAtualizarTransacao = ({
   idTransacao,
   valoresPadrao,
 }: PropriedadesDialogoInserirOuAtualizarTransacao) => {
+  const { data } = useQuery({
+    queryKey: ["bancos"],
+    queryFn: fetchBanco,
+    staleTime: 5 * (60 * 1000), //5 minutos
+  });
   const formulario = useForm<EsquemaFormulario>({
     resolver: zodResolver(esquemaFormulario),
 
     defaultValues: valoresPadrao ?? {
       nome: "",
-      valor: 50,
+      valor: 0,
       categoria: "OUTROS",
       tipo: "DEPOSITO",
       metodoPagamento: "DINHEIRO",
       data: new Date(),
-      bancoId: 1,
     },
   });
 
@@ -106,11 +110,7 @@ const DialogoInserirOuAtualizarTransacao = ({
   };
 
   const eAtualizacao = Boolean(idTransacao);
-  const { data } = useQuery({
-    queryKey: ["bancos"],
-    queryFn: fetchBanco,
-    staleTime: 5 * (60 * 1000), //5 minutos
-  });
+
   return (
     <Dialog
       open={estaAberto}
