@@ -42,6 +42,8 @@ model User{
   status Boolean @default(true)
   transactions Transaction[]
   plano Planos @default(FREE)
+  bancos Banco[]
+  
 
   @@map("users")
 }
@@ -54,7 +56,9 @@ model Banco {
   saldoAtual  Decimal @db.Decimal(10, 2)
   cor String
   transactionsBanco Transaction[]
-
+  userId Int  @default(1)
+  transactionsBancos User @relation(fields: [userId], references: [id])
+  
   @@map("bancos")
 }
 enum TipoContas {
