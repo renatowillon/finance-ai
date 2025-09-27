@@ -6,6 +6,11 @@ export const fetchBanco = async () => {
   return response.data;
 };
 
+export const pegarUmBanco = async (idBanco: number) => {
+  const response = await axios.get(`/api/bancos/${idBanco}`);
+  return response.data;
+};
+
 export const criarBanco = async (banco: TypeBancoInput) => {
   const response = await axios.post("/api/bancos", banco);
   return response.data;

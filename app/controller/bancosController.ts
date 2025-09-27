@@ -15,7 +15,8 @@ export const PegarBancos = async () => {
 export const PegarUmBanco = async (id: number) => {
   const sessao = await obterSessao();
   const usuarioLogado = sessao?.userId;
-  return db.banco.findUnique({
+
+  return await db.banco.findUnique({
     where: { id, userId: Number(usuarioLogado) },
   });
 };

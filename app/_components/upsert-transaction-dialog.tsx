@@ -85,14 +85,19 @@ const DialogoInserirOuAtualizarTransacao = ({
   const formulario = useForm<EsquemaFormulario>({
     resolver: zodResolver(esquemaFormulario),
 
-    defaultValues: valoresPadrao ?? {
-      nome: "",
-      valor: 0,
-      categoria: "OUTROS",
-      tipo: "DEPOSITO",
-      metodoPagamento: "DINHEIRO",
-      data: new Date(),
-    },
+    defaultValues: valoresPadrao
+      ? {
+          ...valoresPadrao,
+          data: valoresPadrao ? new Date(valoresPadrao.data) : new Date(),
+        }
+      : {
+          nome: "",
+          valor: 0,
+          categoria: "OUTROS",
+          tipo: "DEPOSITO",
+          metodoPagamento: "DINHEIRO",
+          data: new Date(),
+        },
   });
 
   const queryCliente = useQueryClient();

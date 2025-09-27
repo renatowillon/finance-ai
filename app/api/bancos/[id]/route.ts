@@ -1,5 +1,29 @@
-import { AtualizarBanco } from "@/app/controller/bancosController";
+import {
+  AtualizarBanco,
+  PegarUmBanco,
+} from "@/app/controller/bancosController";
 import { NextResponse } from "next/server";
+
+export async function GET(
+  _request: Request,
+  { params }: { params: { id: string } },
+) {
+  try {
+    const bancoId = Number(params.id);
+    if (isNaN(bancoId)) {
+      return NextResponse.json({ error: "ID Invalido" }, { status: 400 });
+    }
+
+    const resposta = await PegarUmBanco(bancoId);
+    return NextResponse.json(resposta, { status: 200 });
+  } catch (error) {
+    console.error("Erro ao pegar banco: ", error);
+    return NextResponse.json(
+      { error: "Erro interno no servidor", detalhes: String(error) },
+      { status: 500 },
+    );
+  }
+}
 
 export async function PUT(
   request: Request,
