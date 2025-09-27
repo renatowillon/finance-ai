@@ -59,10 +59,9 @@ export function DataTable<TData, TValue>({
                 className="rounded-lg border bg-muted/30 p-4 shadow-lg transition-shadow duration-300 hover:shadow-xl"
               >
                 <div className="mb-3 flex items-center justify-between">
-                  {/* Lado esquerdo - Título e Badge (categoria) */}
-                  <div className="flex-1 pr-4">
+                  <div className="flex-1 space-y-2 pr-4">
                     <div className="text-base font-semibold leading-tight text-foreground">
-                      {/* Título/Descrição */}
+                      {/* descrição */}
                       {flexRender(
                         cells[0]?.column.columnDef.cell,
                         cells[0]?.getContext(),
@@ -70,7 +69,7 @@ export function DataTable<TData, TValue>({
                     </div>
                     <div className="mt-1">
                       <span className="text-xs text-muted-foreground">
-                        {/* Badge/Categoria onde antes estava o banco */}
+                        {/* tipo de transação */}
                         {flexRender(
                           cells[1]?.column.columnDef.cell,
                           cells[1]?.getContext(),
@@ -79,10 +78,9 @@ export function DataTable<TData, TValue>({
                     </div>
                   </div>
 
-                  {/* Lado direito - Valor e data com badge */}
-                  <div className="text-right">
+                  <div className="space-y-2 text-right">
                     <div className="text-base font-bold text-foreground">
-                      {/* Valor onde antes estava o banco */}
+                      {/* Categoria */}
                       {flexRender(
                         cells[2]?.column.columnDef.cell,
                         cells[2]?.getContext(),
@@ -90,14 +88,14 @@ export function DataTable<TData, TValue>({
                     </div>
                     <div className="mt-1 flex items-center justify-end space-x-2">
                       <span className="text-xs text-muted-foreground">
-                        {/* Data */}
+                        {/* banco */}
                         {flexRender(
                           cells[3]?.column.columnDef.cell,
                           cells[3]?.getContext(),
                         )}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        {/* Badge ao lado da data */}
+                        {/* data */}
                         {flexRender(
                           cells[4]?.column.columnDef.cell,
                           cells[4]?.getContext(),
@@ -112,6 +110,7 @@ export function DataTable<TData, TValue>({
                   {/* Botão Editar */}
                   {cells[5] && (
                     <div className="text-center">
+                      {/* valor */}
                       {flexRender(
                         cells[5]?.column.columnDef.cell,
                         cells[5]?.getContext(),
@@ -121,6 +120,7 @@ export function DataTable<TData, TValue>({
                   {/* Botão Excluir */}
                   {cells[6] && (
                     <div className="text-center">
+                      {/* ações */}
                       {flexRender(
                         cells[6]?.column.columnDef.cell,
                         cells[6]?.getContext(),

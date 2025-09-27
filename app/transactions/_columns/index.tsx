@@ -11,6 +11,7 @@ import {
 import EditTransactionButton from "../_components/edit-transaction-button";
 import { excluirTransacao } from "@/app/_actions/delete-transaction";
 import { BancosTransacao } from "../_components/bancos-transacao";
+import { Badge } from "@/app/_components/ui/badge";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -30,8 +31,11 @@ export const TransactionsColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "category",
     header: "Categoria",
-    cell: ({ row: { original: transaction } }) =>
-      ROTULOS_CATEGORIAS_TRANSACAO[transaction.category],
+    cell: ({ row: { original: transaction } }) => (
+      <Badge className="bg-muted/90 text-muted-foreground">
+        {ROTULOS_CATEGORIAS_TRANSACAO[transaction.category]}
+      </Badge>
+    ),
   },
   {
     accessorKey: "bancoId",
