@@ -17,10 +17,10 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
       return "text-red-500";
     }
     if (transaction.type === TransactionType.DEPOSITO) {
-      return "text-primary";
+      return "text-green-500";
     }
     if (transaction.type === TransactionType.INVESTIMENTO) {
-      return "text-white";
+      return "text-violet-500";
     }
   };
   const getAmountPrefix = (Transaction: Transaction) => {
