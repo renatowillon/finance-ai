@@ -12,6 +12,7 @@ import EditTransactionButton from "../_components/edit-transaction-button";
 import { excluirTransacao } from "@/app/_actions/delete-transaction";
 import { BancosTransacao } from "../_components/bancos-transacao";
 import { Badge } from "@/app/_components/ui/badge";
+import { formatCurrency } from "@/app/_utils/currency";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -63,11 +64,13 @@ export const TransactionsColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "amount",
     header: "Valor",
-    cell: ({ row: { original: transaction } }) =>
-      new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }).format(Number(transaction.amount)),
+    cell: ({ row: { original: transaction } }) => (
+      <div
+        className={`${transaction.type === "DESPESA" ? "text-red-600" : transaction.type === "DEPOSITO" ? "text-green-500" : transaction.type === "INVESTIMENTO" ? "text-violet-500" : ""}`}
+      >
+        {formatCurrency(Number(transaction.amount))}
+      </div>
+    ),
   },
   {
     accessorKey: "actions",
