@@ -58,12 +58,16 @@ export const CardBanco = ({ dataBanco, editBanco }: Props) => {
         <div className="space-y-1">
           <div className="flex items-center justify-between">
             <div className="text-lg text-gray-500">Saldo Atual</div>
-            <div className="text.lg font-bold text-green-500">
-              {data && <>{formatCurrency(Number(data?.toFixed(2)))}</>}
+            <div
+              className={`text.lg font-bold ${data! >= 0 ? "text-green-500" : "text-red-500"}`}
+            >
+              {data !== undefined && (
+                <>{formatCurrency(Number(data?.toFixed(2) ?? 0))}</>
+              )}
               {isLoading && (
                 <>
                   <p className="flex gap-2 text-sm font-semibold">
-                    <Loader2 className="animate-spin duration-1000" />
+                    <Loader2 className="animate-spin text-green-500 duration-1000" />
                   </p>
                 </>
               )}

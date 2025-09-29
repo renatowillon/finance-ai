@@ -51,7 +51,9 @@ export const CardBancoPequeno = ({ dataBanco }: Props) => {
             <div
               className={`text-lg font-bold ${Number(data) >= 0 ? "text-green-500" : "text-red-500"}`}
             >
-              {data && <p>{formatCurrency(Number(data?.toFixed(2)))}</p>}
+              {data !== undefined && (
+                <p>{formatCurrency(Number(data?.toFixed(2)))}</p>
+              )}
               {isLoading && (
                 <>
                   <p

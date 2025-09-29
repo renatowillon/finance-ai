@@ -32,7 +32,7 @@ export const TransactionsColumns: ColumnDef<Transaction>[] = [
     accessorKey: "category",
     header: "Categoria",
     cell: ({ row: { original: transaction } }) => (
-      <Badge className="bg-muted/90 text-muted-foreground">
+      <Badge className="w-32 items-center justify-center bg-muted/90 text-muted-foreground hover:bg-muted/90">
         {ROTULOS_CATEGORIAS_TRANSACAO[transaction.category]}
       </Badge>
     ),
