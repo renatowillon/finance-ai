@@ -43,6 +43,8 @@ import { inserirOuAtualizarTransacao } from "../_actions/upsert-transaction";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchBanco } from "../fetche/bancoFetch";
 import { TypeBanco } from "../types";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
 
 interface PropriedadesDialogoInserirOuAtualizarTransacao {
   estaAberto: boolean;
@@ -67,6 +69,7 @@ const esquemaFormulario = z.object({
   }),
   data: z.date({ required_error: "A data é obrigatória" }),
   bancoId: z.number({ required_error: "Banco é Obrigatorio" }),
+  baixado: z.boolean(),
 });
 
 type EsquemaFormulario = z.infer<typeof esquemaFormulario>;
@@ -97,6 +100,7 @@ const DialogoInserirOuAtualizarTransacao = ({
           tipo: "DEPOSITO",
           metodoPagamento: "DINHEIRO",
           data: new Date(),
+          baixado: false,
         },
   });
 
@@ -139,19 +143,41 @@ const DialogoInserirOuAtualizarTransacao = ({
             onSubmit={formulario.handleSubmit(aoEnviar)}
             className="space-y-4"
           >
-            <FormField
-              control={formulario.control}
-              name="nome"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Digite a descrição" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex items-center justify-center gap-4">
+              <FormField
+                control={formulario.control}
+                name="nome"
+                render={({ field }) => (
+                  <FormItem className="flex-1 gap-4">
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Digite a descrição" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={formulario.control}
+                name="baixado"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="flex items-center justify-center gap-2 pt-7">
+                        <Label htmlFor="baixado">Pago</Label>
+                        <Switch
+                          id="baixado"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={formulario.control}
               name="valor"

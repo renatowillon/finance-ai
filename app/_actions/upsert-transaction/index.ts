@@ -22,6 +22,7 @@ interface ParametrosInserirOuAtualizarTransacao {
   metodoPagamento: TransactionPaymentMethods;
   data: Date;
   bancoId: number;
+  baixado: boolean;
 }
 
 export const inserirOuAtualizarTransacao = async (
@@ -51,6 +52,7 @@ export const inserirOuAtualizarTransacao = async (
     date: parametros.data,
     userId: idUsuario,
     bancoId: parametros.bancoId,
+    baixado: parametros.baixado,
   };
 
   await db.transaction.upsert({

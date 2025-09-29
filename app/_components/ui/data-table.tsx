@@ -79,12 +79,21 @@ export function DataTable<TData, TValue>({
                   </div>
 
                   <div className="space-y-2 text-right">
-                    <div className="text-base font-bold text-foreground">
-                      {/* Categoria */}
-                      {flexRender(
-                        cells[2]?.column.columnDef.cell,
-                        cells[2]?.getContext(),
-                      )}
+                    <div className="flex items-center justify-center gap-2">
+                      <div>
+                        {/* baixado */}
+                        {flexRender(
+                          cells[7]?.column.columnDef.cell,
+                          cells[7]?.getContext(),
+                        )}
+                      </div>
+                      <div className="text-base font-bold text-foreground">
+                        {/* Categoria */}
+                        {flexRender(
+                          cells[2]?.column.columnDef.cell,
+                          cells[2]?.getContext(),
+                        )}
+                      </div>
                     </div>
                     <div className="mt-1 flex items-center justify-end space-x-2">
                       <span className="text-xs text-muted-foreground">

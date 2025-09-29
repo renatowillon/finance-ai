@@ -6,12 +6,22 @@ export const saldoBancoController = async (bancoId: number) => {
   const usuarioLogado = sessao?.userId;
 
   const { _sum: despesasBanco } = await db.transaction.aggregate({
-    where: { type: "DESPESA", bancoId, userId: Number(usuarioLogado) },
+    where: {
+      type: "DESPESA",
+      bancoId,
+      userId: Number(usuarioLogado),
+      baixado: true,
+    },
     _sum: { amount: true },
   });
 
   const { _sum: receitasBanco } = await db.transaction.aggregate({
-    where: { type: "DEPOSITO", bancoId, userId: Number(usuarioLogado) },
+    where: {
+      type: "DEPOSITO",
+      bancoId,
+      userId: Number(usuarioLogado),
+      baixado: true,
+    },
     _sum: { amount: true },
   });
 

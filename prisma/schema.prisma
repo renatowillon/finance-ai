@@ -24,9 +24,10 @@ model Transaction {
   createAt      DateTime                  @default(now())
   updateAt      DateTime                  @updatedAt
   userId        Int
-  author User @relation(fields: [userId], references: [id])
+  author User   @relation(fields: [userId], references: [id])
   bancoId       Int @default(1)
   transactionBanco Banco @relation(fields: [bancoId], references: [id])
+  baixado Boolean @default(true)
   
   @@map("transactions")
 

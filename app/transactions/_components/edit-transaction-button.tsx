@@ -33,6 +33,7 @@ const EditTransactionButton = ({
           metodoPagamento: transacao.paymentMethod,
           data: transacao.date,
           bancoId: transacao.bancoId,
+          baixado: transacao.baixado,
         }}
         idTransacao={transacao.id}
       />

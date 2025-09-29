@@ -3,7 +3,7 @@ import { Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import TransactionTypeBadge from "../_components/type-badge";
 import { Button } from "@/app/_components/ui/button";
-import { Trash2Icon } from "lucide-react";
+import { Check, Pin, Trash2Icon } from "lucide-react";
 import {
   ROTULOS_CATEGORIAS_TRANSACAO,
   // ROTULOS_METODOS_PAGAMENTO_TRANSACAO,
@@ -89,5 +89,19 @@ export const TransactionsColumns: ColumnDef<Transaction>[] = [
         </div>
       );
     },
+  },
+  {
+    accessorKey: "baixado",
+    header: "",
+    cell: ({ row: { original: transaction } }) =>
+      transaction.baixado === true ? (
+        <div className="flex size-5 items-center justify-center rounded-full bg-green-500 p-1 text-green-100">
+          <Check size={30} />
+        </div>
+      ) : (
+        <div className="flex size-5 items-center justify-center rounded-full bg-red-500 p-1 text-red-100">
+          <Pin size={30} />
+        </div>
+      ),
   },
 ];
