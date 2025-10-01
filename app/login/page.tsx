@@ -102,7 +102,11 @@ const LoginPage = () => {
                     </p>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="demo@wdev.com" {...field} />
+                    <Input
+                      type="email"
+                      placeholder="demo@wdev.com"
+                      {...field}
+                    />
                   </FormControl>
                 </FormItem>
               )}
