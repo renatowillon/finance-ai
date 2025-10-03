@@ -20,7 +20,7 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="apple-mobile-web-app-title" content="wFinance" />
-        <meta name="theme-color" content="#233b6a" />
+        <meta name="theme-color" content="#030712" />
       </head>
       <body
         className={`${mulish.className} dark flex flex-col antialiased md:flex-row`}
