@@ -30,7 +30,7 @@ export default function RootLayout({
           <Toaster richColors position="top-right" duration={2000} />
           <AuthProvider>
             <SidebarClient />
-            <div className="flex h-full w-full flex-col overflow-y-scroll lg:p-5">
+            <div className="mb-16 flex h-full w-full flex-col overflow-y-scroll lg:p-5">
               {children}
             </div>
           </AuthProvider>

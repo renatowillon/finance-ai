@@ -23,7 +23,7 @@ export const CardBancoPequeno = ({ dataBanco }: Props) => {
     <>
       <Card
         key={dataBanco.id}
-        className={`w-full justify-between space-y-1 p-6`}
+        className={`w-full justify-between space-y-1 p-4`}
         style={{
           background: `linear-gradient(135deg, hsl(var(--card)), ${dataBanco.cor}30)`,
         }}

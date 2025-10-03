@@ -27,7 +27,7 @@ const SubscriptionsPage = async () => {
 
   return (
     <>
-      <div className="space-y-6 py-6 sm:p-6">
+      <div className="space-y-6 p-6 py-6 sm:p-6">
         <h1 className="text-2xl font-bold">Assinatura</h1>
         <div className="flex flex-col gap-6 sm:flex-row">
           <Card className="sm:w-[450px]">
