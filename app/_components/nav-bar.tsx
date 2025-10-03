@@ -230,7 +230,7 @@ export function Sidebar() {
 
           {/* Botão Adicionar - Espaço reservado para o componente */}
           <div className="-mt-10 flex items-center justify-center">
-            <AddTransactionMobile usuarioPodeAdicionarTransacao={true} />
+            <AddTransactionMobile />
 
             {/* Aqui você adiciona seu componente de adicionar transação */}
           </div>

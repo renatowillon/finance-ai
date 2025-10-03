@@ -22,7 +22,7 @@ const AddTransactionMobile = ({
             <Button
               className="size-14 rounded-full font-bold"
               onClick={() => setDialogoEstaAberto(true)}
-              disabled={!usuarioPodeAdicionarTransacao}
+              disabled={false}
             >
               <Plus className="h-8 w-8 text-white" />
             </Button>
