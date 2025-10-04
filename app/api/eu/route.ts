@@ -1,18 +1,18 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/app/_lib/session"; // ou ajuste o caminho se necessário
+import { obterSessao } from "@/app/_lib/session"; // ou ajuste o caminho se necessário
 
 export async function GET() {
-  const session = await getSession();
+  const sessao = await obterSessao();
 
-  if (!session) {
+  if (!sessao) {
     return NextResponse.json({ userId: null });
   }
 
   return NextResponse.json({
-    userId: session.userId,
-    email: session.email,
-    name: session.name,
-    plano: session.plano,
-    status: session.status,
+    userId: sessao.userId,
+    email: sessao.email,
+    name: sessao.name,
+    plano: sessao.plano,
+    status: sessao.status,
   });
 }

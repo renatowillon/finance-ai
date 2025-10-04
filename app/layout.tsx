@@ -1,17 +1,14 @@
-import type { Metadata } from "next";
 import { Mulish } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import { SidebarClient } from "./_components/sidebarClient";
+import { Toaster } from "sonner";
+import RegisterSW from "./_components/RegisterSW";
+import { Provider } from "./context/Provider";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
 });
-
-export const metadata: Metadata = {
-  title: "Finance AI",
-  description: "Finance AI",
-};
 
 export default function RootLayout({
   children,
@@ -20,13 +17,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${mulish.className} dark flex antialiased`}>
-        <AuthProvider>
-          <SidebarClient />
-          <div className="flex h-full w-full flex-col overflow-scroll p-5">
-            {children}
-          </div>
-        </AuthProvider>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="apple-mobile-web-app-title" content="wFinance" />
+        <meta name="theme-color" content="#030712" />
+      </head>
+      <body
+        className={`${mulish.className} dark flex flex-col antialiased md:flex-row`}
+      >
+        <Provider>
+          <RegisterSW />
+          <Toaster richColors position="top-right" duration={2000} />
+          <AuthProvider>
+            <SidebarClient />
+            <div className="mb-16 flex h-full w-full flex-col overflow-y-scroll lg:p-5">
+              {children}
+            </div>
+          </AuthProvider>
+        </Provider>
       </body>
     </html>
   );

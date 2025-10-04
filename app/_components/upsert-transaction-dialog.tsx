@@ -26,9 +26,9 @@ import {
   SelectValue,
 } from "./ui/select";
 import {
-  TRANSACTION_CATEGORY_OPTIONS,
-  TRANSACTION_PAYMENT_METHOD_OPTIONS,
-  TRANSACTION_TYPE_OPTIONS,
+  OPCOES_CATEGORIAS_TRANSACAO,
+  OPCOES_METODOS_PAGAMENTO_TRANSACAO,
+  OPCOES_TIPOS_TRANSACAO,
 } from "../_constants/transactions";
 import { DatePicker } from "./ui/date-piker";
 import { z } from "zod";
@@ -39,100 +39,148 @@ import {
 } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { upsertTransaction } from "../_actions/upsert-transaction";
+import { inserirOuAtualizarTransacao } from "../_actions/upsert-transaction";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchBanco } from "../fetche/bancoFetch";
+import { TypeBanco } from "../types";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
 
-interface UpsertTransacionDialogProps {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  transactionId?: string;
-  defaultvalues?: FormSchema;
+interface PropriedadesDialogoInserirOuAtualizarTransacao {
+  estaAberto: boolean;
+  definirSeEstaAberto: (estaAberto: boolean) => void;
+  idTransacao?: string;
+  valoresPadrao?: EsquemaFormulario;
 }
 
-const formSchema = z.object({
-  name: z.string().trim().min(1, { message: "O nome é obrigatório" }),
-  amount: z.number({ required_error: "valor é obrigatório" }).positive({
+const esquemaFormulario = z.object({
+  nome: z.string().trim().min(1, { message: "O nome é obrigatório" }),
+  valor: z.number({ required_error: "valor é obrigatório" }).positive({
     message: "O valor deve ser positivo",
   }),
-  type: z.nativeEnum(TransactionType, {
+  tipo: z.nativeEnum(TransactionType, {
     required_error: "O tipo é obrigatório",
   }),
-  category: z.nativeEnum(TransactionCategory, {
+  categoria: z.nativeEnum(TransactionCategory, {
     required_error: "A categoria é obrigatória",
   }),
-  paymentMethod: z.nativeEnum(TransactionPaymentMethods, {
-    required_error: "O método de agamento é obrigatório",
+  metodoPagamento: z.nativeEnum(TransactionPaymentMethods, {
+    required_error: "O método de pagamento é obrigatório",
   }),
-  date: z.date({ required_error: "A data é obrigatória" }),
+  data: z.date({ required_error: "A data é obrigatória" }),
+  bancoId: z.number({ required_error: "Banco é Obrigatorio" }),
+  baixado: z.boolean(),
 });
 
-type FormSchema = z.infer<typeof formSchema>;
+type EsquemaFormulario = z.infer<typeof esquemaFormulario>;
 
-const UpsertTransacionDialog = ({
-  isOpen,
-  setIsOpen,
-  transactionId,
-  defaultvalues,
-}: UpsertTransacionDialogProps) => {
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
+const DialogoInserirOuAtualizarTransacao = ({
+  estaAberto,
+  definirSeEstaAberto,
+  idTransacao,
+  valoresPadrao,
+}: PropriedadesDialogoInserirOuAtualizarTransacao) => {
+  const { data } = useQuery({
+    queryKey: ["bancos"],
+    queryFn: fetchBanco,
+    staleTime: 5 * (60 * 1000), //5 minutos
+  });
+  const formulario = useForm<EsquemaFormulario>({
+    resolver: zodResolver(esquemaFormulario),
 
-    defaultValues: defaultvalues ?? {
-      name: "",
-      amount: 50,
-      category: "OUTROS",
-      type: "DEPOSITO",
-      paymentMethod: "DINHEIRO",
-      date: new Date(),
-    },
+    defaultValues: valoresPadrao
+      ? {
+          ...valoresPadrao,
+          data: valoresPadrao ? new Date(valoresPadrao.data) : new Date(),
+        }
+      : {
+          nome: "",
+          valor: 0,
+          categoria: "OUTROS",
+          tipo: "DEPOSITO",
+          metodoPagamento: "DINHEIRO",
+          data: new Date(),
+          baixado: false,
+        },
   });
 
-  const onSubmit = async (data: FormSchema) => {
+  const queryCliente = useQueryClient();
+  const aoEnviar = async (dados: EsquemaFormulario) => {
     try {
-      await upsertTransaction({ ...data, id: transactionId });
-      setIsOpen(false);
-      form.reset();
-    } catch (error) {
-      console.error(error);
+      await inserirOuAtualizarTransacao({ ...dados, id: idTransacao });
+      definirSeEstaAberto(false);
+      formulario.reset();
+      queryCliente.invalidateQueries({
+        queryKey: ["saldo"],
+      });
+    } catch (erro) {
+      console.error(erro);
     }
   };
 
-  const isUpdate = Boolean(transactionId);
+  const eAtualizacao = Boolean(idTransacao);
+
   return (
     <Dialog
-      open={isOpen}
-      onOpenChange={(open) => {
-        setIsOpen(open);
-        if (!open) {
-          form.reset();
+      open={estaAberto}
+      onOpenChange={(aberto) => {
+        definirSeEstaAberto(aberto);
+        if (!aberto) {
+          formulario.reset();
         }
       }}
     >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {isUpdate ? "Atualizar" : "Criar"} transação
+            {eAtualizacao ? "Atualizar" : "Criar"} transação
           </DialogTitle>
           <DialogDescription>Insira as informações abaixo</DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <Form {...formulario}>
+          <form
+            onSubmit={formulario.handleSubmit(aoEnviar)}
+            className="space-y-4"
+          >
+            <div className="flex items-center justify-center gap-4">
+              <FormField
+                control={formulario.control}
+                name="nome"
+                render={({ field }) => (
+                  <FormItem className="flex-1 gap-4">
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Digite a descrição" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={formulario.control}
+                name="baixado"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="flex items-center justify-center gap-2 pt-7">
+                        <Label htmlFor="baixado">Pago</Label>
+                        <Switch
+                          id="baixado"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Digite a descrição" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="amount"
+              control={formulario.control}
+              name="valor"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
@@ -152,24 +200,24 @@ const UpsertTransacionDialog = ({
               )}
             />
             <FormField
-              control={form.control}
-              name="type"
+              control={formulario.control}
+              name="bancoId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tipo</FormLabel>
+                  <FormLabel>Escolha o Banco</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    onValueChange={(val) => field.onChange(Number(val))}
+                    defaultValue={field.value ? String(field.value) : ""}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione uma tipo"></SelectValue>
+                        <SelectValue placeholder="Selecione o banco"></SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {TRANSACTION_TYPE_OPTIONS.map((options) => (
-                        <SelectItem key={options.value} value={options.value}>
-                          {options.label}
+                      {data?.map((bancos: TypeBanco) => (
+                        <SelectItem key={bancos.id} value={String(bancos.id)}>
+                          {bancos.nome}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -178,10 +226,66 @@ const UpsertTransacionDialog = ({
                 </FormItem>
               )}
             />
+            <div className="flex w-full items-center justify-center gap-4">
+              <FormField
+                control={formulario.control}
+                name="tipo"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Tipo</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um tipo"></SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {OPCOES_TIPOS_TRANSACAO.map((opcoes) => (
+                          <SelectItem key={opcoes.value} value={opcoes.value}>
+                            {opcoes.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={formulario.control}
+                name="categoria"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Categoria</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a categoria"></SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {OPCOES_CATEGORIAS_TRANSACAO.map((opcoes) => (
+                          <SelectItem key={opcoes.value} value={opcoes.value}>
+                            {opcoes.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
-              control={form.control}
-              name="paymentMethod"
+              control={formulario.control}
+              name="metodoPagamento"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Método de Pagamento</FormLabel>
@@ -195,9 +299,9 @@ const UpsertTransacionDialog = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {TRANSACTION_PAYMENT_METHOD_OPTIONS.map((options) => (
-                        <SelectItem key={options.value} value={options.value}>
-                          {options.label}
+                      {OPCOES_METODOS_PAGAMENTO_TRANSACAO.map((opcoes) => (
+                        <SelectItem key={opcoes.value} value={opcoes.value}>
+                          {opcoes.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -208,36 +312,8 @@ const UpsertTransacionDialog = ({
             />
 
             <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categoria</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o método de pagamento"></SelectValue>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {TRANSACTION_CATEGORY_OPTIONS.map((options) => (
-                        <SelectItem key={options.value} value={options.value}>
-                          {options.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="date"
+              control={formulario.control}
+              name="data"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Data</FormLabel>
@@ -254,7 +330,7 @@ const UpsertTransacionDialog = ({
                 </Button>
               </DialogClose>
               <Button type="submit" variant="default">
-                {isUpdate ? "Atualizar" : "Adicionar"}
+                {eAtualizacao ? "Atualizar" : "Adicionar"}
               </Button>
             </DialogFooter>
           </form>
@@ -263,4 +339,4 @@ const UpsertTransacionDialog = ({
     </Dialog>
   );
 };
-export default UpsertTransacionDialog;
+export default DialogoInserirOuAtualizarTransacao;

@@ -7,42 +7,59 @@ import {
   TransactionPaymentMethods,
   TransactionType,
 } from "@prisma/client";
-import { upsertTransactionSchema } from "./schema";
+import { esquemaInserirOuAtualizarTransacao } from "./schema";
 import { revalidatePath } from "next/cache";
-import { pegarUsuarioToken } from "@/app/_lib/session";
+import { obterUsuarioPorToken } from "@/app/_lib/session";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-interface upsertTransactionParams {
+interface ParametrosInserirOuAtualizarTransacao {
   id?: string;
-  name: string;
-  type: TransactionType;
-  amount: number;
-  category: TransactionCategory;
-  paymentMethod: TransactionPaymentMethods;
-  date: Date;
+  nome: string;
+  tipo: TransactionType;
+  valor: number;
+  categoria: TransactionCategory;
+  metodoPagamento: TransactionPaymentMethods;
+  data: Date;
+  bancoId: number;
+  baixado: boolean;
 }
 
-export const upsertTransaction = async (params: upsertTransactionParams) => {
-  upsertTransactionSchema.parse(params);
-  const cookieStore = cookies();
-  const token = cookieStore.get("session_token")?.value;
+export const inserirOuAtualizarTransacao = async (
+  parametros: ParametrosInserirOuAtualizarTransacao,
+) => {
+  esquemaInserirOuAtualizarTransacao.parse(parametros);
+  const armazenadorCookie = cookies();
+  const token = armazenadorCookie.get("session_token")?.value;
 
   if (!token) {
     redirect("/login");
   }
 
-  const user = await pegarUsuarioToken(token!);
-  if (!user) {
+  const usuario = await obterUsuarioPorToken(token!);
+  if (!usuario) {
     redirect("/login");
   }
-  const userId = user.userId;
+  const idUsuario = usuario.userId;
+
+  // Mapeando os campos traduzidos para os campos do banco
+  const dadosTransacao = {
+    name: parametros.nome,
+    type: parametros.tipo,
+    amount: parametros.valor,
+    category: parametros.categoria,
+    paymentMethod: parametros.metodoPagamento,
+    date: parametros.data,
+    userId: idUsuario,
+    bancoId: parametros.bancoId,
+    baixado: parametros.baixado,
+  };
 
   await db.transaction.upsert({
-    update: { ...params, userId },
-    create: { ...params, userId },
+    update: dadosTransacao,
+    create: dadosTransacao,
     where: {
-      id: params.id ?? "",
+      id: parametros.id ?? "",
     },
   });
   revalidatePath("/transaction");

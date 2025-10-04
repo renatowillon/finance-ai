@@ -1,7 +1,7 @@
 import { Button } from "@/app/_components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/app/_components/ui/card";
 import { ScrollArea } from "@/app/_components/ui/scroll-area";
-import { TRANSACTION_PAYMENT_METHOD_ICONS } from "@/app/_constants/transactions";
+import { ICONES_METODOS_PAGAMENTO_TRANSACAO } from "@/app/_constants/transactions";
 import { formatCurrency } from "@/app/_utils/currency";
 import { Transaction, TransactionType } from "@prisma/client";
 import Image from "next/image";
@@ -17,10 +17,10 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
       return "text-red-500";
     }
     if (transaction.type === TransactionType.DEPOSITO) {
-      return "text-primary";
+      return "text-green-500";
     }
     if (transaction.type === TransactionType.INVESTIMENTO) {
-      return "text-white";
+      return "text-violet-500";
     }
   };
   const getAmountPrefix = (Transaction: Transaction) => {
@@ -47,7 +47,9 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
               <div className="rounded-lg bg-white bg-opacity-[3%] p-2">
                 <Image
                   src={
-                    TRANSACTION_PAYMENT_METHOD_ICONS[transaction.paymentMethod]
+                    ICONES_METODOS_PAGAMENTO_TRANSACAO[
+                      transaction.paymentMethod
+                    ]
                   }
                   height={20}
                   width={20}

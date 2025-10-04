@@ -1,11 +1,5 @@
 /*
-  Warnings:
-
-  - Added the required column `plano` to the `users` table without a default value. This is not possible if the table is not empty.
-
+  Esta migration é intencionalmente vazia.
+  Motivo: 20250627202124_inclusao_de_plano_no_users já criou o enum "Planos" e a coluna "plano" em "users".
+  Deixamos este arquivo como no-op para evitar erro de duplicidade no shadow database.
 */
--- CreateEnum
-CREATE TYPE "Planos" AS ENUM ('FREE', 'PREMIUM');
-
--- AlterTable
-ALTER TABLE "users" ADD COLUMN     "plano" "Planos" NOT NULL;

@@ -3,66 +3,89 @@ import SumaryCards from "./_components/summary-cards";
 import TimeSelect from "./_components/time-selects";
 import { isMatch } from "date-fns";
 import TransactionsPieChats from "./_components/transaction-pie-charts";
-import { getDashboard } from "../_data/get-dashboard";
+import { obterDashboard } from "../_data/get-dashboard";
 import ExpensesPerCategory from "./_components/expenses-per-category";
 import LastTransactions from "./_components/last-transactions";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import AiReportButton from "./_components/ai-report-button";
 import { cookies } from "next/headers";
-import { pegarUsuarioToken } from "../_lib/session";
+import { obterUsuarioPorToken } from "../_lib/session";
 
-interface HomeProps {
+interface PropriedadesHome {
   searchParams: {
     month: string;
   };
 }
 
-const Home = async ({ searchParams: { month } }: HomeProps) => {
-  const cookieStore = cookies();
-  const token = cookieStore.get("session_token")?.value;
+const Home = async ({ searchParams: { month } }: PropriedadesHome) => {
+  const armazenadorCookie = cookies();
+  const token = armazenadorCookie.get("session_token")?.value;
 
   if (!token) {
     redirect("/login");
   }
-  const user = await pegarUsuarioToken(token!);
-  if (!user) {
+  const usuario = await obterUsuarioPorToken(token!);
+  if (!usuario) {
     redirect("/login");
   }
-  console.log("Usuario Logado: ", user.userId, user.email);
+  console.log("Usuario Logado: ", usuario.userId, usuario.email);
 
-  const currentMonth = String(new Date().getMonth() + 1).padStart(2, "0");
-  const monthIsInvalid = !month || !isMatch(month, "MM");
-  if (monthIsInvalid) {
-    redirect(`/?month=${currentMonth}`);
+  const mesAtual = String(new Date().getMonth() + 1).padStart(2, "0");
+  const mesInvalido = !month || !isMatch(month, "MM");
+  if (mesInvalido) {
+    redirect(`/?month=${mesAtual}`);
   }
-  const dashboard = await getDashboard(month);
-  const userCanAddTransaction = await canUserAddTransaction();
+  const painelControle = await obterDashboard(month);
+  const usuarioPodeAdicionarTransacao = await canUserAddTransaction();
+
   return (
     <>
-      <div className="flex flex-col space-y-6 p-6">
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <div className="flex items-center gap-4">
+      <div className="flex flex-col space-y-4 p-4 sm:space-y-6 sm:p-6">
+        {/* Header responsivo */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:gap-0">
+          <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
             <AiReportButton />
             <TimeSelect />
           </div>
         </div>
-        <div className="grid grid-cols-[2fr,1fr] gap-6 overflow-hidden">
-          <div className="flex flex-col gap-6 overflow-hidden">
+
+        {/* Layout principal responsivo */}
+        <div className="grid grid-cols-1 gap-4 overflow-hidden sm:gap-6 xl:grid-cols-[2fr,1fr]">
+          {/* Coluna principal */}
+          <div className="flex flex-col gap-4 overflow-hidden sm:gap-6">
+            {/* Cards de resumo */}
+
             <SumaryCards
               month={month}
-              {...dashboard}
-              userCanAddTransaction={userCanAddTransaction}
+              {...painelControle}
+              userCanAddTransaction={usuarioPodeAdicionarTransacao}
             />
-            <div className="grid grid-cols-3 grid-rows-1 gap-6">
-              <TransactionsPieChats {...dashboard} />
-              <ExpensesPerCategory
-                expensesPerCategory={dashboard.totalExpensePerCategory}
-              />
+
+            {/* Gráficos responsivos */}
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <div className="md:col-span-2 xl:col-span-1">
+                <TransactionsPieChats
+                  totalDepositos={painelControle.totalDepositos}
+                  totalDespesas={painelControle.totalDespesas}
+                  totalInvestimentos={painelControle.totalInvestimentos}
+                  porcentagemPorTipo={painelControle.porcentagemPorTipo}
+                />
+              </div>
+              <div className="md:col-span-2 xl:col-span-2">
+                <ExpensesPerCategory
+                  expensesPerCategory={painelControle.totalDespesasPorCategoria}
+                />
+              </div>
             </div>
           </div>
 
-          <LastTransactions lastTransactions={dashboard.lastTransactions} />
+          {/* Últimas transações - responsivo */}
+          <div className="space-y-6 xl:max-h-screen xl:overflow-y-auto">
+            <LastTransactions
+              lastTransactions={painelControle.ultimasTransacoes}
+            />
+          </div>
         </div>
       </div>
     </>

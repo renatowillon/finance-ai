@@ -24,7 +24,10 @@ model Transaction {
   createAt      DateTime                  @default(now())
   updateAt      DateTime                  @updatedAt
   userId        Int
-  author User @relation(fields: [userId], references: [id])
+  author User   @relation(fields: [userId], references: [id])
+  bancoId       Int @default(1)
+  transactionBanco Banco @relation(fields: [bancoId], references: [id])
+  baixado Boolean @default(true)
   
   @@map("transactions")
 
@@ -40,8 +43,29 @@ model User{
   status Boolean @default(true)
   transactions Transaction[]
   plano Planos @default(FREE)
+  bancos Banco[]
+  
 
   @@map("users")
+}
+
+model Banco {
+  id Int @id @default(autoincrement())
+  nome String
+  tipo TipoContas
+  saldoInicial  Decimal @db.Decimal(10, 2)
+  saldoAtual  Decimal @db.Decimal(10, 2)
+  cor String
+  transactionsBanco Transaction[]
+  userId Int  @default(1)
+  transactionsBancos User @relation(fields: [userId], references: [id])
+  
+  @@map("bancos")
+}
+enum TipoContas {
+  POUPANCA
+  CONTA_CORRENTE
+  CARTAO_CREDITO
 }
 
 enum Planos {
@@ -85,3 +109,4 @@ enum TransactionPaymentMethods {
   CARTAO_DEBITO
   CARTAO_CREDITO
 }
+

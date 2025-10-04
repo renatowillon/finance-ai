@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     response.cookies.set("session_token", token, {
       httpOnly: true, // O cookie não pode ser acessado via JavaScript no cliente
       secure: process.env.NODE_ENV === "production", // Usar apenas em HTTPS em produção
-      maxAge: 60 * 60 * 24 * 7, // 7 dias
+      maxAge: 60 * 60 * 24 * 1, // 1 dias
       path: "/",
       sameSite: "lax",
     });

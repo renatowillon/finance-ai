@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setUserId(data.userId);
         }
       });
-  }, []);
+  });
 
   const login = async (email: string, password: string) => {
     const res = await fetch("/api/login", {

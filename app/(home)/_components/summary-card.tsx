@@ -27,7 +27,7 @@ const SumaryCard = ({
           {title}
         </p>
       </CardHeader>
-      <CardContent className="flex justify-between">
+      <CardContent className="flex flex-col justify-between space-y-2 sm:flex-row">
         <p
           className={`font-bold ${size === "small" ? "text-2xl" : "text-4xl"}`}
         >
@@ -37,7 +37,9 @@ const SumaryCard = ({
           }).format(amount)}
         </p>
         {size === "large" && (
-          <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
+          <AddTransactionButton
+            usuarioPodeAdicionarTransacao={userCanAddTransaction}
+          />
         )}
       </CardContent>
     </Card>

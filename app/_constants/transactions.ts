@@ -4,7 +4,7 @@ import {
   TransactionType,
 } from "@prisma/client";
 
-export const TRANSACTION_CATEGORY_LABELS = {
+export const ROTULOS_CATEGORIAS_TRANSACAO = {
   SALARIO: "Salário",
   INVESTIMENTOS: "Investimentos",
   FREELANCER: "Freelancer",
@@ -27,7 +27,7 @@ export const TRANSACTION_CATEGORY_LABELS = {
   OUTRAS: "Outras",
 };
 
-export const TRANSACTION_PAYMENT_METHOD_LABEL = {
+export const ROTULOS_METODOS_PAGAMENTO_TRANSACAO = {
   PIX: "Pix",
   TRANSFERENCIA: "Transferência",
   BOLETO: "Boleto",
@@ -36,7 +36,7 @@ export const TRANSACTION_PAYMENT_METHOD_LABEL = {
   CARTAO_CREDITO: "Cartão de Crédito",
 };
 
-export const TRANSACTION_PAYMENT_METHOD_ICONS = {
+export const ICONES_METODOS_PAGAMENTO_TRANSACAO = {
   [TransactionPaymentMethods.PIX]: "pix.svg",
   [TransactionPaymentMethods.TRANSFERENCIA]: "transferência.svg",
   [TransactionPaymentMethods.BOLETO]: "boleto.svg",
@@ -45,7 +45,7 @@ export const TRANSACTION_PAYMENT_METHOD_ICONS = {
   [TransactionPaymentMethods.CARTAO_CREDITO]: "credito.svg",
 };
 
-export const TRANSACTION_TYPE_OPTIONS = [
+export const OPCOES_TIPOS_TRANSACAO = [
   {
     value: TransactionType.DEPOSITO,
     label: "Receita",
@@ -60,7 +60,7 @@ export const TRANSACTION_TYPE_OPTIONS = [
   },
 ];
 
-export const TRANSACTION_PAYMENT_METHOD_OPTIONS = [
+export const OPCOES_METODOS_PAGAMENTO_TRANSACAO = [
   {
     value: TransactionPaymentMethods.DINHEIRO,
     label: "Dinheiro",
@@ -87,49 +87,55 @@ export const TRANSACTION_PAYMENT_METHOD_OPTIONS = [
   },
 ];
 
-export const TRANSACTION_CATEGORY_OPTIONS = [
+export const OPCOES_CATEGORIAS_TRANSACAO = [
   {
     value: TransactionCategory.ALIMENTACAO,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.ALIMENTACAO],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.ALIMENTACAO],
   },
   {
     value: TransactionCategory.SALARIO,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.SALARIO],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.SALARIO],
   },
   {
     value: TransactionCategory.INVESTIMENTOS,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.INVESTIMENTOS],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.INVESTIMENTOS],
   },
   {
     value: TransactionCategory.FREELANCER,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.FREELANCER],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.FREELANCER],
   },
   {
     value: TransactionCategory.VENDAS,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.VENDAS],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.VENDAS],
   },
   {
     value: TransactionCategory.REEMBOLSOS,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.REEMBOLSOS],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.REEMBOLSOS],
   },
   {
     value: TransactionCategory.EMPRESTIMOS,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.EMPRESTIMOS],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.EMPRESTIMOS],
   },
   {
     value: TransactionCategory.ALUGUEIS,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.ALUGUEIS],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.ALUGUEIS],
   },
   {
     value: TransactionCategory.PREMIOS,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.PREMIOS],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.PREMIOS],
   },
   {
     value: TransactionCategory.DOACOES,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.DOACOES],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.DOACOES],
   },
   {
     value: TransactionCategory.OUTROS,
-    label: TRANSACTION_CATEGORY_LABELS[TransactionCategory.OUTROS],
+    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.OUTROS],
   },
 ];
+
+export const ROTULOS_TIPO_CONTA = {
+  POUPANCA: "Poupança",
+  CONTA_CORRENTE: "Conta Corrente",
+  CARTAO_CREDITO: "Cartão de Crédito",
+};
