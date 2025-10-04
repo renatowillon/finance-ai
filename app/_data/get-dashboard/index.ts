@@ -78,18 +78,20 @@ export const obterDashboard = async (mes: string) => {
 
   const totalDespesasPorCategoria: TotalDespesaPorCategoria[] = (
     await db.transaction.groupBy({
-      by: ["category"],
+      by: ["categoriaId"],
       where: { ...filtroConsulta, type: TransactionType.DESPESA },
       _sum: { amount: true },
     })
-  ).map((categoria) => ({
-    categoria: categoria.category,
-    valorTotal: Number(categoria._sum.amount),
-    porcentagemDoTotal:
-      totalDespesas > 0
-        ? Math.round((Number(categoria._sum.amount) / totalDespesas) * 100)
-        : 0,
-  }));
+  )
+    .filter((categoria) => categoria.categoriaId !== null)
+    .map((categoria) => ({
+      categoria: categoria.categoriaId!,
+      valorTotal: Number(categoria._sum.amount),
+      porcentagemDoTotal:
+        totalDespesas > 0
+          ? Math.round((Number(categoria._sum.amount) / totalDespesas) * 100)
+          : 0,
+    }));
 
   const ultimasTransacoes = await db.transaction.findMany({
     where: filtroConsulta,

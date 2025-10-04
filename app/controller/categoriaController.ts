@@ -8,7 +8,7 @@ export const PegarCategorias = async () => {
 
   return db.categoria.findMany({
     where: { userId: Number(usuarioLogado) },
-    orderBy: { id: "asc" },
+    orderBy: { tipo: "asc" },
   });
 };
 

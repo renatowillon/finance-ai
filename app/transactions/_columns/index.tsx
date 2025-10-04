@@ -1,13 +1,9 @@
 "use client";
-import { Transaction } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import TransactionTypeBadge from "../_components/type-badge";
 import { Button } from "@/app/_components/ui/button";
 import { Check, Pin, Trash2Icon } from "lucide-react";
-import {
-  ROTULOS_CATEGORIAS_TRANSACAO,
-  // ROTULOS_METODOS_PAGAMENTO_TRANSACAO,
-} from "@/app/_constants/transactions";
 import EditTransactionButton from "../_components/edit-transaction-button";
 import { excluirTransacao } from "@/app/_actions/delete-transaction";
 import { BancosTransacao } from "../_components/bancos-transacao";
@@ -17,7 +13,11 @@ import { formatCurrency } from "@/app/_utils/currency";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-export const TransactionsColumns: ColumnDef<Transaction>[] = [
+type TransactionWithCategoria = Prisma.TransactionGetPayload<{
+  include: { categoria: true };
+}>;
+
+export const TransactionsColumns: ColumnDef<TransactionWithCategoria>[] = [
   {
     accessorKey: "name",
     header: "Nome",
@@ -30,11 +30,11 @@ export const TransactionsColumns: ColumnDef<Transaction>[] = [
     ),
   },
   {
-    accessorKey: "category",
+    accessorKey: "categoriaId",
     header: "Categoria",
     cell: ({ row: { original: transaction } }) => (
       <Badge className="w-32 items-center justify-center bg-muted/90 text-muted-foreground hover:bg-muted/90">
-        {ROTULOS_CATEGORIAS_TRANSACAO[transaction.category]}
+        {transaction.categoria?.nome}
       </Badge>
     ),
   },
