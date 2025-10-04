@@ -28,7 +28,8 @@ model Transaction {
   bancoId       Int @default(1)
   transactionBanco Banco @relation(fields: [bancoId], references: [id])
   baixado Boolean @default(true)
-  
+  categoriaId Int?
+  categoria Categoria? @relation(fields: [categoriaId], references: [id])
   @@map("transactions")
 
 }
@@ -44,6 +45,7 @@ model User{
   transactions Transaction[]
   plano Planos @default(FREE)
   bancos Banco[]
+  categorias Categoria[]
   
 
   @@map("users")
@@ -62,6 +64,17 @@ model Banco {
   
   @@map("bancos")
 }
+
+model Categoria {
+  id Int @id @default(autoincrement())
+  nome String
+  tipo Categoriatype
+  userId Int?
+  user User? @relation(fields: [userId], references: [id])
+  transaction Transaction[]
+
+  @@map("categorias")
+}
 enum TipoContas {
   POUPANCA
   CONTA_CORRENTE
@@ -71,6 +84,11 @@ enum TipoContas {
 enum Planos {
   FREE
   PREMIUM
+}
+
+enum Categoriatype {
+  DEPOSITO
+  DESPESA
 }
 
 enum TransactionType {
