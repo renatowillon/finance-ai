@@ -31,6 +31,8 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getRowId: (row: any) => row.id,
   });
 
   useEffect(() => {
@@ -55,7 +57,8 @@ export function DataTable<TData, TValue>({
 
             return (
               <div
-                key={index}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                key={(item as any).id}
                 className="rounded-lg border bg-muted/30 p-4 shadow-lg transition-shadow duration-300 hover:shadow-xl"
               >
                 <div className="mb-3 flex items-center justify-between">
