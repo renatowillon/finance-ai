@@ -11,6 +11,7 @@ import {
   TrendingUp,
   Wallet,
   MoreHorizontal,
+  Tags,
 } from "lucide-react";
 
 import {
@@ -66,6 +67,12 @@ const menuItems: MenuItem[] = [
         label: "Investimentos",
         icon: TrendingUp,
         href: "/investimentos",
+      },
+      {
+        id: "categorias",
+        label: "Categorias",
+        icon: Tags,
+        href: "/categorias",
       },
     ],
   },
@@ -299,6 +306,17 @@ export function Sidebar() {
                   >
                     <TrendingUp className="mr-2 h-4 w-4" />
                     <span className="text-sm">Investimentos</span>
+                  </Link>
+                  <Link
+                    href="/categorias"
+                    onClick={() => setActiveDropdown(null)}
+                    className={cn(
+                      "flex items-center rounded-t-lg px-4 py-3 transition-colors hover:bg-muted",
+                      isPathActive("/categorias") && "font-medium text-primary",
+                    )}
+                  >
+                    <Tags className="mr-2 h-4 w-4" />
+                    <span className="text-sm">Categorias</span>
                   </Link>
                 </div>
               </>

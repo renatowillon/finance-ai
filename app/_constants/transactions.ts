@@ -1,8 +1,4 @@
-import {
-  TransactionCategory,
-  TransactionPaymentMethods,
-  TransactionType,
-} from "@prisma/client";
+import { TransactionPaymentMethods, TransactionType } from "@prisma/client";
 
 export const ROTULOS_CATEGORIAS_TRANSACAO = {
   SALARIO: "Salário",
@@ -87,55 +83,13 @@ export const OPCOES_METODOS_PAGAMENTO_TRANSACAO = [
   },
 ];
 
-export const OPCOES_CATEGORIAS_TRANSACAO = [
-  {
-    value: TransactionCategory.ALIMENTACAO,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.ALIMENTACAO],
-  },
-  {
-    value: TransactionCategory.SALARIO,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.SALARIO],
-  },
-  {
-    value: TransactionCategory.INVESTIMENTOS,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.INVESTIMENTOS],
-  },
-  {
-    value: TransactionCategory.FREELANCER,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.FREELANCER],
-  },
-  {
-    value: TransactionCategory.VENDAS,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.VENDAS],
-  },
-  {
-    value: TransactionCategory.REEMBOLSOS,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.REEMBOLSOS],
-  },
-  {
-    value: TransactionCategory.EMPRESTIMOS,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.EMPRESTIMOS],
-  },
-  {
-    value: TransactionCategory.ALUGUEIS,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.ALUGUEIS],
-  },
-  {
-    value: TransactionCategory.PREMIOS,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.PREMIOS],
-  },
-  {
-    value: TransactionCategory.DOACOES,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.DOACOES],
-  },
-  {
-    value: TransactionCategory.OUTROS,
-    label: ROTULOS_CATEGORIAS_TRANSACAO[TransactionCategory.OUTROS],
-  },
-];
-
 export const ROTULOS_TIPO_CONTA = {
   POUPANCA: "Poupança",
   CONTA_CORRENTE: "Conta Corrente",
   CARTAO_CREDITO: "Cartão de Crédito",
+};
+
+export const ROTULO_TIPO_CATEGORIA = {
+  DEPOSITO: "Receitas",
+  DESPESA: "Despesas",
 };

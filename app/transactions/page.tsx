@@ -24,6 +24,7 @@ const TransactionsPage = async () => {
   const transacoes = await db.transaction.findMany({
     where: { userId: usuario.userId },
     orderBy: { createAt: "desc" },
+    include: { categoria: true },
   });
 
   const usuarioPodeAdicionarTransacao = await canUserAddTransaction();

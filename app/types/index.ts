@@ -9,3 +9,10 @@ export interface TypeBanco {
 }
 
 export type TypeBancoInput = Omit<TypeBanco, "id" | "saldoAtual">;
+
+export interface TypeCategoria {
+  id: number;
+  nome: string;
+  tipo: "DEPOSITO" | "DESPESA";
+  userId: number;
+}

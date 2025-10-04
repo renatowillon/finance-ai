@@ -26,25 +26,22 @@ import {
   SelectValue,
 } from "./ui/select";
 import {
-  OPCOES_CATEGORIAS_TRANSACAO,
   OPCOES_METODOS_PAGAMENTO_TRANSACAO,
   OPCOES_TIPOS_TRANSACAO,
 } from "../_constants/transactions";
 import { DatePicker } from "./ui/date-piker";
 import { z } from "zod";
-import {
-  TransactionCategory,
-  TransactionPaymentMethods,
-  TransactionType,
-} from "@prisma/client";
+import { TransactionPaymentMethods, TransactionType } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { inserirOuAtualizarTransacao } from "../_actions/upsert-transaction";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchBanco } from "../fetche/bancoFetch";
-import { TypeBanco } from "../types";
+import { TypeBanco, TypeCategoria } from "../types";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
+import { fetchCategoria } from "../fetche/categoriaFetch";
+import { useEffect } from "react";
 
 interface PropriedadesDialogoInserirOuAtualizarTransacao {
   estaAberto: boolean;
@@ -61,9 +58,11 @@ const esquemaFormulario = z.object({
   tipo: z.nativeEnum(TransactionType, {
     required_error: "O tipo é obrigatório",
   }),
-  categoria: z.nativeEnum(TransactionCategory, {
-    required_error: "A categoria é obrigatória",
-  }),
+  categoriaId: z
+    .number({
+      required_error: "A categoria é obrigatória",
+    })
+    .min(1, { message: "A categoria é obrigatória" }),
   metodoPagamento: z.nativeEnum(TransactionPaymentMethods, {
     required_error: "O método de pagamento é obrigatório",
   }),
@@ -80,11 +79,18 @@ const DialogoInserirOuAtualizarTransacao = ({
   idTransacao,
   valoresPadrao,
 }: PropriedadesDialogoInserirOuAtualizarTransacao) => {
-  const { data } = useQuery({
+  const { data: bancos } = useQuery({
     queryKey: ["bancos"],
     queryFn: fetchBanco,
     staleTime: 5 * (60 * 1000), //5 minutos
   });
+
+  const { data: categorias } = useQuery({
+    queryKey: ["categorias"],
+    queryFn: fetchCategoria,
+    staleTime: 5 * (60 * 1000),
+  });
+
   const formulario = useForm<EsquemaFormulario>({
     resolver: zodResolver(esquemaFormulario),
 
@@ -96,7 +102,7 @@ const DialogoInserirOuAtualizarTransacao = ({
       : {
           nome: "",
           valor: 0,
-          categoria: "OUTROS",
+          categoriaId: 0,
           tipo: "DEPOSITO",
           metodoPagamento: "DINHEIRO",
           data: new Date(),
@@ -120,6 +126,33 @@ const DialogoInserirOuAtualizarTransacao = ({
 
   const eAtualizacao = Boolean(idTransacao);
 
+  const tipoSelecionado = useWatch({
+    control: formulario.control,
+    name: "tipo",
+  });
+
+  const categoriasFiltradas = (categorias || []).filter(
+    (cat: TypeCategoria) => {
+      if (!tipoSelecionado) return true;
+      if (tipoSelecionado === "DESPESA") return cat.tipo === "DESPESA";
+      if (tipoSelecionado === "INVESTIMENTO") return cat.tipo === "DESPESA";
+      if (tipoSelecionado === "DEPOSITO") return cat.tipo === "DEPOSITO";
+    },
+  );
+
+  useEffect(() => {
+    if (!eAtualizacao) {
+      if (
+        !categoriasFiltradas.find(
+          (c: { id: number }) => c.id === formulario.getValues("categoriaId"),
+        )
+      ) {
+        const primeira = categoriasFiltradas[0];
+        formulario.setValue("categoriaId", primeira ? Number(primeira.id) : 0);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tipoSelecionado]);
   return (
     <Dialog
       open={estaAberto}
@@ -215,7 +248,7 @@ const DialogoInserirOuAtualizarTransacao = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {data?.map((bancos: TypeBanco) => (
+                      {bancos?.map((bancos: TypeBanco) => (
                         <SelectItem key={bancos.id} value={String(bancos.id)}>
                           {bancos.nome}
                         </SelectItem>
@@ -256,23 +289,24 @@ const DialogoInserirOuAtualizarTransacao = ({
               />
               <FormField
                 control={formulario.control}
-                name="categoria"
+                name="categoriaId"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>Categoria</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value ? String(field.value) : ""}
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      // defaultValue={String(field.value)}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione a categoria"></SelectValue>
+                          <SelectValue placeholder="Selecione a categoria" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {OPCOES_CATEGORIAS_TRANSACAO.map((opcoes) => (
-                          <SelectItem key={opcoes.value} value={opcoes.value}>
-                            {opcoes.label}
+                        {categoriasFiltradas.map((opcoes: TypeCategoria) => (
+                          <SelectItem key={opcoes.id} value={String(opcoes.id)}>
+                            {opcoes.nome}
                           </SelectItem>
                         ))}
                       </SelectContent>
