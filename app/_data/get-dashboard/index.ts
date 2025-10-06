@@ -77,14 +77,10 @@ export const obterDashboard = async (mes: string) => {
   };
 
   const transacoes = await db.transaction.findMany({
-    where: { ...filtroConsulta },
+    where: { ...filtroConsulta, type: TransactionType.DESPESA },
     orderBy: { createAt: "desc" },
     include: { categoria: true },
   });
-
-  // type TransactionWithCategoria = Prisma.TransactionGetPayload<{
-  //   include: { categoria: true };
-  // }>;
 
   const totalDespesasPorCategoria: TotalDespesaPorCategoria[] = (
     await db.transaction.groupBy({
