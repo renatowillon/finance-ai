@@ -8,4 +8,5 @@ export interface TotalDespesaPorCategoria {
   categoria: number;
   valorTotal: number;
   porcentagemDoTotal: number;
+  categoriaNome: string;
 }

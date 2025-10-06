@@ -76,6 +76,16 @@ export const obterDashboard = async (mes: string) => {
         : 0,
   };
 
+  const transacoes = await db.transaction.findMany({
+    where: { ...filtroConsulta },
+    orderBy: { createAt: "desc" },
+    include: { categoria: true },
+  });
+
+  // type TransactionWithCategoria = Prisma.TransactionGetPayload<{
+  //   include: { categoria: true };
+  // }>;
+
   const totalDespesasPorCategoria: TotalDespesaPorCategoria[] = (
     await db.transaction.groupBy({
       by: ["categoriaId"],
@@ -84,14 +94,21 @@ export const obterDashboard = async (mes: string) => {
     })
   )
     .filter((categoria) => categoria.categoriaId !== null)
-    .map((categoria) => ({
-      categoria: categoria.categoriaId!,
-      valorTotal: Number(categoria._sum.amount),
-      porcentagemDoTotal:
-        totalDespesas > 0
-          ? Math.round((Number(categoria._sum.amount) / totalDespesas) * 100)
-          : 0,
-    }));
+    .map((categoria) => {
+      const categoriaInfo = transacoes.find(
+        (t) => t.categoriaId === categoria.categoriaId,
+      );
+
+      return {
+        categoria: categoria.categoriaId!,
+        valorTotal: Number(categoria._sum.amount),
+        porcentagemDoTotal:
+          totalDespesas > 0
+            ? Math.round((Number(categoria._sum.amount) / totalDespesas) * 100)
+            : 0,
+        categoriaNome: categoriaInfo?.categoria?.nome ?? "Sem nome",
+      };
+    });
 
   const ultimasTransacoes = await db.transaction.findMany({
     where: filtroConsulta,
