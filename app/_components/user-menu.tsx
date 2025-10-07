@@ -1,8 +1,9 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 export default function UserMenu() {
   const router = useRouter();
@@ -25,6 +26,10 @@ export default function UserMenu() {
     router.replace("/login");
   };
 
+  const handleAdministracao = () => {
+    toast.success("Processo de criação de Administração em andamento");
+  };
+
   if (!userName) return null;
 
   return (
@@ -36,7 +41,13 @@ export default function UserMenu() {
         {userName}
       </button>
       {open && (
-        <div className="absolute -top-14 right-0 z-50 mt-2 w-full rounded-md border bg-slate-900 shadow-lg">
+        <div className="absolute -top-24 right-0 z-50 mt-2 w-full rounded-md border bg-slate-900 shadow-lg">
+          <button
+            className="flex w-full gap-3 px-4 py-2 text-left text-xs hover:rounded-md hover:bg-gray-100/10"
+            onClick={handleAdministracao}
+          >
+            <Settings size={15} /> Administração
+          </button>
           <button
             onClick={handleLogout}
             className="flex w-full gap-3 px-4 py-2 text-left text-sm text-red-500 hover:rounded-md hover:bg-gray-100/10"
