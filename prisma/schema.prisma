@@ -84,6 +84,7 @@ enum TipoContas {
 enum Planos {
   FREE
   PREMIUM
+  DEV
 }
 
 enum Categoriatype {

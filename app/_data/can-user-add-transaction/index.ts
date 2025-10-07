@@ -14,6 +14,10 @@ export const canUserAddTransaction = async (): Promise<boolean> => {
     return true;
   }
 
+  if (sessao.plano === "DEV") {
+    return true;
+  }
+
   // Passa o userId para a função que precisa dele
   const transacoesDoMesAtual = await getCurrentMonthTransactions(sessao.userId);
 

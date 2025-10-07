@@ -23,7 +23,7 @@ const TransactionsPage = async () => {
 
   const transacoes = await db.transaction.findMany({
     where: { userId: usuario.userId },
-    orderBy: { createAt: "desc" },
+    orderBy: { date: "desc" },
     include: { categoria: true },
   });
 
