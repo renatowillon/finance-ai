@@ -15,6 +15,24 @@ import {
   TableRow,
 } from "./table";
 import { useEffect, useState } from "react";
+import {
+  Banknote,
+  Check,
+  CheckCheck,
+  Filter,
+  TrendingDown,
+  TrendingUp,
+  X,
+} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+} from "./select";
+import { SelectValue } from "@radix-ui/react-select";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,7 +62,8 @@ export function DataTable<TData, TValue>({
     window.addEventListener("resize", checkIsMobile);
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
-
+  const [filtroTipo, setFiltroTipo] = useState("");
+  const [FiltroPago, setFiltroPago] = useState("");
   // Renderização para Mobile (Cards)
   if (isMobile) {
     return (
@@ -155,50 +174,126 @@ export function DataTable<TData, TValue>({
   }
 
   // Renderização para Desktop (Tabela Original)
+
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+    <div className="space-y-6">
+      {/* filtros de pesquisas */}
+      <div
+        title="Filtro em estado de implementação"
+        className="flex items-center gap-3 rounded-md border bg-muted/50 p-3 text-muted"
+      >
+        <span className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Filter size={20} />
+          Filtros:{" "}
+        </span>
+        <div className="flex gap-3 text-muted">
+          <Select value={filtroTipo} onValueChange={setFiltroTipo}>
+            <SelectTrigger className="w-[180px] bg-muted/50 text-muted-foreground">
+              <SelectValue placeholder="Tipo de conta" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel className="text-muted-foreground">
+                  Tipo de conta
+                </SelectLabel>
+                <SelectItem value="TODOS">
+                  <span className="flex gap-2">
+                    <Banknote size={20} />
+                    Todos
+                  </span>
+                </SelectItem>
+                <SelectItem value="DEPOSITO">
+                  <span className="flex gap-2">
+                    <TrendingUp size={20} /> Depósitos
+                  </span>
+                </SelectItem>
+                <SelectItem value="DESPESA">
+                  <span className="flex gap-2">
+                    <TrendingDown size={20} /> Despesas
+                  </span>
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Select value={FiltroPago} onValueChange={setFiltroPago}>
+            <SelectTrigger className="w-[180px] bg-muted/50 text-muted-foreground">
+              <SelectValue placeholder="Status da conta" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel className="text-muted-foreground">
+                  Status da conta
+                </SelectLabel>
+                <SelectItem value="TODOS">
+                  <span className="flex gap-2">
+                    <CheckCheck size={20} /> Todos
+                  </span>
+                </SelectItem>
+                <SelectItem value="true">
+                  <span className="flex gap-2">
+                    <Check size={20} /> Pago
+                  </span>
+                </SelectItem>
+                <SelectItem value="false">
+                  <span className="flex gap-2">
+                    <X size={20} /> Pendente
+                  </span>
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                Sem Resultados.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Sem Resultados.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
