@@ -69,12 +69,12 @@ const Categorias = () => {
         </Button>
       </div>
 
-      <div className="flex flex-1 items-center gap-4 rounded-md border bg-muted/50 p-3">
-        <p className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="flex-1 flex-col justify-center gap-4 rounded-md border bg-muted/50 p-3 md:flex md:flex-row md:justify-start">
+        <p className="hidden items-center justify-center gap-2 text-center text-sm text-muted-foreground md:flex">
           {" "}
           <Filter size={20} /> Filtro por tipo:
         </p>
-        <div className="flex gap-4 text-muted-foreground">
+        <div className="flex items-center justify-center gap-4 text-muted-foreground md:justify-start">
           <Button
             onClick={() => setFiltroSelecionado("TODOS")}
             variant={`${filtroSelecionado === "TODOS" ? "default" : "ghost"}`}
