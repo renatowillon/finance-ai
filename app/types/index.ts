@@ -16,3 +16,11 @@ export interface TypeCategoria {
   tipo: "DEPOSITO" | "DESPESA";
   userId: number;
 }
+
+export interface TypeUsuarioLogado {
+  userId: number;
+  email: string;
+  name: string;
+  plano: string;
+  status: boolean;
+}

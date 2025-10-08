@@ -3,18 +3,20 @@
 import { LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { toast } from "sonner";
+import { TypeUsuarioLogado } from "../types";
 
 export default function UserMenu() {
   const router = useRouter();
   const [userName, setUserName] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const [usuario, setUsuario] = useState<TypeUsuarioLogado>();
 
   useEffect(() => {
     fetch("/api/eu", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setUserName(data?.name || null); // Pode ser nome se quiser
+        setUsuario(data);
       });
   }, []);
 
@@ -27,7 +29,9 @@ export default function UserMenu() {
   };
 
   const handleAdministracao = () => {
-    toast.success("Processo de criação de Administração em andamento");
+    router.replace("/configuracao");
+    setOpen((prev) => !prev);
+    // toast.success("Processo de criação de Administração em andamento");
   };
 
   if (!userName) return null;
@@ -42,12 +46,14 @@ export default function UserMenu() {
       </button>
       {open && (
         <div className="absolute -top-24 right-0 z-50 mt-2 w-full rounded-md border bg-slate-900 shadow-lg">
-          <button
-            className="flex w-full gap-3 px-4 py-2 text-left text-xs hover:rounded-md hover:bg-gray-100/10"
-            onClick={handleAdministracao}
-          >
-            <Settings size={15} /> Administração
-          </button>
+          {usuario?.plano === "DEV" && (
+            <button
+              className="flex w-full gap-3 px-4 py-2 text-left text-xs hover:rounded-md hover:bg-gray-100/10"
+              onClick={handleAdministracao}
+            >
+              <Settings size={15} /> Administração
+            </button>
+          )}
           <button
             onClick={handleLogout}
             className="flex w-full gap-3 px-4 py-2 text-left text-sm text-red-500 hover:rounded-md hover:bg-gray-100/10"
