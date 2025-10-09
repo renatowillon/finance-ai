@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "./table";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Banknote,
   Check,
@@ -33,20 +33,49 @@ import {
   SelectTrigger,
 } from "./select";
 import { SelectValue } from "@radix-ui/react-select";
+import { Accordion, AccordionContent, AccordionTrigger } from "./accordion";
+import { AccordionItem } from "@radix-ui/react-accordion";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends { id: string | number }, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const hoje = new Date();
   const [isMobile, setIsMobile] = useState(false);
+  const [filtroTipo, setFiltroTipo] = useState("");
+  const [filtroPago, setFiltroPago] = useState("");
+  const [filtroData, setFiltroData] = useState(String(hoje.getMonth()));
+
+  const dadosFiltrados = useMemo(() => {
+    return data.filter((item) => {
+      const tipoOk =
+        !filtroTipo || filtroTipo === "TODOS"
+          ? true
+          : "type" in item && item.type === filtroTipo;
+      const pagoOk =
+        !filtroPago || filtroPago === "TODOS" || ""
+          ? true
+          : "baixado" in item &&
+            (filtroPago === "true"
+              ? item.baixado === true
+              : item.baixado === false);
+      const mesOk =
+        !filtroData || filtroData === "TODOS"
+          ? true
+          : "date" in item &&
+            (typeof item.date === "string" || item.date instanceof Date) &&
+            new Date(item.date).getMonth() + 1 === Number(filtroData);
+      return tipoOk && pagoOk && mesOk;
+    });
+  }, [data, filtroTipo, filtroPago, filtroData]);
 
   const table = useReactTable({
-    data,
+    data: dadosFiltrados,
     columns,
     getCoreRowModel: getCoreRowModel(),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,12 +91,109 @@ export function DataTable<TData, TValue>({
     window.addEventListener("resize", checkIsMobile);
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
-  const [filtroTipo, setFiltroTipo] = useState("");
-  const [FiltroPago, setFiltroPago] = useState("");
+
+  // const transacao: Transaction = table.
+
   // Renderização para Mobile (Cards)
   if (isMobile) {
     return (
       <div className="space-y-4">
+        {/* filtros de pesquisas */}
+
+        <div
+          title="Filtro em estado de implementação"
+          className="flex-row items-center justify-evenly gap-3 space-y-3 rounded-md border bg-muted/50 p-3 text-muted"
+        >
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="filtro">
+              <AccordionTrigger>
+                <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Filter size={20} />
+                  Filtros{" "}
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="p-1">
+                <div className="grid grid-cols-2 gap-3 text-muted">
+                  <Select value={filtroTipo} onValueChange={setFiltroTipo}>
+                    <SelectTrigger className="w-full bg-muted/50 text-muted-foreground">
+                      <SelectValue placeholder="Tipo de conta" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel className="text-muted-foreground">
+                          Tipo de conta
+                        </SelectLabel>
+                        <SelectItem value="TODOS">
+                          <span className="flex gap-2">
+                            <Banknote size={20} />
+                            Todos
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="DEPOSITO">
+                          <span className="flex gap-2">
+                            <TrendingUp size={20} /> Depósitos
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="DESPESA">
+                          <span className="flex gap-2">
+                            <TrendingDown size={20} /> Despesas
+                          </span>
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <Select value={filtroPago} onValueChange={setFiltroPago}>
+                    <SelectTrigger className="w-full bg-muted/50 text-muted-foreground">
+                      <SelectValue placeholder="Status da conta" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel className="text-muted-foreground">
+                          Status da conta
+                        </SelectLabel>
+                        <SelectItem value="TODOS">
+                          <span className="flex gap-2">
+                            <CheckCheck size={20} /> Todos
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="true">
+                          <span className="flex gap-2">
+                            <Check size={20} /> Pago
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="false">
+                          <span className="flex gap-2">
+                            <X size={20} /> Pendente
+                          </span>
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <Select value={filtroData} onValueChange={setFiltroData}>
+                    <SelectTrigger className="w-full bg-muted/50 text-muted-foreground">
+                      <SelectValue placeholder="Filtrar por mês" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="TODOS">Todos</SelectItem>
+                      <SelectItem value="1">Janeiro</SelectItem>
+                      <SelectItem value="2">Fevereiro</SelectItem>
+                      <SelectItem value="3">Março</SelectItem>
+                      <SelectItem value="4">Abril</SelectItem>
+                      <SelectItem value="5">Maio</SelectItem>
+                      <SelectItem value="6">Junho</SelectItem>
+                      <SelectItem value="7">Julho</SelectItem>
+                      <SelectItem value="8">Agosto</SelectItem>
+                      <SelectItem value="9">Setembro</SelectItem>
+                      <SelectItem value="10">Outubro</SelectItem>
+                      <SelectItem value="11">Novembro</SelectItem>
+                      <SelectItem value="12">Dezembro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
         {data.length > 0 ? (
           data.map((item, index) => {
             const cells = table.getRowModel().rows[index]?.getVisibleCells();
@@ -215,7 +341,7 @@ export function DataTable<TData, TValue>({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Select value={FiltroPago} onValueChange={setFiltroPago}>
+          <Select value={filtroPago} onValueChange={setFiltroPago}>
             <SelectTrigger className="w-[180px] bg-muted/50 text-muted-foreground">
               <SelectValue placeholder="Status da conta" />
             </SelectTrigger>
@@ -240,6 +366,26 @@ export function DataTable<TData, TValue>({
                   </span>
                 </SelectItem>
               </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Select value={filtroData} onValueChange={setFiltroData}>
+            <SelectTrigger className="w-[180px] bg-muted/50 text-muted-foreground">
+              <SelectValue placeholder="Filtrar por mês" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TODOS">Todos</SelectItem>
+              <SelectItem value="1">Janeiro</SelectItem>
+              <SelectItem value="2">Fevereiro</SelectItem>
+              <SelectItem value="3">Março</SelectItem>
+              <SelectItem value="4">Abril</SelectItem>
+              <SelectItem value="5">Maio</SelectItem>
+              <SelectItem value="6">Junho</SelectItem>
+              <SelectItem value="7">Julho</SelectItem>
+              <SelectItem value="8">Agosto</SelectItem>
+              <SelectItem value="9">Setembro</SelectItem>
+              <SelectItem value="10">Outubro</SelectItem>
+              <SelectItem value="11">Novembro</SelectItem>
+              <SelectItem value="12">Dezembro</SelectItem>
             </SelectContent>
           </Select>
         </div>
