@@ -49,7 +49,7 @@ export function DataTable<TData extends { id: string | number }, TValue>({
   const [isMobile, setIsMobile] = useState(false);
   const [filtroTipo, setFiltroTipo] = useState("");
   const [filtroPago, setFiltroPago] = useState("");
-  const [filtroData, setFiltroData] = useState(String(hoje.getMonth()));
+  const [filtroData, setFiltroData] = useState(String(hoje.getMonth() + 1));
 
   const dadosFiltrados = useMemo(() => {
     return data.filter((item) => {
