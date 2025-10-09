@@ -12,7 +12,7 @@ export const CardBancosDashboard = () => {
   });
 
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-[repeat(auto-fit,minmax(200px,2fr))]">
+    <div className="flex flex-wrap gap-3 md:grid-cols-[repeat(auto-fit,minmax(200px,2fr))]">
       {data?.map((banco: TypeBanco) => (
         <CardBancoPequeno key={banco.id} dataBanco={banco} />
       ))}
