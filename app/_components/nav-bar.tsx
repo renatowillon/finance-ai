@@ -91,7 +91,11 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-export function Sidebar() {
+interface props {
+  usuarioPodeAdicionarTransacao: boolean;
+}
+
+export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
   const pathname = usePathname();
   const [expandedItems, setExpandedItems] = useState<string[]>(["carteira"]);
   const [, setIsMobileMenuOpen] = useState(false);
@@ -245,7 +249,9 @@ export function Sidebar() {
 
           {/* Botão Adicionar - Espaço reservado para o componente */}
           <div className="-mt-10 flex items-center justify-center">
-            <AddTransactionMobile />
+            <AddTransactionMobile
+              usuarioPodeAdicionarTransacao={usuarioPodeAdicionarTransacao}
+            />
 
             {/* Aqui você adiciona seu componente de adicionar transação */}
           </div>

@@ -5,16 +5,18 @@ import { SidebarClient } from "./_components/sidebarClient";
 import { Toaster } from "sonner";
 import RegisterSW from "./_components/RegisterSW";
 import { Provider } from "./context/Provider";
+import { canUserAddTransaction } from "./_data/can-user-add-transaction";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const usuarioPodeAdicionarTransacao = await canUserAddTransaction();
   return (
     <html lang="en">
       <head>
@@ -29,7 +31,9 @@ export default function RootLayout({
           <RegisterSW />
           <Toaster richColors position="top-right" duration={2000} />
           <AuthProvider>
-            <SidebarClient />
+            <SidebarClient
+              usuarioPodeAdicionarTransacao={usuarioPodeAdicionarTransacao}
+            />
             <div className="mb-16 flex h-full w-full flex-col overflow-y-scroll lg:p-5">
               {children}
             </div>
