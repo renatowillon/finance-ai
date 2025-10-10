@@ -17,7 +17,9 @@ export const CardCategoria = ({ dataCategoria, editCategoria }: Props) => {
       <Card key={dataCategoria.id} className={`space-y-4 p-3`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span className="rounded-lg p-2">
+            <span
+              className={`rounded-lg p-2 text-muted-foreground ${ROTULO_TIPO_CATEGORIA[dataCategoria.tipo] === "Despesas" ? "bg-red-500/10" : "bg-green-500/10"}`}
+            >
               <Tags />
             </span>
             <div className={`w-full`}>

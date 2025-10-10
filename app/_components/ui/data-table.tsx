@@ -31,10 +31,15 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
+  SelectValue,
 } from "./select";
-import { SelectValue } from "@radix-ui/react-select";
-import { Accordion, AccordionContent, AccordionTrigger } from "./accordion";
-import { AccordionItem } from "@radix-ui/react-accordion";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./accordion";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
