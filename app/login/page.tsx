@@ -7,7 +7,6 @@ import { formSchemaUser } from "./components/formSchemaUser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
-
 import {
   Form,
   FormControl,
@@ -16,22 +15,22 @@ import {
   FormLabel,
 } from "../_components/ui/form";
 import { Input } from "../_components/ui/input";
-import { useRouter } from "next/navigation";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../_components/ui/tooltip";
+import { useState } from "react";
+import TelaCarregamento from "./components/telaAnimacao";
+// 👈 importa a animação
 
 const LoginPage = () => {
-  const router = useRouter();
+  const [showAnimation, setShowAnimation] = useState(false);
+
   const form = useForm<z.infer<typeof formSchemaUser>>({
     resolver: zodResolver(formSchemaUser),
-    defaultValues: {
-      email: "",
-      senha: "",
-    },
+    defaultValues: { email: "", senha: "" },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchemaUser>) => {
@@ -40,8 +39,9 @@ const LoginPage = () => {
         email: values.email,
         senha: values.senha,
       });
+
       console.log("✅ Login sucesso:", res.data);
-      router.replace("/");
+      setShowAnimation(true); // 🔥 mostra animação
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(
@@ -52,6 +52,10 @@ const LoginPage = () => {
     console.log(values);
   };
 
+  // 👇 se a animação estiver ativa, mostra a TelaAnimacao
+  if (showAnimation) return <TelaCarregamento />;
+
+  // 👇 caso contrário, mostra o formulário
   return (
     <div className="flex h-full flex-col md:grid md:grid-cols-2">
       <div className="mx-auto flex h-full max-w-[550px] flex-col justify-center gap-3 p-8">
@@ -63,10 +67,10 @@ const LoginPage = () => {
             alt="Wfinance"
           />
         </p>
-        <h1 className="mb-3 text-4xl font-bold">Bem-Vindo</h1>
+        <h1 className="mb-3 text-4xl font-bold">Bem-vindo</h1>
         <p className="mb-3 text-muted-foreground">
           A Finance AI é uma plataforma de gestão financeira que utiliza IA para
-          monitorar suas movimentações, e oferecer insights personalizados,
+          monitorar suas movimentações e oferecer insights personalizados,
           facilitando o controle do seu orçamento.
         </p>
 
@@ -79,27 +83,25 @@ const LoginPage = () => {
                 <FormItem>
                   <FormLabel className="flex justify-between">
                     <p>Email</p>
-                    <p>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <InfoIcon
-                              className="text-muted-foreground"
-                              size={20}
-                            />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-center font-bold">
-                              Acesso Demontração
-                            </p>
-                            <p className="text-muted-foreground">
-                              Usuario: demo@wdev.com
-                            </p>
-                            <p className="text-muted-foreground">Senha: 123</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </p>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <InfoIcon
+                            className="text-muted-foreground"
+                            size={20}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-center font-bold">
+                            Acesso Demonstração
+                          </p>
+                          <p className="text-muted-foreground">
+                            Usuario: demo@wdev.com
+                          </p>
+                          <p className="text-muted-foreground">Senha: 123</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -111,6 +113,7 @@ const LoginPage = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="senha"
@@ -123,6 +126,7 @@ const LoginPage = () => {
                 </FormItem>
               )}
             />
+
             <Button type="submit" className="w-full" variant={"outline"}>
               {form.formState.isSubmitting ? (
                 <div className="flex items-center justify-center">
@@ -139,6 +143,7 @@ const LoginPage = () => {
           </form>
         </Form>
       </div>
+
       <div className="relative h-full w-full">
         <Image
           src="/loginPage.png"
@@ -150,4 +155,5 @@ const LoginPage = () => {
     </div>
   );
 };
+
 export default LoginPage;
