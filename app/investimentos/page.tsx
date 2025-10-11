@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { InfoSemDados } from "../_components/bancos/infoSemDados";
 import { Button } from "../_components/ui/button";
 import { toast } from "sonner";
+// import { CardInvestimento } from "./components/cardInvestimento";
 
 const Investimentos = () => {
   function alerta() {
@@ -26,6 +27,11 @@ const Investimentos = () => {
         tituloBotao="Adicionar Investimento"
         onClick={alerta}
       />
+
+      {/* inicio de implementação de card de investimento */}
+      {/* <div className="grid-cols-1 md:grid md:grid-cols-2 lg:grid-cols-3">
+        <CardInvestimento />
+      </div> */}
     </div>
   );
 };

@@ -46,6 +46,7 @@ model User{
   plano Planos @default(FREE)
   bancos Banco[]
   categorias Categoria[]
+  investimentos Investimento[]
   
 
   @@map("users")
@@ -75,6 +76,41 @@ model Categoria {
 
   @@map("categorias")
 }
+
+model Investimento {
+  id Int @id @default(autoincrement())
+  userId Int
+  nome String
+  descricao String?
+  meta Decimal @db.Decimal(10,2)
+  valorAtual Decimal @db.Decimal(10,2)
+  cor String
+  Status StatusInvestimento @default(ATIVO)
+  transacoes TransacoesInvestimento []
+  user User @relation(fields: [userId], references: [id])
+  @@map("investimentos")
+}
+
+model TransacoesInvestimento {
+  id Int @id @default(autoincrement())
+  investimentoId Int
+  tipo TipoTransacaoInvestimento
+  valor Decimal @db.Decimal(10,2)
+  descricao String?
+  investimento Investimento @relation(fields: [investimentoId], references: [id])
+  @@map("transacoes_investimentos")
+}
+
+enum StatusInvestimento {
+  ATIVO
+  CONCLUIDO
+  CANCELADO
+}
+enum TipoTransacaoInvestimento {
+  DEPOSITO
+  RETIRADA
+}
+
 enum TipoContas {
   POUPANCA
   CONTA_CORRENTE

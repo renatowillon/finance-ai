@@ -24,3 +24,15 @@ export interface TypeUsuarioLogado {
   plano: string;
   status: boolean;
 }
+
+export interface TypeInvestimento {
+  id: number;
+  userId: number;
+  nome: string;
+  descricao: string;
+  meta: number;
+  valorAtual: number;
+  cor: string;
+  status: "ATIVO" | "CONCLUIDO" | "CANCELADO";
+}
+export type TypeInvestimentoInput = Omit<TypeInvestimento, "id">;
