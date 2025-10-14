@@ -7,23 +7,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/app/_components/ui/dialog";
+import { formatCurrency } from "@/app/_utils/currency";
+import { TypeInvestimento } from "@/app/types";
 import { ChartSpline, EditIcon, Minus, Plus, Target } from "lucide-react";
+import { useState } from "react";
 
-// interface CardInvestimentoProps {
-//   titulo: string;
-//   descricao: string;
-//   valorTotal: string;
-//   entradas: number;
-//   saidas: number;
-// }
-// {
-//   descricao,
-//   entradas,
-//   saidas,
-//   titulo,
-//   valorTotal,
-// }: CardInvestimentoProps
-export const CardInvestimento = () => {
+interface CardInvestimentoProps {
+  investimento: TypeInvestimento;
+}
+
+export const CardInvestimento = ({ investimento }: CardInvestimentoProps) => {
+  const [adicionarTransacao, setAdicionarTransacao] = useState("");
+
   return (
     <Dialog>
       <DialogHeader>
@@ -34,9 +29,9 @@ export const CardInvestimento = () => {
                 <ChartSpline />
               </p>
               <span className="flex flex-col text-start">
-                <p className="font-bold">Viagem</p>
+                <p className="font-bold">{investimento?.nome}</p>
                 <p className="text-sm text-muted-foreground">
-                  Viagem em Fevereiro
+                  {investimento?.descricao}
                 </p>
               </span>
             </div>
@@ -74,7 +69,9 @@ export const CardInvestimento = () => {
               <div className="h-2 w-full rounded-lg bg-muted-foreground/20"></div>
               <div className="flex items-center justify-between px-5">
                 <p className="text-sm text-muted-foreground">R$ 0,00</p>
-                <p className="text-sm text-muted-foreground">R$ 2.000,00</p>
+                <p className="text-sm text-muted-foreground">
+                  {formatCurrency(investimento.meta)}
+                </p>
               </div>
             </div>
             <p className="text-start text-sm text-muted-foreground">
@@ -130,10 +127,16 @@ export const CardInvestimento = () => {
           </div>
         </Card>
         <div className="flex w-full gap-2">
-          <Button className="w-full bg-green-500 font-bold hover:bg-green-600">
+          <Button
+            onClick={() => setAdicionarTransacao("DEPOSITAR")}
+            className="w-full bg-green-500 font-bold hover:bg-green-600"
+          >
             <Plus /> Depositar
           </Button>
-          <Button className="w-full border border-red-500 bg-muted/20 font-bold text-red-500 hover:bg-red-500 hover:text-red-100">
+          <Button
+            onClick={() => setAdicionarTransacao("SACAR")}
+            className="w-full border border-red-500 bg-muted/20 font-bold text-red-500 hover:bg-red-500 hover:text-red-100"
+          >
             <Minus /> Sacar
           </Button>
         </div>
@@ -147,6 +150,12 @@ export const CardInvestimento = () => {
               faça seu primeiro depósito para começar
             </p>
           </div>
+          {/* formulario de transação por investimento */}
+          {adicionarTransacao && (
+            <>
+              <div>Aqui será criado as transações {adicionarTransacao}</div>
+            </>
+          )}
         </div>
       </DialogContent>
     </Dialog>

@@ -83,8 +83,8 @@ model Investimento {
   nome String
   descricao String?
   meta Decimal @db.Decimal(10,2)
-  valorAtual Decimal @db.Decimal(10,2)
-  cor String
+  valorAtual Decimal? @db.Decimal(10,2)
+  cor String?
   Status StatusInvestimento @default(ATIVO)
   transacoes TransacoesInvestimento []
   user User @relation(fields: [userId], references: [id])

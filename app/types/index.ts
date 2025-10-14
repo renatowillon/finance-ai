@@ -31,8 +31,8 @@ export interface TypeInvestimento {
   nome: string;
   descricao: string;
   meta: number;
-  valorAtual: number;
-  cor: string;
-  status: "ATIVO" | "CONCLUIDO" | "CANCELADO";
+  //valorAtual?: number;
+  cor?: string;
+  status?: "ATIVO" | "CONCLUIDO" | "CANCELADO";
 }
 export type TypeInvestimentoInput = Omit<TypeInvestimento, "id">;
