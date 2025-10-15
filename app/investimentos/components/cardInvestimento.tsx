@@ -70,7 +70,10 @@ export const CardInvestimento = ({
                 </p>
                 <p className="text-sm text-muted-foreground">0%</p>
               </div>
-              <div className="h-2 w-full rounded-lg bg-muted-foreground/20"></div>
+              <div className="relative">
+                <div className="absolute h-2 w-[30%] rounded-lg bg-green-500" />
+                <div className="absolute h-2 w-full rounded-lg bg-muted-foreground/20" />
+              </div>
               <div className="flex items-center justify-between px-5">
                 <p className="text-sm text-muted-foreground">R$ 0,00</p>
                 <p className="text-sm text-muted-foreground">
@@ -131,7 +134,10 @@ export const CardInvestimento = ({
           </div>
           <div className="flex flex-col gap-2">
             <p className="text-sm text-muted-foreground">Progresso</p>
-            <div className="h-2 w-full rounded-lg bg-muted-foreground/20"></div>
+            <div className="relative">
+              <div className="absolute h-2 w-[30%] rounded-lg bg-green-500" />
+              <div className="absolute h-2 w-full rounded-lg bg-muted-foreground/20" />
+            </div>
           </div>
         </Card>
         <div className="flex w-full gap-2">
