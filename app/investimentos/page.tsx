@@ -15,12 +15,14 @@ import { useQuery } from "@tanstack/react-query";
 
 const Investimentos = () => {
   const [openFormInvestimento, setOpenFormInvestimento] = useState(false);
-  const [investimentoSelecionado] = useState<TypeInvestimento>();
+  const [investimentoSelecionado, setInvestimentoSelecionado] =
+    useState<TypeInvestimento>();
   const { criarMutation, atualizarMutation } = useMutations();
   const { userId } = useAuth();
-  function alerta() {
+  function abrirForm() {
     toast.info("implementação em andamento 🥳");
     setOpenFormInvestimento(true);
+    setInvestimentoSelecionado(undefined);
   }
 
   const { data } = useQuery({
@@ -52,31 +54,42 @@ const Investimentos = () => {
     }
     console.log(values);
   }
+  function EditarInvestimento(values: TypeInvestimento) {
+    setInvestimentoSelecionado(values);
+    setOpenFormInvestimento(true);
+    console.log(values);
+  }
 
   return (
     <div className="space-y-6 p-6">
       {/* titulo e botão */}
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Meus Investimentos</h1>
-        <Button onClick={alerta}>
+        <Button onClick={abrirForm}>
           <Plus /> Adicionar Investimento
         </Button>
       </div>
-      <p className="animate-pulse text-center font-bold text-muted-foreground">
+      <p className="animate-pulse rounded-lg border border-orange-500 bg-orange-500/20 p-3 text-center font-bold text-muted-foreground">
         PEDIMOS PERDÃO PELO TRANSTORNO, ESSA TELA ESTÁ EM DESENVOLVIMENTO, TODOS
         OS DADOS NO MOMENTO DESSA TELA SÃO FICTICIOS
       </p>
-      <InfoSemDados
-        titulo="Nenhum investimento cadastrado"
-        subtitulo="Comece adicionando seu primeira plano de investimento"
-        tituloBotao="Adicionar Investimento"
-        onClick={alerta}
-      />
+      {data?.length < 0 && (
+        <InfoSemDados
+          titulo="Nenhum investimento cadastrado"
+          subtitulo="Comece adicionando seu primeira plano de investimento"
+          tituloBotao="Adicionar Investimento"
+          onClick={abrirForm}
+        />
+      )}
 
       {/* inicio de implementação de card de investimento */}
       <div className="grid-cols-1 gap-3 md:grid md:grid-cols-2 lg:grid-cols-3">
         {data?.map((investimento: TypeInvestimento) => (
-          <CardInvestimento key={investimento.id} investimento={investimento} />
+          <CardInvestimento
+            key={investimento.id}
+            investimento={investimento}
+            editInvestimento={EditarInvestimento}
+          />
         ))}
       </div>
 
@@ -84,6 +97,7 @@ const Investimentos = () => {
         open={openFormInvestimento}
         onOpenChange={setOpenFormInvestimento}
         onSubmit={AdicionarInvestimento}
+        investimentoSelecionado={investimentoSelecionado}
       />
     </div>
   );

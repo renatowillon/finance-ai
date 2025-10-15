@@ -7,7 +7,7 @@ export const fetchInvestimento = async () => {
 };
 
 export const pegarUmInvestimento = async (idInvestimento: number) => {
-  const response = await axios.get(`/api/investimento/${idInvestimento}`);
+  const response = await axios.get(`/api/investimentos/${idInvestimento}`);
   return response.data;
 };
 
@@ -22,11 +22,11 @@ export const atualizarInvestimento = async (
   id: number,
   investimento: TypeInvestimentoInput,
 ) => {
-  const response = await axios.put(`/api/investimento/${id}`, investimento);
+  const response = await axios.put(`/api/investimentos/${id}`, investimento);
   return response.data;
 };
 
 export const deletarInvestimento = async (id: number) => {
-  const response = await axios.delete(`/api/investimento/${id}`);
+  const response = await axios.delete(`/api/investimentos/${id}`);
   return response.data;
 };

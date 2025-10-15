@@ -14,13 +14,17 @@ import { useState } from "react";
 
 interface CardInvestimentoProps {
   investimento: TypeInvestimento;
+  editInvestimento: (investimento: TypeInvestimento) => void;
 }
 
-export const CardInvestimento = ({ investimento }: CardInvestimentoProps) => {
+export const CardInvestimento = ({
+  investimento,
+  editInvestimento,
+}: CardInvestimentoProps) => {
   const [adicionarTransacao, setAdicionarTransacao] = useState("");
-
+  const [open, setOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogHeader>
         <DialogTrigger>
           <Card className="space-y-4 bg-secondary/20 p-6">
@@ -86,7 +90,7 @@ export const CardInvestimento = ({ investimento }: CardInvestimentoProps) => {
             <ChartSpline />
           </p>
           <span className="flex flex-col text-start">
-            <p className="font-bold">Viagem</p>
+            <p className="font-bold">{investimento.nome}</p>
           </span>
         </DialogTitle>
         <Card className="space-y-3 bg-muted/20 p-6">
@@ -101,7 +105,7 @@ export const CardInvestimento = ({ investimento }: CardInvestimentoProps) => {
             </div>
           </div>
           <p className="border-b pb-5 text-sm text-muted-foreground">
-            viagem em fevereiro
+            {investimento.descricao}
           </p>
           <div className="flex items-center justify-between px-4">
             <div>
@@ -110,13 +114,17 @@ export const CardInvestimento = ({ investimento }: CardInvestimentoProps) => {
                   <Target size={20} /> Meta:
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  R$ 2.000,00
+                  {formatCurrency(investimento.meta)}
                 </span>
               </p>
             </div>
             <Button
               variant={"ghost"}
               className="flex gap-3 text-sm text-muted-foreground"
+              onClick={() => {
+                editInvestimento(investimento);
+                setOpen(false);
+              }}
             >
               <EditIcon size={20} /> Editar
             </Button>

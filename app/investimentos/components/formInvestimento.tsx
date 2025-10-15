@@ -8,19 +8,21 @@ import {
 import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
 import { useAuth } from "@/app/context/AuthContext";
-import { TypeInvestimentoInput } from "@/app/types";
-import { useState } from "react";
+import { TypeInvestimento, TypeInvestimentoInput } from "@/app/types";
+import { useEffect, useState } from "react";
 
 interface FormInvestimentoProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (Investimento: TypeInvestimentoInput) => void;
+  investimentoSelecionado?: TypeInvestimento;
 }
 
 export const FormInvestimentos = ({
   open,
   onOpenChange,
   onSubmit,
+  investimentoSelecionado,
 }: FormInvestimentoProps) => {
   const { userId } = useAuth();
 
@@ -49,14 +51,38 @@ export const FormInvestimentos = ({
     onOpenChange(false);
     //console.log(formData) //consultar se esta chegando os dados corretamente
   };
+
+  useEffect(() => {
+    if (open) {
+      if (investimentoSelecionado) {
+        setFormData({
+          descricao: investimentoSelecionado.descricao,
+          meta: String(investimentoSelecionado.meta),
+          nome: investimentoSelecionado.nome,
+          userId: Number(userId),
+        });
+      } else {
+        setFormData({
+          nome: "",
+          meta: "",
+          descricao: "",
+          userId: Number(userId),
+        });
+      }
+    }
+  }, [open, userId, investimentoSelecionado]);
   return (
     <div>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Criar Novo Investimento</DialogTitle>
+            <DialogTitle>
+              {investimentoSelecionado
+                ? "Atualizar Investimento"
+                : "Criar Novo Investimento"}
+            </DialogTitle>
           </DialogHeader>
-          <form onClick={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="nome">Titulo do Investimento</Label>
               <Input
@@ -100,13 +126,13 @@ export const FormInvestimentos = ({
               <Button
                 className="flex-1"
                 variant={"outline"}
-                type={"button"}
+                type="button"
                 onClick={() => onOpenChange(false)}
               >
                 Cancelar
               </Button>
-              <Button className="flex-1" variant={"default"}>
-                Criar
+              <Button type="submit" className="flex-1" variant={"default"}>
+                {investimentoSelecionado ? "Atualizar" : "Criar"}
               </Button>
             </div>
           </form>
