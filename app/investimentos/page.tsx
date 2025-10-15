@@ -12,6 +12,7 @@ import { useMutations } from "../mutetions/investimentoMutation";
 import { useAuth } from "../context/AuthContext";
 import { fetchInvestimento } from "../fetche/investimentoFetch";
 import { useQuery } from "@tanstack/react-query";
+import { Loading } from "../_components/loading";
 
 const Investimentos = () => {
   const [openFormInvestimento, setOpenFormInvestimento] = useState(false);
@@ -25,7 +26,7 @@ const Investimentos = () => {
     setInvestimentoSelecionado(undefined);
   }
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["investimento"],
     queryFn: fetchInvestimento,
     staleTime: 5 * (60 * 1000), //5 minutos
@@ -73,7 +74,7 @@ const Investimentos = () => {
         PEDIMOS PERDÃO PELO TRANSTORNO, ESSA TELA ESTÁ EM DESENVOLVIMENTO, TODOS
         OS DADOS NO MOMENTO DESSA TELA SÃO FICTICIOS
       </p>
-      {data?.length < 0 && (
+      {data?.length < 1 && (
         <InfoSemDados
           titulo="Nenhum investimento cadastrado"
           subtitulo="Comece adicionando seu primeira plano de investimento"
@@ -81,7 +82,7 @@ const Investimentos = () => {
           onClick={abrirForm}
         />
       )}
-
+      {isLoading && <Loading />}
       {/* inicio de implementação de card de investimento */}
       <div className="grid-cols-1 gap-3 md:grid md:grid-cols-2 lg:grid-cols-3">
         {data?.map((investimento: TypeInvestimento) => (
