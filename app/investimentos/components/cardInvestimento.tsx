@@ -11,6 +11,7 @@ import { formatCurrency } from "@/app/_utils/currency";
 import { TypeInvestimento } from "@/app/types";
 import { ChartSpline, EditIcon, Minus, Plus, Target } from "lucide-react";
 import { useState } from "react";
+import { FormTransacaoInvestimentos } from "./formTransacaoInvestimento";
 
 interface CardInvestimentoProps {
   investimento: TypeInvestimento;
@@ -167,6 +168,7 @@ export const CardInvestimento = ({
           {/* formulario de transação por investimento */}
           {adicionarTransacao && (
             <>
+              <FormTransacaoInvestimentos onSubmit={() => adicionarTransacao} />
               <div>Aqui será criado as transações {adicionarTransacao}</div>
             </>
           )}
