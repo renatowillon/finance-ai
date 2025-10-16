@@ -8,10 +8,14 @@ import {
   DialogTrigger,
 } from "@/app/_components/ui/dialog";
 import { formatCurrency } from "@/app/_utils/currency";
-import { TypeInvestimento } from "@/app/types";
+import { TypeInvestimento, TypeTransacaoInvestimento } from "@/app/types";
 import { ChartSpline, EditIcon, Minus, Plus, Target } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormTransacaoInvestimentos } from "./formTransacaoInvestimento";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { pegarTransacaoInvestimento } from "@/app/fetche/transacaoInvestimentoFetch";
+import { CardTransacaoInvestimento } from "./cardTransacaoInvestimento";
+import { InfoSemDados } from "@/app/_components/bancos/infoSemDados";
 
 interface CardInvestimentoProps {
   investimento: TypeInvestimento;
@@ -24,6 +28,20 @@ export const CardInvestimento = ({
 }: CardInvestimentoProps) => {
   const [adicionarTransacao, setAdicionarTransacao] = useState("");
   const [open, setOpen] = useState(false);
+
+  const { data } = useQuery({
+    queryKey: ["transacaoInvestimento"],
+    queryFn: () => pegarTransacaoInvestimento(investimento.id),
+  });
+
+  const queryCliente = useQueryClient();
+
+  useEffect(() => {
+    queryCliente.invalidateQueries({
+      queryKey: ["transacaoInvestimento"],
+    });
+  }, [investimento]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogHeader>
@@ -88,10 +106,10 @@ export const CardInvestimento = ({
           </Card>
         </DialogTrigger>
       </DialogHeader>
-      <DialogContent className="">
+      <DialogContent className="max-h-[80vh] overflow-auto sm:max-w-2xl">
         <DialogTitle className="flex items-center gap-3">
           <p className="rounded-lg bg-violet-500/20 p-2 text-violet-500">
-            <ChartSpline />
+            <ChartSpline /> {investimento.id}
           </p>
           <span className="flex flex-col text-start">
             <p className="font-bold">{investimento.nome}</p>
@@ -157,21 +175,28 @@ export const CardInvestimento = ({
         </div>
         <div className="space-y-4 py-4">
           <p>Histórico de Transações</p>
-          <div className="flex flex-col items-center justify-center">
-            <p className="text-muted-foreground">
-              Nenhuma transação realizada ainda
-            </p>
-            <p className="text-sm text-muted-foreground">
-              faça seu primeiro depósito para começar
-            </p>
-          </div>
           {/* formulario de transação por investimento */}
           {adicionarTransacao && (
             <>
               <FormTransacaoInvestimentos onSubmit={() => adicionarTransacao} />
-              <div>Aqui será criado as transações {adicionarTransacao}</div>
             </>
           )}
+          <div className="space-y-2">
+            {data?.map((transacao: TypeTransacaoInvestimento) => (
+              <CardTransacaoInvestimento
+                key={transacao.id}
+                transacao={transacao}
+              />
+            ))}
+          </div>
+          <div className="flex flex-col items-center justify-center">
+            {data?.length < 1 && (
+              <InfoSemDados
+                titulo="Nenhuma transação realizada ainda"
+                subtitulo="faça seu primeiro depósito para começar"
+              />
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>

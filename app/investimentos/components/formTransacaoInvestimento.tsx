@@ -102,7 +102,7 @@ export const FormTransacaoInvestimentos = ({
           />
         </div>
 
-        <div className="flex w-full gap-3">
+        <div className="flex w-full gap-2">
           <Button className="flex-1" variant={"outline"} type="button">
             Cancelar
           </Button>

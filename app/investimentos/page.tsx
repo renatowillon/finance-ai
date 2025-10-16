@@ -16,8 +16,9 @@ import { Loading } from "../_components/loading";
 
 const Investimentos = () => {
   const [openFormInvestimento, setOpenFormInvestimento] = useState(false);
-  const [investimentoSelecionado, setInvestimentoSelecionado] =
-    useState<TypeInvestimento>();
+  const [investimentoSelecionado, setInvestimentoSelecionado] = useState<
+    TypeInvestimento | undefined
+  >();
   const { criarMutation, atualizarMutation } = useMutations();
   const { userId } = useAuth();
   function abrirForm() {
