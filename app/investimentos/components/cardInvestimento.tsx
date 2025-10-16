@@ -10,9 +10,9 @@ import {
 import { formatCurrency } from "@/app/_utils/currency";
 import { TypeInvestimento, TypeTransacaoInvestimento } from "@/app/types";
 import { ChartSpline, EditIcon, Minus, Plus, Target } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FormTransacaoInvestimentos } from "./formTransacaoInvestimento";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { pegarTransacaoInvestimento } from "@/app/fetche/transacaoInvestimentoFetch";
 import { CardTransacaoInvestimento } from "./cardTransacaoInvestimento";
 import { InfoSemDados } from "@/app/_components/bancos/infoSemDados";
@@ -30,17 +30,9 @@ export const CardInvestimento = ({
   const [open, setOpen] = useState(false);
 
   const { data } = useQuery({
-    queryKey: ["transacaoInvestimento"],
+    queryKey: ["transacaoInvestimento", investimento.id],
     queryFn: () => pegarTransacaoInvestimento(investimento.id),
   });
-
-  const queryCliente = useQueryClient();
-
-  useEffect(() => {
-    queryCliente.invalidateQueries({
-      queryKey: ["transacaoInvestimento"],
-    });
-  }, [investimento]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
