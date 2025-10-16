@@ -36,3 +36,15 @@ export interface TypeInvestimento {
   status?: "ATIVO" | "CONCLUIDO" | "CANCELADO";
 }
 export type TypeInvestimentoInput = Omit<TypeInvestimento, "id">;
+
+export interface TypeTransacaoInvestimento {
+  id: number;
+  investimentoId: number;
+  tipo: "DEPOSITO" | "RETIRADA";
+  valor: number;
+  descricao: string;
+}
+export type TypeTransacaoInvestimentoInput = Omit<
+  TypeTransacaoInvestimento,
+  "id"
+>;
