@@ -15,28 +15,49 @@ import {
   TypeTransacaoInvestimento,
   TypeTransacaoInvestimentoInput,
 } from "@/app/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface FormTransacaoInvestimentoProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   onSubmit: (transacaoInvestimento: TypeTransacaoInvestimentoInput) => void;
   investimentoSelecionado?: TypeInvestimento;
+  cancelar?: () => void;
+  depositarOuSacar: string;
 }
 
 export const FormTransacaoInvestimentos = ({
   onSubmit,
   investimentoSelecionado,
+  cancelar,
+  depositarOuSacar,
 }: FormTransacaoInvestimentoProps) => {
   const [formData, setFormData] = useState({
-    investimentoId: "",
-    tipo: "DEPOSITO" as TypeTransacaoInvestimento["tipo"],
+    investimentoId: investimentoSelecionado?.id,
+    tipo:
+      depositarOuSacar === "DEPOSITAR"
+        ? ("DEPOSITO" as TypeTransacaoInvestimento["tipo"])
+        : ("RETIRADA" as TypeTransacaoInvestimento["tipo"]),
     valor: "",
     descricao: "",
   });
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      tipo:
+        depositarOuSacar === "DEPOSITAR"
+          ? ("DEPOSITO" as TypeTransacaoInvestimento["tipo"])
+          : ("RETIRADA" as TypeTransacaoInvestimento["tipo"]),
+    }));
+  }, [depositarOuSacar]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.investimentoId || !formData.valor || !formData.tipo) return;
+    if (!formData.investimentoId || !formData.valor || !formData.tipo) {
+      return toast.warning("Preencha os dados corretamente");
+    }
 
     onSubmit({
       investimentoId: Number(investimentoSelecionado?.id),
@@ -45,12 +66,12 @@ export const FormTransacaoInvestimentos = ({
       descricao: formData.descricao,
     });
     setFormData({
-      investimentoId: "",
+      investimentoId: investimentoSelecionado?.id,
       tipo: "DEPOSITO" as TypeTransacaoInvestimento["tipo"],
       valor: "",
       descricao: "",
     });
-
+    cancelar?.();
     //console.log(formData) //consultar se esta chegando os dados corretamente
   };
   return (
@@ -103,7 +124,12 @@ export const FormTransacaoInvestimentos = ({
         </div>
 
         <div className="flex w-full gap-2">
-          <Button className="flex-1" variant={"outline"} type="button">
+          <Button
+            onClick={cancelar}
+            className="flex-1"
+            variant={"outline"}
+            type="button"
+          >
             Cancelar
           </Button>
           <Button type="submit" className="flex-1" variant={"default"}>

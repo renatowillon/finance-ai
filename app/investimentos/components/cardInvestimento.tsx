@@ -8,7 +8,11 @@ import {
   DialogTrigger,
 } from "@/app/_components/ui/dialog";
 import { formatCurrency } from "@/app/_utils/currency";
-import { TypeInvestimento, TypeTransacaoInvestimento } from "@/app/types";
+import {
+  TypeInvestimento,
+  TypeTransacaoInvestimento,
+  TypeTransacaoInvestimentoInput,
+} from "@/app/types";
 import { ChartSpline, EditIcon, Minus, Plus, Target } from "lucide-react";
 import { useState } from "react";
 import { FormTransacaoInvestimentos } from "./formTransacaoInvestimento";
@@ -34,6 +38,9 @@ export const CardInvestimento = ({
     queryFn: () => pegarTransacaoInvestimento(investimento.id),
   });
 
+  const onSubmitTransacao = (values: TypeTransacaoInvestimentoInput) => {
+    console.log(values);
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogHeader>
@@ -101,7 +108,7 @@ export const CardInvestimento = ({
       <DialogContent className="max-h-[80vh] overflow-auto sm:max-w-2xl">
         <DialogTitle className="flex items-center gap-3">
           <p className="rounded-lg bg-violet-500/20 p-2 text-violet-500">
-            <ChartSpline /> {investimento.id}
+            <ChartSpline />
           </p>
           <span className="flex flex-col text-start">
             <p className="font-bold">{investimento.nome}</p>
@@ -170,7 +177,12 @@ export const CardInvestimento = ({
           {/* formulario de transação por investimento */}
           {adicionarTransacao && (
             <>
-              <FormTransacaoInvestimentos onSubmit={() => adicionarTransacao} />
+              <FormTransacaoInvestimentos
+                onSubmit={onSubmitTransacao}
+                cancelar={() => setAdicionarTransacao("")}
+                depositarOuSacar={adicionarTransacao}
+                investimentoSelecionado={investimento}
+              />
             </>
           )}
           <div className="space-y-2">
