@@ -1,5 +1,8 @@
 import axios from "axios";
-import { TypeInvestimentoInput } from "../types";
+import {
+  TypeTransacaoInvestimento,
+  TypeTransacaoInvestimentoInput,
+} from "../types";
 
 export const pegarTransacaoInvestimento = async (idInvestimento: number) => {
   const response = await axios.get(
@@ -9,8 +12,30 @@ export const pegarTransacaoInvestimento = async (idInvestimento: number) => {
 };
 
 export const criarTransacaoInvestimento = async (
-  investimento: TypeInvestimentoInput,
+  investimento: TypeTransacaoInvestimentoInput,
 ) => {
   const response = await axios.post("/api/transacaoInvestimento", investimento);
   return response.data;
 };
+
+export function calcularResumo(transacoes: TypeTransacaoInvestimento[]) {
+  let totalDepositos = 0;
+  let totalRetiradas = 0;
+
+  for (const t of transacoes) {
+    const valor = parseFloat(String(t.valor));
+    if (t.tipo === "DEPOSITO") {
+      totalDepositos += valor;
+    } else if (t.tipo === "RETIRADA") {
+      totalRetiradas += valor;
+    }
+  }
+  const qtdTransacoes = transacoes.length;
+  const saldoTotal = totalDepositos - totalRetiradas;
+  return {
+    totalDepositos,
+    totalRetiradas,
+    qtdTransacoes,
+    saldoTotal,
+  };
+}

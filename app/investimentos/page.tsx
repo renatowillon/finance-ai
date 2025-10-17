@@ -71,10 +71,7 @@ const Investimentos = () => {
           <Plus /> Adicionar Investimento
         </Button>
       </div>
-      <p className="animate-pulse rounded-lg border border-orange-500 bg-orange-500/20 p-3 text-center font-bold text-muted-foreground">
-        PEDIMOS PERDÃO PELO TRANSTORNO, ESSA TELA ESTÁ EM DESENVOLVIMENTO, TODOS
-        OS DADOS NO MOMENTO DESSA TELA SÃO FICTICIOS
-      </p>
+
       {data?.length < 1 && (
         <InfoSemDados
           titulo="Nenhum investimento cadastrado"

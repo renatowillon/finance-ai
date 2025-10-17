@@ -17,9 +17,13 @@ import { ChartSpline, EditIcon, Minus, Plus, Target } from "lucide-react";
 import { useState } from "react";
 import { FormTransacaoInvestimentos } from "./formTransacaoInvestimento";
 import { useQuery } from "@tanstack/react-query";
-import { pegarTransacaoInvestimento } from "@/app/fetche/transacaoInvestimentoFetch";
+import {
+  calcularResumo,
+  pegarTransacaoInvestimento,
+} from "@/app/fetche/transacaoInvestimentoFetch";
 import { CardTransacaoInvestimento } from "./cardTransacaoInvestimento";
 import { InfoSemDados } from "@/app/_components/bancos/infoSemDados";
+import { useMutations } from "@/app/mutetions/transacaoInvestimentoMutation";
 
 interface CardInvestimentoProps {
   investimento: TypeInvestimento;
@@ -32,6 +36,7 @@ export const CardInvestimento = ({
 }: CardInvestimentoProps) => {
   const [adicionarTransacao, setAdicionarTransacao] = useState("");
   const [open, setOpen] = useState(false);
+  const { criarMutation } = useMutations();
 
   const { data } = useQuery({
     queryKey: ["transacaoInvestimento", investimento.id],
@@ -39,8 +44,16 @@ export const CardInvestimento = ({
   });
 
   const onSubmitTransacao = (values: TypeTransacaoInvestimentoInput) => {
-    console.log(values);
+    const transacaoInvestimento: TypeTransacaoInvestimentoInput = {
+      ...values,
+    };
+    criarMutation.mutate(transacaoInvestimento);
   };
+
+  const resumoTransacao = calcularResumo(data || []);
+  const resumoProgresso =
+    (resumoTransacao.saldoTotal / investimento.meta) * 100;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogHeader>
@@ -59,7 +72,9 @@ export const CardInvestimento = ({
             </div>
             <div className="flex items-center justify-between px-5">
               <p className="text-sm text-muted-foreground">Valor Total</p>
-              <p className="font-bold text-green-500">R$ 0,00</p>
+              <p className="font-bold text-green-500">
+                {formatCurrency(resumoTransacao.saldoTotal)}
+              </p>
             </div>
             <div className="flex items-center justify-around border-y px-5 py-2">
               <div className="flex items-center gap-3">
@@ -68,7 +83,9 @@ export const CardInvestimento = ({
                 </p>
                 <span>
                   <p className="text-sm text-muted-foreground">Depósito</p>
-                  <p className="font-bold text-green-500">R$ 0,00</p>
+                  <p className="font-bold text-green-500">
+                    {formatCurrency(resumoTransacao.totalDepositos)}
+                  </p>
                 </span>
               </div>
               <div className="flex items-center gap-3">
@@ -77,7 +94,9 @@ export const CardInvestimento = ({
                 </p>
                 <span>
                   <p className="text-sm text-muted-foreground">Saída</p>
-                  <p className="font-bold text-red-500">R$ 0,00</p>
+                  <p className="font-bold text-red-500">
+                    {formatCurrency(resumoTransacao.totalRetiradas)}
+                  </p>
                 </span>
               </div>
             </div>
@@ -86,21 +105,28 @@ export const CardInvestimento = ({
                 <p className="flex items-center gap-1 text-sm text-muted-foreground">
                   <Target size={15} /> Meta
                 </p>
-                <p className="text-sm text-muted-foreground">0%</p>
+                <p className="text-sm text-muted-foreground">
+                  {resumoProgresso.toFixed(0)}%
+                </p>
               </div>
               <div className="relative">
-                <div className="absolute h-2 w-[30%] rounded-lg bg-green-500" />
+                <div
+                  className={`absolute h-2 rounded-lg bg-green-500`}
+                  style={{ width: `${resumoProgresso}%` }}
+                />
                 <div className="absolute h-2 w-full rounded-lg bg-muted-foreground/20" />
               </div>
               <div className="flex items-center justify-between px-5">
-                <p className="text-sm text-muted-foreground">R$ 0,00</p>
+                <p className="text-sm text-muted-foreground">
+                  {formatCurrency(resumoTransacao.saldoTotal)}
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {formatCurrency(investimento.meta)}
                 </p>
               </div>
             </div>
             <p className="text-start text-sm text-muted-foreground">
-              0 transação(ões)
+              {resumoTransacao.qtdTransacoes} transação(ões)
             </p>
           </Card>
         </DialogTrigger>
@@ -118,11 +144,15 @@ export const CardInvestimento = ({
           <div className="flex w-full">
             <div className="w-full">
               <div className="text-sm text-muted-foreground">Valor Total</div>
-              <div className="text-2xl font-black text-green-500">R$ 0,00</div>
+              <div className="text-2xl font-black text-green-500">
+                {formatCurrency(resumoTransacao.saldoTotal)}
+              </div>
             </div>
             <div className="w-full">
               <div className="text-sm text-muted-foreground">Transações</div>
-              <div className="text-2xl font-black">0</div>
+              <div className="text-2xl font-black">
+                {resumoTransacao.qtdTransacoes}
+              </div>
             </div>
           </div>
           <p className="border-b pb-5 text-sm text-muted-foreground">
@@ -152,8 +182,12 @@ export const CardInvestimento = ({
           </div>
           <div className="flex flex-col gap-2">
             <p className="text-sm text-muted-foreground">Progresso</p>
+
             <div className="relative">
-              <div className="absolute h-2 w-[30%] rounded-lg bg-green-500" />
+              <div
+                className={`absolute h-2 rounded-lg bg-green-500`}
+                style={{ width: `${resumoProgresso}%` }}
+              />
               <div className="absolute h-2 w-full rounded-lg bg-muted-foreground/20" />
             </div>
           </div>
@@ -161,13 +195,13 @@ export const CardInvestimento = ({
         <div className="flex w-full gap-2">
           <Button
             onClick={() => setAdicionarTransacao("DEPOSITAR")}
-            className="w-full bg-green-500 font-bold hover:bg-green-600"
+            className={`w-full ${adicionarTransacao === "DEPOSITAR" ? "bg-green-500 hover:bg-green-600" : "border border-green-500 bg-muted/20 text-green-500"} font-bold hover:bg-green-600 hover:text-green-100`}
           >
             <Plus /> Depositar
           </Button>
           <Button
             onClick={() => setAdicionarTransacao("SACAR")}
-            className="w-full border border-red-500 bg-muted/20 font-bold text-red-500 hover:bg-red-500 hover:text-red-100"
+            className={`w-full border ${adicionarTransacao === "SACAR" ? "bg-red-500 font-bold text-red-100 hover:bg-red-500 hover:text-red-100" : "border-red-500 bg-muted/20 font-bold text-red-500 hover:bg-red-500 hover:text-red-100"} `}
           >
             <Minus /> Sacar
           </Button>
