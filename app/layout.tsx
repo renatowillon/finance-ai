@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import RegisterSW from "./_components/RegisterSW";
 import { Provider } from "./context/Provider";
 import { canUserAddTransaction } from "./_data/can-user-add-transaction";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
@@ -36,6 +37,7 @@ export default async function RootLayout({
             />
             <div className="mb-16 flex h-full w-full flex-col overflow-y-scroll lg:p-5">
               {children}
+              <SpeedInsights />
             </div>
           </AuthProvider>
         </Provider>
