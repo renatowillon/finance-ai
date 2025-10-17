@@ -22,7 +22,6 @@ const Investimentos = () => {
   const { criarMutation, atualizarMutation } = useMutations();
   const { userId } = useAuth();
   function abrirForm() {
-    toast.info("implementação em andamento 🥳");
     setOpenFormInvestimento(true);
     setInvestimentoSelecionado(undefined);
   }
