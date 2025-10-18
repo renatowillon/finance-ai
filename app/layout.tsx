@@ -26,7 +26,7 @@ export default async function RootLayout({
         <meta name="theme-color" content="#030712" />
       </head>
       <body
-        className={`${mulish.className} dark flex flex-col antialiased md:flex-row`}
+        className={`${mulish.className} dark flex flex-row antialiased md:flex-row`}
       >
         <Provider>
           <RegisterSW />
