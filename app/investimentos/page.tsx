@@ -4,10 +4,61 @@ import { Plus } from "lucide-react";
 import { InfoSemDados } from "../_components/bancos/infoSemDados";
 import { Button } from "../_components/ui/button";
 import { toast } from "sonner";
+import { CardInvestimento } from "./components/cardInvestimento";
+import { FormInvestimentos } from "./components/formInvestimento";
+import { useState } from "react";
+import { TypeInvestimento, TypeInvestimentoInput } from "../types";
+import { useMutations } from "../mutetions/investimentoMutation";
+import { useAuth } from "../context/AuthContext";
+import { fetchInvestimento } from "../fetche/investimentoFetch";
+import { useQuery } from "@tanstack/react-query";
+import { Loading } from "../_components/loading";
 
 const Investimentos = () => {
-  function alerta() {
-    toast.info("implementação em andamento 🥳");
+  const [openFormInvestimento, setOpenFormInvestimento] = useState(false);
+  const [investimentoSelecionado, setInvestimentoSelecionado] = useState<
+    TypeInvestimento | undefined
+  >();
+  const { criarMutation, atualizarMutation } = useMutations();
+  const { userId } = useAuth();
+  function abrirForm() {
+    setOpenFormInvestimento(true);
+    setInvestimentoSelecionado(undefined);
+  }
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["investimento"],
+    queryFn: fetchInvestimento,
+    staleTime: 5 * (60 * 1000), //5 minutos
+  });
+
+  function AdicionarInvestimento(values: TypeInvestimentoInput) {
+    if (investimentoSelecionado) {
+      const investimentoAtualizado = investimentoSelecionado;
+      atualizarMutation.mutate({
+        id: investimentoAtualizado.id,
+        investimento: {
+          descricao: values.descricao,
+          meta: values.meta,
+          nome: values.nome,
+          userId: Number(userId),
+        },
+      });
+      toast.success("Investimento Atualizado com Sucesso");
+      console.log(investimentoSelecionado);
+    } else {
+      const investimentoNovo: TypeInvestimentoInput = {
+        ...values,
+      };
+      criarMutation.mutate(investimentoNovo);
+      toast.success("Investimento Criado com Sucesso");
+    }
+    console.log(values);
+  }
+  function EditarInvestimento(values: TypeInvestimento) {
+    setInvestimentoSelecionado(values);
+    setOpenFormInvestimento(true);
+    console.log(values);
   }
 
   return (
@@ -15,16 +66,36 @@ const Investimentos = () => {
       {/* titulo e botão */}
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Meus Investimentos</h1>
-        <Button onClick={alerta}>
+        <Button onClick={abrirForm}>
           <Plus /> Adicionar Investimento
         </Button>
       </div>
 
-      <InfoSemDados
-        titulo="Nenhum investimento cadastrado"
-        subtitulo="Comece adicionando seu primeira plano de investimento"
-        tituloBotao="Adicionar Investimento"
-        onClick={alerta}
+      {data?.length < 1 && (
+        <InfoSemDados
+          titulo="Nenhum investimento cadastrado"
+          subtitulo="Comece adicionando seu primeira plano de investimento"
+          tituloBotao="Adicionar Investimento"
+          onClick={abrirForm}
+        />
+      )}
+      {isLoading && <Loading />}
+      {/* inicio de implementação de card de investimento */}
+      <div className="grid-cols-1 gap-3 md:grid md:grid-cols-2 lg:grid-cols-3">
+        {data?.map((investimento: TypeInvestimento) => (
+          <CardInvestimento
+            key={investimento.id}
+            investimento={investimento}
+            editInvestimento={EditarInvestimento}
+          />
+        ))}
+      </div>
+
+      <FormInvestimentos
+        open={openFormInvestimento}
+        onOpenChange={setOpenFormInvestimento}
+        onSubmit={AdicionarInvestimento}
+        investimentoSelecionado={investimentoSelecionado}
       />
     </div>
   );

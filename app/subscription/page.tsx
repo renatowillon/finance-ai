@@ -85,6 +85,7 @@ const SubscriptionsPage = async () => {
               </div>
               {usuario.plano === "FREE" && <AcquirePlanButton />}
               {usuario.plano === "PREMIUM" && <PlanoAdquirido />}
+              {usuario.plano === "DEV" && <PlanoAdquirido />}
             </CardContent>
           </Card>
         </div>

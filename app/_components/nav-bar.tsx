@@ -29,6 +29,13 @@ import { usePathname } from "next/navigation";
 import InstallButton from "./InstallButton";
 
 import AddTransactionMobile from "./add-transactions-mobile";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
 
 interface MenuItem {
   id: string;
@@ -84,11 +91,16 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-export function Sidebar() {
+interface props {
+  usuarioPodeAdicionarTransacao: boolean;
+}
+
+export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
   const pathname = usePathname();
   const [expandedItems, setExpandedItems] = useState<string[]>(["carteira"]);
   const [, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
 
   const toggleExpanded = async (itemId: string) => {
     setExpandedItems((prev) =>
@@ -237,7 +249,9 @@ export function Sidebar() {
 
           {/* Botão Adicionar - Espaço reservado para o componente */}
           <div className="-mt-10 flex items-center justify-center">
-            <AddTransactionMobile />
+            <AddTransactionMobile
+              usuarioPodeAdicionarTransacao={usuarioPodeAdicionarTransacao}
+            />
 
             {/* Aqui você adiciona seu componente de adicionar transação */}
           </div>
@@ -324,67 +338,56 @@ export function Sidebar() {
           </div>
 
           {/* Mais com dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => toggleDropdown("mais")}
-              className="flex w-full flex-col items-center justify-center py-2"
-            >
-              <div
-                className={cn(
-                  "flex flex-col items-center justify-center rounded-lg px-3 py-2 transition-colors",
-                  isPathActive("/subscription") && "text-primary",
-                )}
-              >
-                <MoreHorizontal
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <button className="flex w-full flex-col items-center justify-center py-2">
+                <div
                   className={cn(
-                    "mb-1 h-5 w-5",
-                    isPathActive("/subscription")
-                      ? "text-primary"
-                      : "text-muted-foreground",
-                  )}
-                />
-                <span
-                  className={cn(
-                    "text-xs",
-                    isPathActive("/subscription")
-                      ? "font-medium text-primary"
-                      : "text-muted-foreground",
+                    "flex flex-col items-center justify-center rounded-lg px-3 py-2 transition-colors",
+                    open ? "text-primary" : "text-muted-foreground",
                   )}
                 >
-                  Mais
-                </span>
-              </div>
-            </button>
-
-            {/* Dropdown Menu para Mais */}
-            {activeDropdown === "mais" && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setActiveDropdown(null)}
-                />
-                <div className="absolute bottom-full right-0 z-50 mb-2 min-w-[140px] rounded-lg border bg-background shadow-lg">
-                  <Link
-                    href="/subscription"
-                    onClick={() => setActiveDropdown(null)}
+                  <MoreHorizontal className="mb-1 h-5 w-5" />
+                  <span
                     className={cn(
-                      "flex items-center rounded-lg px-4 py-3 transition-colors hover:bg-muted",
-                      isPathActive("/subscription") &&
-                        "font-medium text-primary",
+                      "text-xs",
+                      open
+                        ? "font-medium text-primary"
+                        : "text-muted-foreground",
                     )}
                   >
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span className="text-sm">Assinatura</span>
-                  </Link>
-                  {/* Adicione mais opções aqui se necessário */}
-                  <div className="my-1 border-t" />
-                  <div className="px-4 py-3">
-                    <UserMenu />
-                  </div>
+                    Mais
+                  </span>
                 </div>
-              </>
-            )}
-          </div>
+              </button>
+            </SheetTrigger>
+
+            <SheetContent
+              side="bottom"
+              className="rounded-t-2xl border-t bg-background pb-8"
+            >
+              <SheetHeader className="flex items-center justify-between">
+                <SheetTitle className="w-full text-center text-muted-foreground">
+                  Mais opções
+                </SheetTitle>
+              </SheetHeader>
+
+              <div className="mt-6 space-y-2 px-2">
+                <Link
+                  href="/subscription"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-muted"
+                >
+                  <FileText className="mr-3 h-5 w-5 text-primary" />
+                  Assinatura
+                </Link>
+
+                <div className="rounded-xl bg-muted/30 p-4">
+                  <UserMenu />
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
 

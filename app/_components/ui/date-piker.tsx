@@ -12,16 +12,24 @@ import { SelectSingleEventHandler } from "react-day-picker";
 
 interface DatePickerProps {
   value?: Date;
-  onChange?: SelectSingleEventHandler;
+  onChange?: (date: Date | undefined) => void; // ✅ corrigido aqui
 }
+
 export const DatePicker = ({ value, onChange }: DatePickerProps) => {
   const [open, setOpen] = React.useState(false);
 
+  // assinatura correta para o Calendar
+  const handleSelect: SelectSingleEventHandler = (date) => {
+    if (!date) return;
+    onChange?.(date);
+    setTimeout(() => setOpen(false), 0);
+  };
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal={false}>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
+          variant="outline"
           className={cn(
             "w-full justify-start text-left font-normal",
             !value && "text-muted-foreground",
@@ -39,17 +47,17 @@ export const DatePicker = ({ value, onChange }: DatePickerProps) => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+
+      <PopoverContent
+        className="z-[9999] w-auto p-0"
+        onClick={(e) => e.stopPropagation()} // impede foco em inputs abaixo
+      >
         <Calendar
           mode="single"
           selected={value}
-          onSelect={(date, selectedDay, modifiers, e) => {
-            if (!date) return setOpen(false);
-            onChange?.(date, selectedDay, modifiers, e);
-            setOpen(false);
-          }}
-          initialFocus
+          onSelect={handleSelect} // ✅ compatível com o react-day-picker
           locale={ptBR}
+          initialFocus
         />
       </PopoverContent>
     </Popover>

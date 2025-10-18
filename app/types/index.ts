@@ -16,3 +16,34 @@ export interface TypeCategoria {
   tipo: "DEPOSITO" | "DESPESA";
   userId: number;
 }
+
+export interface TypeUsuarioLogado {
+  userId: number;
+  email: string;
+  name: string;
+  plano: string;
+  status: boolean;
+}
+
+export interface TypeInvestimento {
+  id: number;
+  userId: number;
+  nome: string;
+  descricao: string;
+  meta: number;
+  cor?: string;
+  status?: "ATIVO" | "CONCLUIDO" | "CANCELADO";
+}
+export type TypeInvestimentoInput = Omit<TypeInvestimento, "id">;
+
+export interface TypeTransacaoInvestimento {
+  id: number;
+  investimentoId: number;
+  tipo: "DEPOSITO" | "RETIRADA";
+  valor: number;
+  descricao?: string;
+}
+export type TypeTransacaoInvestimentoInput = Omit<
+  TypeTransacaoInvestimento,
+  "id"
+>;

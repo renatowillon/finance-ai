@@ -1,5 +1,5 @@
 "use client";
-import { Plus } from "lucide-react";
+import { Filter, Plus } from "lucide-react";
 import { Button } from "../_components/ui/button";
 import { useState } from "react";
 import { TypeCategoria } from "../types";
@@ -18,12 +18,16 @@ const Categorias = () => {
   const [categoriaSelecionado, setCategoriaSelecionado] =
     useState<TypeCategoria>();
   const { userId } = useAuth();
-
+  const [filtroSelecionado, setFiltroSelecionado] = useState("TODOS");
   const { data, isLoading } = useQuery({
     queryKey: ["categorias"],
     queryFn: fetchCategoria,
     staleTime: 5 * (60 * 1000), //5 minutos
   });
+
+  const categoriasFiltradas = data?.filter((cat: TypeCategoria) =>
+    filtroSelecionado === "TODOS" ? true : cat.tipo === filtroSelecionado,
+  );
 
   function AdicionarCategoria(values: Omit<TypeCategoria, "id">) {
     if (categoriaSelecionado) {
@@ -64,6 +68,34 @@ const Categorias = () => {
           <Plus /> Adicionar Categorias
         </Button>
       </div>
+
+      <div className="flex-1 flex-col justify-center gap-4 rounded-md border bg-muted/50 p-3 md:flex md:flex-row md:justify-start">
+        <p className="hidden items-center justify-center gap-2 text-center text-sm text-muted-foreground md:flex">
+          {" "}
+          <Filter size={20} /> Filtro por tipo:
+        </p>
+        <div className="flex items-center justify-center gap-4 text-muted-foreground md:justify-start">
+          <Button
+            onClick={() => setFiltroSelecionado("TODOS")}
+            variant={`${filtroSelecionado === "TODOS" ? "default" : "ghost"}`}
+          >
+            Todos
+          </Button>
+          <Button
+            onClick={() => setFiltroSelecionado("DESPESA")}
+            variant={`${filtroSelecionado === "DESPESA" ? "default" : "ghost"}`}
+          >
+            Despesas
+          </Button>
+          <Button
+            onClick={() => setFiltroSelecionado("DEPOSITO")}
+            variant={`${filtroSelecionado === "DEPOSITO" ? "default" : "ghost"}`}
+          >
+            Receitas
+          </Button>
+        </div>
+      </div>
+
       <FormCategoria
         open={abrirFormCategoria}
         onOpenChange={setAbrirFormCategoria}
@@ -79,8 +111,8 @@ const Categorias = () => {
           onClick={() => setAbrirFormCategoria(true)}
         />
       )}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4">
-        {data?.map((categoria: TypeCategoria) => (
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {categoriasFiltradas?.map((categoria: TypeCategoria) => (
           <CardCategoria
             key={categoria.id}
             dataCategoria={categoria}
