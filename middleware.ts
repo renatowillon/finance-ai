@@ -15,7 +15,10 @@ export async function middleware(req: NextRequest) {
   if (!token && !isPublicPath) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
-  if (path.startsWith("/configuracao")) {
+
+  const rotasApenasDev = ["/configuracao", "/api/usuarios"];
+
+  if (rotasApenasDev.some((r) => path.startsWith(r))) {
     try {
       const secret = new TextEncoder().encode(process.env.JWT_SECRET_KEY!);
       const { payload } = await jwtVerify(token!, secret);
@@ -24,7 +27,7 @@ export async function middleware(req: NextRequest) {
       }
     } catch (error) {
       console.error("Erro ao verificar token:", error);
-      return NextResponse.redirect(new URL("/login"));
+      return NextResponse.redirect(new URL("/login", req.url));
     }
   }
 
