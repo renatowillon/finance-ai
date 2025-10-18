@@ -14,6 +14,8 @@ import {
 } from "../ui/select";
 import { TypeCategoria } from "@/app/types";
 import { useAuth } from "@/app/context/AuthContext";
+import { categoriaSchema } from "@/app/schemas/categoriaSchema";
+import { toast } from "sonner";
 
 interface FormCategoriaProps {
   open: boolean;
@@ -58,13 +60,28 @@ export const FormCategoria = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.nome || !userId) return;
 
-    onSubmit({
-      nome: formData.nome,
-      tipo: formData.tipo,
+    const result = categoriaSchema.safeParse({
+      ...formData,
       userId: Number(userId),
     });
+
+    if (!result.success) {
+      const mensagem = Object.values(result.error.flatten().fieldErrors)
+        .flat()
+        .filter(Boolean);
+
+      toast.error("Erro ao salvar categoria!", {
+        description:
+          mensagem.join("\n") || "Preencha todos os campos corretamente.",
+        className: "font-bold whitespace-pre-line", // 👈 respeita o \n
+      });
+      return;
+    }
+
+    if (!formData.nome || !userId) return;
+
+    onSubmit(result.data!);
 
     // reset após criar/editar
     setFormData({
@@ -74,6 +91,7 @@ export const FormCategoria = ({
     });
 
     onOpenChange(false);
+    toast.success("Categoria adicionada com sucesso");
   };
 
   return (
@@ -97,7 +115,6 @@ export const FormCategoria = ({
                 setFormData((prev) => ({ ...prev, nome: e.target.value }))
               }
               placeholder="Mercado"
-              required
             />
           </div>
 
@@ -124,6 +141,7 @@ export const FormCategoria = ({
               onClick={() => onOpenChange(false)}
               className="flex-1"
               variant="outline"
+              type="button"
             >
               Cancelar
             </Button>

@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/app/_components/ui/select";
 import { Textarea } from "@/app/_components/ui/textarea";
+import { TransacaoInvestimentoSchema } from "@/app/schemas/investimentoSchema";
 import {
   TypeInvestimento,
   TypeTransacaoInvestimento,
@@ -55,16 +56,23 @@ export const FormTransacaoInvestimentos = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.investimentoId || !formData.valor || !formData.tipo) {
-      return toast.warning("Preencha os dados corretamente");
+
+    const result = TransacaoInvestimentoSchema.safeParse(formData);
+
+    if (!result.success) {
+      const mensagem = Object.values(result.error.flatten().fieldErrors)
+        .flat()
+        .filter(Boolean);
+
+      toast.error("Erro ao salvar transação!", {
+        description:
+          mensagem.join("\n") || "Preencha todos os campos corretamente.",
+        className: "font-bold whitespace-pre-line", // 👈 respeita o \n
+      });
+      return;
     }
 
-    onSubmit({
-      investimentoId: Number(investimentoSelecionado?.id),
-      tipo: formData.tipo,
-      valor: parseFloat(formData.valor),
-      descricao: formData.descricao,
-    });
+    onSubmit(result.data!);
     setFormData({
       investimentoId: investimentoSelecionado?.id,
       tipo: "DEPOSITO" as TypeTransacaoInvestimento["tipo"],
@@ -100,6 +108,7 @@ export const FormTransacaoInvestimentos = ({
             <Input
               id="valor"
               step="0.01"
+              type="number"
               value={formData.valor}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, valor: e.target.value }))

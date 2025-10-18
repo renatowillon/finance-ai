@@ -8,8 +8,10 @@ import {
 import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
 import { useAuth } from "@/app/context/AuthContext";
+import { InvestimentoSchema } from "@/app/schemas/investimentoSchema";
 import { TypeInvestimento, TypeInvestimentoInput } from "@/app/types";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface FormInvestimentoProps {
   open: boolean;
@@ -34,14 +36,27 @@ export const FormInvestimentos = ({
   });
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.nome || !formData.meta) return;
 
-    onSubmit({
-      nome: formData.nome,
-      descricao: formData.descricao,
-      meta: parseFloat(formData.meta),
+    const result = InvestimentoSchema.safeParse({
+      ...formData,
       userId: Number(userId),
     });
+
+    if (!result.success) {
+      const mensagem = Object.values(result.error.flatten().fieldErrors)
+        .flat()
+        .filter(Boolean);
+
+      toast.error("Erro ao salvar investimento!", {
+        description:
+          mensagem.join("\n") || "Preencha todos os campos corretamente.",
+        className: "font-bold whitespace-pre-line", // 👈 respeita o \n
+      });
+      return;
+    }
+
+    onSubmit(result.data!);
+
     setFormData({
       nome: "",
       meta: "",
@@ -116,6 +131,7 @@ export const FormInvestimentos = ({
                 id="meta"
                 step="0.01"
                 value={formData.meta}
+                type="number"
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, meta: e.target.value }))
                 }

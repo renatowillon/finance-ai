@@ -13,6 +13,8 @@ import {
 import { TypeBanco } from "@/app/types";
 import { CorBanco } from "@/app/models";
 import { useAuth } from "@/app/context/AuthContext";
+import { toast } from "sonner";
+import { bancoSchema } from "@/app/schemas/bancoSchema";
 
 interface FormBancoProps {
   open: boolean;
@@ -48,7 +50,7 @@ export const Formbanco = ({
           saldoInicial: String(bancoSelecionado.saldoInicial),
           cor: bancoSelecionado.cor,
           userId: Number(userId),
-          saldoAtual: bancoSelecionado.saldoAtual,
+          saldoAtual: Number(bancoSelecionado.saldoAtual),
         });
       } else {
         // Criar: limpa o formulário
@@ -67,16 +69,25 @@ export const Formbanco = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.nome || !formData.saldoInicial) return;
-
-    onSubmit({
-      nome: formData.nome,
-      tipo: formData.tipo,
-      saldoInicial: parseFloat(formData.saldoInicial),
-      cor: formData.cor,
+    const result = bancoSchema.safeParse({
+      ...formData,
       userId: Number(userId),
-      saldoAtual: 0,
     });
+
+    if (!result.success) {
+      const mensagem = Object.values(result.error.flatten().fieldErrors)
+        .flat()
+        .filter(Boolean);
+
+      toast.error("Erro ao salvar banco!", {
+        description:
+          mensagem.join("\n") || "Preencha todos os campos corretamente.",
+        className: "font-bold whitespace-pre-line", // 👈 respeita o \n
+      });
+      return;
+    }
+
+    onSubmit(result.data!);
     setFormData({
       nome: "",
       tipo: "POUPANCA" as TypeBanco["tipo"],
@@ -107,7 +118,6 @@ export const Formbanco = ({
                   setFormData((prev) => ({ ...prev, nome: e.target.value }))
                 }
                 placeholder="Banco do Brasil"
-                required
               />
             </div>
             <div className="space-y-2">
@@ -143,7 +153,7 @@ export const Formbanco = ({
                 }
                 step="0.01"
                 placeholder="0,00"
-                required
+                type="number"
               />
             </div>
             <div className="space-y-2">

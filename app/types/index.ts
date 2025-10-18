@@ -31,7 +31,6 @@ export interface TypeInvestimento {
   nome: string;
   descricao: string;
   meta: number;
-  //valorAtual?: number;
   cor?: string;
   status?: "ATIVO" | "CONCLUIDO" | "CANCELADO";
 }
@@ -42,7 +41,7 @@ export interface TypeTransacaoInvestimento {
   investimentoId: number;
   tipo: "DEPOSITO" | "RETIRADA";
   valor: number;
-  descricao: string;
+  descricao?: string;
 }
 export type TypeTransacaoInvestimentoInput = Omit<
   TypeTransacaoInvestimento,
