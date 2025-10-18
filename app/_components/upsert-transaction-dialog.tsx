@@ -155,6 +155,7 @@ const DialogoInserirOuAtualizarTransacao = ({
   }, [tipoSelecionado]);
   return (
     <Dialog
+      modal={false}
       open={estaAberto}
       onOpenChange={(aberto) => {
         definirSeEstaAberto(aberto);
