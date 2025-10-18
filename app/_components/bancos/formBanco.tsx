@@ -179,6 +179,7 @@ export const Formbanco = ({
                 onClick={() => onOpenChange(false)}
                 className="flex-1"
                 variant="outline"
+                type="button"
               >
                 Cancelar
               </Button>
