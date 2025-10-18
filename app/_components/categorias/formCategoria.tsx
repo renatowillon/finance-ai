@@ -36,44 +36,29 @@ export const FormCategoria = ({
     userId: undefined as number | undefined,
   });
 
-  // Atualiza o form quando o modal abre ou categoriaSelecionada muda
   useEffect(() => {
-    if (userId) {
-      // Garante que o formData tenha o userId correto
-      setFormData((prev) => ({ ...prev, userId: Number(userId) }));
+    if (!open) return; // só atualiza se o modal abrir
 
-      // Se o modal estava aberto antes do userId existir, resetamos ele
-      if (!open) return; // não faz nada se modal fechado
+    if (categoriaSelecionada) {
+      // Editar categoria existente
       setFormData({
-        nome: categoriaSelecionada?.nome || "",
-        tipo: categoriaSelecionada?.tipo || "DESPESA",
+        nome: categoriaSelecionada.nome,
+        tipo: categoriaSelecionada.tipo,
         userId: Number(userId),
       });
     } else {
-      // Logout: fecha o modal e limpa o form
+      // Criar nova categoria
       setFormData({
         nome: "",
         tipo: "DESPESA",
-        userId: undefined,
+        userId: Number(userId),
       });
-      onOpenChange(false);
     }
-  }, [userId, open, categoriaSelecionada, onOpenChange]);
-
-  // Garante que o userId no formData seja atualizado se mudar depois
-  useEffect(() => {
-    if (userId) {
-      setFormData((prev) => ({ ...prev, userId: Number(userId) }));
-    }
-  }, [userId]);
-
-  if (!userId) {
-    return <div>Carregando...</div>; // Spinner ou outra UI enquanto espera
-  }
+  }, [open, categoriaSelecionada, userId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.nome) return;
+    if (!formData.nome || !userId) return;
 
     onSubmit({
       nome: formData.nome,
@@ -81,7 +66,7 @@ export const FormCategoria = ({
       userId: Number(userId),
     });
 
-    // Reset form
+    // reset após criar/editar
     setFormData({
       nome: "",
       tipo: "DESPESA",
@@ -96,7 +81,9 @@ export const FormCategoria = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {categoriaSelecionada ? "Atualizar Banco" : "Adicionar Novo Banco"}
+            {categoriaSelecionada
+              ? "Atualizar Categoria"
+              : "Adicionar Nova Categoria"}
           </DialogTitle>
         </DialogHeader>
 
