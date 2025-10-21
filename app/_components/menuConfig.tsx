@@ -7,6 +7,7 @@ import {
   Bell,
   Activity,
   Database,
+  LogOut,
 } from "lucide-react";
 import {
   Tooltip,
@@ -58,6 +59,11 @@ const menuItems = [
     title: "Sistema",
     url: "/configuracao/sistema",
     icon: Database,
+  },
+  {
+    title: "Sair",
+    url: "/",
+    icon: LogOut,
   },
 ];
 
