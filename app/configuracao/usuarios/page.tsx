@@ -17,16 +17,52 @@ import {
 } from "@/app/_components/ui/table";
 import { Button } from "@/app/_components/ui/button";
 import { Badge } from "@/app/_components/ui/badge";
+import { useState } from "react";
+import { Loading } from "@/app/_components/loading";
 
 const Usuarios = () => {
+  const [input, setInput] = useState("");
+  const [filtrado, setFiltrado] = useState<User[] | null>(null);
+
+  const { data: usuarios = [], isLoading } = useQuery({
+    queryKey: ["usuarios"],
+    queryFn: fetchUsuarios,
+  });
+
+  if (isLoading) return <Loading />;
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setInput(value);
+    if (value.trim() === "") {
+      setFiltrado(null);
+    }
+  }
+
+  function handleFiltro(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      const palavraDigitada = input.toLowerCase();
+      const resultado = usuarios.filter(
+        (usuario: User) =>
+          usuario.name.toLowerCase().includes(palavraDigitada) ||
+          usuario.email.toLowerCase().includes(palavraDigitada),
+      );
+      if (resultado.length === 0) {
+        toast.warning("Usuário não localizado");
+      }
+      setFiltrado(resultado);
+    }
+
+    if (e.key === "Escape") {
+      setInput("");
+      setFiltrado(null);
+    }
+  }
   function addUsuario() {
     toast.info("Em breve");
   }
 
-  const { data } = useQuery({
-    queryKey: ["usuarios"],
-    queryFn: fetchUsuarios,
-  });
+  const listaDeUsuarios = filtrado ?? usuarios;
 
   return (
     <div className="space-y-6 p-6">
@@ -43,7 +79,9 @@ const Usuarios = () => {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="bg-azulEscuro pl-9 focus:border-none focus:outline-none"
-            placeholder={`buscar por nome ou email...`}
+            placeholder={`buscar por nome ou email e pressione "Enter"...`}
+            onChange={handleChange}
+            onKeyDown={handleFiltro}
           />
         </div>
         <div>
@@ -61,7 +99,7 @@ const Usuarios = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.map((user: User) => (
+              {listaDeUsuarios.map((user: User) => (
                 <TableRow key={user.id}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.name}</TableCell>

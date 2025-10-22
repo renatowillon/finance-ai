@@ -47,3 +47,14 @@ export type TypeTransacaoInvestimentoInput = Omit<
   TypeTransacaoInvestimento,
   "id"
 >;
+
+export type TypeUsuario = {
+  id: number;
+  name: string;
+  email: string;
+  senha: string;
+  createAt: Date;
+  updateAt: Date;
+  status: boolean;
+  plano: "FREE" | "PREMIUM" | "DEV";
+};
