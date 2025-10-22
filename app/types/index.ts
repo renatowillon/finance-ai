@@ -48,13 +48,14 @@ export type TypeTransacaoInvestimentoInput = Omit<
   "id"
 >;
 
-export type TypeUsuario = {
+export interface TypeUsuario {
   id: number;
   name: string;
   email: string;
   senha: string;
-  createAt: Date;
-  updateAt: Date;
+  createAt?: Date;
+  updateAt?: Date;
   status: boolean;
   plano: "FREE" | "PREMIUM" | "DEV";
-};
+}
+export type TypeUsuarioInput = Omit<TypeUsuario, "id, createAt, updateAt">;

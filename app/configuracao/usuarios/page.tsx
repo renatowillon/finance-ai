@@ -19,10 +19,14 @@ import { Button } from "@/app/_components/ui/button";
 import { Badge } from "@/app/_components/ui/badge";
 import { useState } from "react";
 import { Loading } from "@/app/_components/loading";
+import { FormUsuario } from "../_components/formUsuario";
+import { TypeUsuario, TypeUsuarioInput } from "@/app/types";
 
 const Usuarios = () => {
   const [input, setInput] = useState("");
   const [filtrado, setFiltrado] = useState<User[] | null>(null);
+  const [open, setOpen] = useState(false);
+  const [usuarioSelecionado, setUsuarioSelecionado] = useState<TypeUsuario>();
 
   const { data: usuarios = [], isLoading } = useQuery({
     queryKey: ["usuarios"],
@@ -59,10 +63,21 @@ const Usuarios = () => {
     }
   }
   function addUsuario() {
-    toast.info("Em breve");
+    setUsuarioSelecionado(undefined);
+    setOpen(true);
+    // toast.info("Em breve");
   }
 
   const listaDeUsuarios = filtrado ?? usuarios;
+
+  const AdicionarUsuario = (values: Omit<TypeUsuarioInput, "id">) => {
+    console.log(values);
+  };
+  const EditarUsuario = (values: TypeUsuario) => {
+    setUsuarioSelecionado(values);
+    setOpen(true);
+    console.log(values);
+  };
 
   return (
     <div className="space-y-6 p-6">
@@ -73,6 +88,13 @@ const Usuarios = () => {
         onClick={addUsuario}
         tituloButao="Novo Usuário"
       />
+      <FormUsuario
+        open={open}
+        onOpenChange={setOpen}
+        onSubmit={AdicionarUsuario}
+        usuarioSelecionado={usuarioSelecionado!}
+      />
+
       <Card className="space-y-4 p-6">
         <p className="text-2xl font-bold">Usuários Cadastrados</p>
         <div className="relative flex items-center justify-center gap-3 rounded-lg">
@@ -106,7 +128,7 @@ const Usuarios = () => {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.plano}</TableCell>
                   <TableCell>
-                    {user.plano === "PREMIUM" ? "R$ 49,00" : "-"}
+                    {user.plano === "PREMIUM" ? "R$ 19,00" : "R$ 0,00"}
                   </TableCell>
                   <TableCell>
                     <p>
@@ -121,7 +143,10 @@ const Usuarios = () => {
                     <Badge>{user.status === true ? "Ativo" : "Inativo"}</Badge>
                   </TableCell>
                   <TableCell>
-                    <Button className="bg-azulEscuro hover:bg-azulEscuro">
+                    <Button
+                      onClick={() => EditarUsuario(user)}
+                      className="bg-azulEscuro hover:bg-azulEscuro"
+                    >
                       <Edit /> Edit
                     </Button>
                   </TableCell>
