@@ -81,14 +81,16 @@ export const FormUsuario = ({
     }
 
     onSubmit(result.data!);
-
+    onOpenChange(false);
     console.log(formData);
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Criar Usuário</DialogTitle>
+          <DialogTitle>
+            {usuarioSelecionado ? "Atualizar Usuário" : "Criar Usuário"}
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -165,7 +167,7 @@ export const FormUsuario = ({
               Cancelar
             </Button>
             <Button className="flex-1" variant={"default"}>
-              Criar
+              {usuarioSelecionado ? "Atualizar" : "Criar"}
             </Button>
           </div>
         </form>

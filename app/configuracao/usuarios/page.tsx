@@ -21,13 +21,14 @@ import { useState } from "react";
 import { Loading } from "@/app/_components/loading";
 import { FormUsuario } from "../_components/formUsuario";
 import { TypeUsuario, TypeUsuarioInput } from "@/app/types";
+import { useMutations } from "@/app/mutetions/usuarioMutation";
 
 const Usuarios = () => {
   const [input, setInput] = useState("");
   const [filtrado, setFiltrado] = useState<User[] | null>(null);
   const [open, setOpen] = useState(false);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState<TypeUsuario>();
-
+  const { criarMutation, atualizarMutation } = useMutations();
   const { data: usuarios = [], isLoading } = useQuery({
     queryKey: ["usuarios"],
     queryFn: fetchUsuarios,
@@ -71,6 +72,27 @@ const Usuarios = () => {
   const listaDeUsuarios = filtrado ?? usuarios;
 
   const AdicionarUsuario = (values: Omit<TypeUsuarioInput, "id">) => {
+    if (usuarioSelecionado) {
+      const usuarioParaAtualizar = usuarioSelecionado;
+      atualizarMutation.mutate({
+        id: usuarioSelecionado.id,
+        usuario: {
+          id: usuarioParaAtualizar.id,
+          name: values.name,
+          email: values.email,
+          plano: values.plano,
+          senha: values.senha,
+          status: values.status,
+          updateAt: new Date(Date.now()),
+        },
+      });
+    } else {
+      const usuarioNovo: TypeUsuarioInput = {
+        ...values,
+      };
+      criarMutation.mutate(usuarioNovo);
+    }
+
     console.log(values);
   };
   const EditarUsuario = (values: TypeUsuario) => {

@@ -58,4 +58,4 @@ export interface TypeUsuario {
   status: boolean;
   plano: "FREE" | "PREMIUM" | "DEV";
 }
-export type TypeUsuarioInput = Omit<TypeUsuario, "id, createAt, updateAt">;
+export type TypeUsuarioInput = Omit<TypeUsuario, "id">;
