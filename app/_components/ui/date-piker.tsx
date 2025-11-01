@@ -50,7 +50,7 @@ export const DatePicker = ({ value, onChange }: DatePickerProps) => {
 
       <PopoverContent
         className="z-[9999] w-auto p-0"
-        onClick={(e) => e.stopPropagation()} // impede foco em inputs abaixo
+        // onClick={(e) => e.stopPropagation()} // impede foco em inputs abaixo
       >
         <Calendar
           mode="single"

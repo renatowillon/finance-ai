@@ -6,6 +6,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogPortal,
   DialogTitle,
 } from "./ui/dialog";
 import {
@@ -41,7 +42,9 @@ import { TypeBanco, TypeCategoria } from "../types";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { fetchCategoria } from "../fetche/categoriaFetch";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Card } from "./ui/card";
+import { CopyPlus, RefreshCcw } from "lucide-react";
 
 interface PropriedadesDialogoInserirOuAtualizarTransacao {
   estaAberto: boolean;
@@ -69,6 +72,9 @@ const esquemaFormulario = z.object({
   data: z.date({ required_error: "A data é obrigatória" }),
   bancoId: z.number({ required_error: "Banco é Obrigatorio" }),
   baixado: z.boolean(),
+  repete: z.boolean().optional(),
+  repeteQtd: z.number().optional(),
+  repetePeriodo: z.number().optional(),
 });
 
 type EsquemaFormulario = z.infer<typeof esquemaFormulario>;
@@ -130,6 +136,10 @@ const DialogoInserirOuAtualizarTransacao = ({
     control: formulario.control,
     name: "tipo",
   });
+  const repeteAtivo = useWatch({
+    control: formulario.control,
+    name: "repete",
+  });
 
   const categoriasFiltradas = (categorias || []).filter(
     (cat: TypeCategoria) => {
@@ -153,6 +163,8 @@ const DialogoInserirOuAtualizarTransacao = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tipoSelecionado]);
+  const [selectAberto, setSelectAberto] = useState(false);
+
   return (
     <Dialog
       modal={false}
@@ -164,120 +176,192 @@ const DialogoInserirOuAtualizarTransacao = ({
         }
       }}
     >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {eAtualizacao ? "Atualizar" : "Criar"} transação
-          </DialogTitle>
-          <DialogDescription>Insira as informações abaixo</DialogDescription>
-        </DialogHeader>
+      {/* <DialogOverlay className="fixed inset-0 bg-black/50 transition-opacity duration-300" /> */}
+      <DialogPortal>
+        <div className="fixed inset-0 bg-black/70 transition-opacity duration-500" />
+        <DialogContent
+          className="max-h-[90vh] max-w-2xl overflow-y-auto"
+          onInteractOutside={(event) => {
+            if (selectAberto) event.preventDefault();
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>
+              {eAtualizacao ? "Atualizar" : "Criar"} transação
+            </DialogTitle>
+            <DialogDescription>Insira as informações abaixo</DialogDescription>
+          </DialogHeader>
 
-        <Form {...formulario}>
-          <form
-            onSubmit={formulario.handleSubmit(aoEnviar)}
-            className="space-y-4"
-          >
-            <div className="flex items-center justify-center gap-4">
+          <Form {...formulario}>
+            <form
+              onSubmit={formulario.handleSubmit(aoEnviar)}
+              className="space-y-4"
+            >
+              <div className="flex items-center justify-center gap-4">
+                <FormField
+                  control={formulario.control}
+                  name="nome"
+                  render={({ field }) => (
+                    <FormItem className="flex-1 gap-4">
+                      <FormLabel>Nome</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Digite a descrição" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formulario.control}
+                  name="baixado"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="flex items-center justify-center gap-2 pt-7">
+                          <Label htmlFor="baixado">Pago</Label>
+                          <Switch
+                            id="baixado"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={formulario.control}
-                name="nome"
-                render={({ field }) => (
-                  <FormItem className="flex-1 gap-4">
-                    <FormLabel>Nome</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Digite a descrição" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={formulario.control}
-                name="baixado"
+                name="valor"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Valor</FormLabel>
                     <FormControl>
-                      <div className="flex items-center justify-center gap-2 pt-7">
-                        <Label htmlFor="baixado">Pago</Label>
-                        <Switch
-                          id="baixado"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </div>
+                      <MoneyInput
+                        value={field.value}
+                        placeholder="Digite o valor"
+                        onValueChange={({ floatValue }) => {
+                          field.onChange(floatValue);
+                        }}
+                        onBlur={field.onBlur}
+                        disabled={field.disabled}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-
-            <FormField
-              control={formulario.control}
-              name="valor"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Valor</FormLabel>
-                  <FormControl>
-                    <MoneyInput
-                      value={field.value}
-                      placeholder="Digite o valor"
-                      onValueChange={({ floatValue }) => {
-                        field.onChange(floatValue);
-                      }}
-                      onBlur={field.onBlur}
-                      disabled={field.disabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={formulario.control}
-              name="bancoId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Escolha o Banco</FormLabel>
-                  <Select
-                    onValueChange={(val) => field.onChange(Number(val))}
-                    defaultValue={field.value ? String(field.value) : ""}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o banco"></SelectValue>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {bancos?.map((bancos: TypeBanco) => (
-                        <SelectItem key={bancos.id} value={String(bancos.id)}>
-                          {bancos.nome}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex w-full items-center justify-center gap-4">
               <FormField
                 control={formulario.control}
-                name="tipo"
+                name="bancoId"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Tipo</FormLabel>
+                  <FormItem>
+                    <FormLabel>Escolha o Banco</FormLabel>
                     <Select
+                      onOpenChange={(aberto) => setSelectAberto(aberto)}
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      defaultValue={field.value ? String(field.value) : ""}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o banco"></SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {bancos?.map((bancos: TypeBanco) => (
+                          <SelectItem key={bancos.id} value={String(bancos.id)}>
+                            {bancos.nome}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex w-full items-center justify-center gap-4">
+                <FormField
+                  control={formulario.control}
+                  name="tipo"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Tipo</FormLabel>
+                      <Select
+                        onOpenChange={(aberto) => setSelectAberto(aberto)}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione um tipo"></SelectValue>
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {OPCOES_TIPOS_TRANSACAO.map((opcoes) => (
+                            <SelectItem key={opcoes.value} value={opcoes.value}>
+                              {opcoes.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formulario.control}
+                  name="categoriaId"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Categoria</FormLabel>
+                      <Select
+                        onOpenChange={(aberto) => setSelectAberto(aberto)}
+                        value={field.value ? String(field.value) : ""}
+                        onValueChange={(val) => field.onChange(Number(val))}
+                        // defaultValue={String(field.value)}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione a categoria" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {categoriasFiltradas.map((opcoes: TypeCategoria) => (
+                            <SelectItem
+                              key={opcoes.id}
+                              value={String(opcoes.id)}
+                            >
+                              {opcoes.nome}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={formulario.control}
+                name="metodoPagamento"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Método de Pagamento</FormLabel>
+                    <Select
+                      onOpenChange={(aberto) => setSelectAberto(aberto)}
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione um tipo"></SelectValue>
+                          <SelectValue placeholder="Selecione o método de pagamento"></SelectValue>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {OPCOES_TIPOS_TRANSACAO.map((opcoes) => (
+                        {OPCOES_METODOS_PAGAMENTO_TRANSACAO.map((opcoes) => (
                           <SelectItem key={opcoes.value} value={opcoes.value}>
                             {opcoes.label}
                           </SelectItem>
@@ -290,87 +374,112 @@ const DialogoInserirOuAtualizarTransacao = ({
               />
               <FormField
                 control={formulario.control}
-                name="categoriaId"
+                name="repete"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Categoria</FormLabel>
-                    <Select
-                      value={field.value ? String(field.value) : ""}
-                      onValueChange={(val) => field.onChange(Number(val))}
-                      // defaultValue={String(field.value)}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione a categoria" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {categoriasFiltradas.map((opcoes: TypeCategoria) => (
-                          <SelectItem key={opcoes.id} value={String(opcoes.id)}>
-                            {opcoes.nome}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  <FormItem>
+                    <FormControl>
+                      <div className="flex items-center gap-2">
+                        <Label
+                          htmlFor="repete"
+                          className="flex items-center gap-3"
+                        >
+                          <RefreshCcw size={20} /> Repete
+                        </Label>
+                        <Switch
+                          id="repete"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </div>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
 
-            <FormField
-              control={formulario.control}
-              name="metodoPagamento"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Método de Pagamento</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o método de pagamento"></SelectValue>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {OPCOES_METODOS_PAGAMENTO_TRANSACAO.map((opcoes) => (
-                        <SelectItem key={opcoes.value} value={opcoes.value}>
-                          {opcoes.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
+              {repeteAtivo && (
+                <Card className="space-y-3 bg-muted-foreground/5 p-3 text-muted-foreground transition-all duration-300">
+                  <FormField
+                    control={formulario.control}
+                    name="repeteQtd"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-3">
+                          <CopyPlus size={20} /> Quantidade
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="Ex: 3"
+                            value={field.value ?? ""}
+                            onChange={(e) =>
+                              field.onChange(Number(e.target.value))
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={formulario.control}
+                    name="repetePeriodo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-3">
+                          <RefreshCcw size={20} /> Período
+                        </FormLabel>
+                        <Select
+                          onOpenChange={(aberto) => setSelectAberto(aberto)}
+                          onValueChange={(val) => field.onChange(Number(val))}
+                          value={field.value ? String(field.value) : ""}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione o período" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="1">Diário</SelectItem>
+                            <SelectItem value="30">Mensal</SelectItem>
+                            <SelectItem value="180">Semestral</SelectItem>
+                            <SelectItem value="365">Anual</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </Card>
               )}
-            />
 
-            <FormField
-              control={formulario.control}
-              name="data"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data</FormLabel>
-                  <DatePicker value={field.value} onChange={field.onChange} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={formulario.control}
+                name="data"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data</FormLabel>
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  Cancelar
+              <DialogFooter className="gap-3">
+                <DialogClose asChild>
+                  <Button type="button" variant="outline">
+                    Cancelar
+                  </Button>
+                </DialogClose>
+                <Button type="submit" variant="default">
+                  {eAtualizacao ? "Atualizar" : "Adicionar"}
                 </Button>
-              </DialogClose>
-              <Button type="submit" variant="default">
-                {eAtualizacao ? "Atualizar" : "Adicionar"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </DialogPortal>
     </Dialog>
   );
 };

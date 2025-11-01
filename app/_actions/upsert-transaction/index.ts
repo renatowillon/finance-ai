@@ -19,6 +19,9 @@ interface ParametrosInserirOuAtualizarTransacao {
   data: Date;
   bancoId: number;
   baixado: boolean;
+  repete?: boolean;
+  repeteQtd?: number;
+  repetePeriodo?: number;
 }
 
 export const inserirOuAtualizarTransacao = async (
@@ -49,14 +52,45 @@ export const inserirOuAtualizarTransacao = async (
     userId: idUsuario,
     bancoId: parametros.bancoId,
     baixado: parametros.baixado,
+    repete: parametros.repeteQtd ? true : false,
+    repeteQtd: parametros.repeteQtd ?? null,
+    repetePeriodo: parametros.repetePeriodo ?? null,
   };
 
-  await db.transaction.upsert({
-    update: dadosTransacao,
-    create: dadosTransacao,
-    where: {
-      id: parametros.id ?? "",
-    },
-  });
+  // ⚙️ SE FOR ATUALIZAÇÃO
+  if (parametros.id) {
+    await db.transaction.update({
+      where: { id: parametros.id },
+      data: dadosTransacao,
+    });
+  } else {
+    // ⚙️ SE FOR NOVA TRANSAÇÃO
+    const transacaoPrincipal = await db.transaction.create({
+      data: dadosTransacao,
+    });
+
+    // 🔁 SE FOR RECORRENTE, CRIA AS REPETIÇÕES
+    if (parametros.repeteQtd && parametros.repetePeriodo) {
+      const transacoesRepetidas = [];
+
+      for (let i = 1; i < parametros.repeteQtd; i++) {
+        const novaData = new Date(parametros.data);
+        novaData.setDate(novaData.getDate() + parametros.repetePeriodo * i);
+
+        transacoesRepetidas.push({
+          ...dadosTransacao,
+          date: novaData,
+          repeteId: transacaoPrincipal.id,
+        });
+      }
+
+      if (transacoesRepetidas.length > 0) {
+        await db.transaction.createMany({
+          data: transacoesRepetidas,
+        });
+      }
+    }
+  }
+
   revalidatePath("/transaction");
 };
