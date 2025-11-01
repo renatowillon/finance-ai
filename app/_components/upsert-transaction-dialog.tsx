@@ -372,30 +372,32 @@ const DialogoInserirOuAtualizarTransacao = ({
                   </FormItem>
                 )}
               />
-              <FormField
-                control={formulario.control}
-                name="repete"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div className="flex items-center gap-2">
-                        <Label
-                          htmlFor="repete"
-                          className="flex items-center gap-3"
-                        >
-                          <RefreshCcw size={20} /> Repete
-                        </Label>
-                        <Switch
-                          id="repete"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {!idTransacao && (
+                <FormField
+                  control={formulario.control}
+                  name="repete"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="flex items-center gap-2">
+                          <Label
+                            htmlFor="repete"
+                            className="flex items-center gap-3"
+                          >
+                            <RefreshCcw size={20} /> Repete
+                          </Label>
+                          <Switch
+                            id="repete"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               {repeteAtivo && (
                 <Card className="space-y-3 bg-muted-foreground/5 p-3 text-muted-foreground transition-all duration-300">

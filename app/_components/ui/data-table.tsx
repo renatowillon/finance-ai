@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "./table";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Banknote,
   Check,
@@ -75,6 +75,7 @@ export function DataTable<TData extends { id: string | number }, TValue>({
           : "date" in item &&
             (typeof item.date === "string" || item.date instanceof Date) &&
             new Date(item.date).getMonth() + 1 === Number(filtroData);
+
       return tipoOk && pagoOk && mesOk;
     });
   }, [data, filtroTipo, filtroPago, filtroData]);
@@ -174,6 +175,7 @@ export function DataTable<TData extends { id: string | number }, TValue>({
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+
                   <Select value={filtroData} onValueChange={setFiltroData}>
                     <SelectTrigger className="w-full bg-muted/50 text-muted-foreground">
                       <SelectValue placeholder="Filtrar por mês" />
@@ -373,6 +375,7 @@ export function DataTable<TData extends { id: string | number }, TValue>({
               </SelectGroup>
             </SelectContent>
           </Select>
+
           <Select value={filtroData} onValueChange={setFiltroData}>
             <SelectTrigger className="w-[180px] bg-muted/50 text-muted-foreground">
               <SelectValue placeholder="Filtrar por mês" />
