@@ -35,8 +35,8 @@ export default async function RootLayout({
             <SidebarClient
               usuarioPodeAdicionarTransacao={usuarioPodeAdicionarTransacao}
             />
-            <div className="mb-16 flex h-full w-full flex-col overflow-y-scroll lg:p-5">
-              {children}
+            <div className="flex min-h-screen w-full flex-col overflow-y-scroll lg:p-5">
+              <div className="mb-16">{children}</div>
               <SpeedInsights />
             </div>
           </AuthProvider>
