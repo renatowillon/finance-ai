@@ -45,6 +45,7 @@ import { fetchCategoria } from "../fetche/categoriaFetch";
 import { useEffect, useState } from "react";
 import { Card } from "./ui/card";
 import { CopyPlus, RefreshCcw } from "lucide-react";
+import { toast } from "sonner";
 
 interface PropriedadesDialogoInserirOuAtualizarTransacao {
   estaAberto: boolean;
@@ -117,6 +118,7 @@ const DialogoInserirOuAtualizarTransacao = ({
   });
 
   const queryCliente = useQueryClient();
+
   const aoEnviar = async (dados: EsquemaFormulario) => {
     try {
       await inserirOuAtualizarTransacao({ ...dados, id: idTransacao });
@@ -125,8 +127,12 @@ const DialogoInserirOuAtualizarTransacao = ({
       queryCliente.invalidateQueries({
         queryKey: ["saldo"],
       });
-    } catch (erro) {
-      console.error(erro);
+    } catch (erro: unknown) {
+      if (erro instanceof Error) {
+        toast.error(erro.message);
+      } else {
+        toast.warning("Algo inesperado aconteceu!");
+      }
     }
   };
 
