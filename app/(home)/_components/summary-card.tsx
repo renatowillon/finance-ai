@@ -1,5 +1,6 @@
 import AddTransactionButton from "@/app/_components/add-transactions-button";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
+import { cn } from "@/app/_lib/utils";
 import { ReactNode } from "react";
 
 interface SumaryCardProps {
@@ -8,6 +9,7 @@ interface SumaryCardProps {
   amount: number;
   size: "small" | "large";
   userCanAddTransaction?: boolean;
+  className?: string;
 }
 
 const SumaryCard = ({
@@ -16,9 +18,15 @@ const SumaryCard = ({
   amount,
   size,
   userCanAddTransaction,
+  className,
 }: SumaryCardProps) => {
   return (
-    <Card className={`${size === "large" ? "bg-white bg-opacity-5" : ""}`}>
+    <Card
+      className={cn(
+        `${size === "large" ? "bg-white bg-opacity-5" : ""}`,
+        className,
+      )}
+    >
       <CardHeader className="flex-row items-center gap-4">
         <p className="gap-2 rounded-lg bg-primary/5 p-3">{icon}</p>
         <p
@@ -28,9 +36,7 @@ const SumaryCard = ({
         </p>
       </CardHeader>
       <CardContent className="flex flex-col justify-between space-y-2 sm:flex-row">
-        <p
-          className={`font-bold ${size === "small" ? "text-2xl" : "text-4xl"}`}
-        >
+        <p className={`font-bold ${size === "small" ? "text-xl" : "text-4xl"}`}>
           {Intl.NumberFormat("pt-BR", {
             style: "currency",
             currency: "BRL",

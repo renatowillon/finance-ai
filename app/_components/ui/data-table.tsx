@@ -21,6 +21,7 @@ import {
   Check,
   CheckCheck,
   Filter,
+  PiggyBank,
   TrendingDown,
   TrendingUp,
   X,
@@ -46,6 +47,7 @@ import { Button } from "./button";
 import { format, startOfMonth, endOfMonth } from "date-fns";
 import { Calendar } from "./calendar";
 import { ptBR } from "date-fns/locale";
+import SumaryCard from "@/app/(home)/_components/summary-card";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -54,6 +56,9 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<
   TData extends {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    amount: any;
+    type: string;
     date: string | number | Date;
     id: string | number;
   },
@@ -69,8 +74,8 @@ export function DataTable<
   const [openCalendarioInicio, setOpenCalendarioInicio] = useState(false);
   const [openCalendarioFim, setOpenCalendarioFim] = useState(false);
 
-  const dadosFiltrados = useMemo(() => {
-    return data.filter((item) => {
+  const { dadosFiltrados, totais } = useMemo(() => {
+    const filtrado = data.filter((item) => {
       const tipoOk =
         !filtroTipo || filtroTipo === "TODOS"
           ? true
@@ -92,6 +97,20 @@ export function DataTable<
 
       return tipoOk && pagoOk && dataDentroDoPeriodo;
     });
+
+    const totais = filtrado.reduce(
+      (acc, item) => {
+        if (item.type === "DESPESA") acc.despesas += Number(item.amount) ?? 0;
+        else if (item.type === "DEPOSITO")
+          acc.receitas += Number(item.amount) ?? 0;
+        else if (item.type === "INVESTIMENTO")
+          acc.investimentos += Number(item.amount) ?? 0;
+        return acc;
+      },
+      { despesas: 0, receitas: 0, investimentos: 0 },
+    );
+
+    return { dadosFiltrados: filtrado, totais };
   }, [data, filtroTipo, filtroPago, dateInicio, dateFim]);
 
   const table = useReactTable({
@@ -288,6 +307,46 @@ export function DataTable<
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <SumaryCard
+            className="justify-between space-y-1 p-1 text-sm"
+            title="Receitas"
+            icon={
+              <TrendingUp
+                size={16}
+                className="text-end text-green-500 md:text-start"
+              />
+            }
+            amount={totais.receitas}
+            size="small"
+          />
+
+          <SumaryCard
+            className="justify-between space-y-1 p-1 text-sm"
+            title="Despesas"
+            icon={
+              <TrendingDown
+                size={16}
+                className="text-end text-red-500 md:text-start"
+              />
+            }
+            amount={totais.despesas}
+            size="small"
+          />
+
+          {/* <SumaryCard
+            className="justify-between space-y-1 p-4"
+            title="Investimentos"
+            icon={
+              <PiggyBank
+                size={16}
+                className="text-primary-500 text-end md:text-start"
+              />
+            }
+            amount={totais.investimentos}
+            size="small"
+          /> */}
         </div>
         {data.length > 0 ? (
           data.map((item, index) => {
@@ -559,6 +618,46 @@ export function DataTable<
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex gap-6">
+        <SumaryCard
+          className="w-full"
+          title="Receitas"
+          icon={
+            <TrendingUp
+              size={16}
+              className="text-end text-green-500 md:text-start"
+            />
+          }
+          amount={totais.receitas}
+          size="small"
+        />
+
+        <SumaryCard
+          className="w-full"
+          title="Despesas"
+          icon={
+            <TrendingDown
+              size={16}
+              className="text-end text-red-500 md:text-start"
+            />
+          }
+          amount={totais.despesas}
+          size="small"
+        />
+
+        <SumaryCard
+          className="w-full"
+          title="Investimentos"
+          icon={
+            <PiggyBank
+              size={16}
+              className="text-primary-500 text-end md:text-start"
+            />
+          }
+          amount={totais.investimentos}
+          size="small"
+        />
       </div>
       <div className="rounded-md border">
         <Table>

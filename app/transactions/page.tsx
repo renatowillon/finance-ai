@@ -1,6 +1,6 @@
 import { db } from "../_lib/prisma";
 import { DataTable } from "../_components/ui/data-table";
-import { TransactionsColumns } from "./_columns";
+import { TransactionsColumns, TransactionWithCategoria } from "./_columns";
 import AddTransactionButton from "../_components/add-transactions-button";
 import { ScrollArea } from "../_components/ui/scroll-area";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
@@ -41,7 +41,7 @@ const TransactionsPage = async () => {
         </div>
 
         <ScrollArea>
-          <DataTable
+          <DataTable<TransactionWithCategoria, unknown>
             columns={TransactionsColumns}
             data={JSON.parse(JSON.stringify(transacoes))}
           />
