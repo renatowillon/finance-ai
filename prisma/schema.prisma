@@ -18,7 +18,6 @@ model Transaction {
   name          String
   type          TransactionType
   amount        Decimal                   @db.Decimal(10, 2)
-  // category      TransactionCategory?
   paymentMethod TransactionPaymentMethods
   date          DateTime
   createAt      DateTime                  @default(now())
@@ -30,6 +29,10 @@ model Transaction {
   baixado Boolean @default(true)
   categoriaId Int?
   categoria Categoria? @relation(fields: [categoriaId], references: [id])
+  repete        Boolean                   @default(false)
+  repeteQtd     Int?                      // quantidade de repetições
+  repetePeriodo  Int?                      // em dias (1, 30, 60, 365)
+  repeteId      String?                   // id da transação "original" (para saber de onde veio)
   @@map("transactions")
 
 }

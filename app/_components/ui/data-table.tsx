@@ -14,12 +14,14 @@ import {
   TableHeader,
   TableRow,
 } from "./table";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Banknote,
+  CalendarDays,
   Check,
   CheckCheck,
   Filter,
+  PiggyBank,
   TrendingDown,
   TrendingUp,
   X,
@@ -40,44 +42,76 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./accordion";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Button } from "./button";
+import { format, startOfMonth, endOfMonth } from "date-fns";
+import { Calendar } from "./calendar";
+import { ptBR } from "date-fns/locale";
+import SumaryCard from "@/app/(home)/_components/summary-card";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData extends { id: string | number }, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const hoje = new Date();
+export function DataTable<
+  TData extends {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    amount: any;
+    type: string;
+    date: string | number | Date;
+    id: string | number;
+  },
+  TValue,
+>({ columns, data }: DataTableProps<TData, TValue>) {
+  // const hoje = new Date();
   const [isMobile, setIsMobile] = useState(false);
   const [filtroTipo, setFiltroTipo] = useState("");
   const [filtroPago, setFiltroPago] = useState("");
-  const [filtroData, setFiltroData] = useState(String(hoje.getMonth() + 1));
+  // const [filtroData, setFiltroData] = useState(String(hoje.getMonth() + 1));
+  const [dateInicio, setDateInicio] = useState<Date>(startOfMonth(new Date()));
+  const [dateFim, setDateFim] = useState<Date>(endOfMonth(new Date()));
+  const [openCalendarioInicio, setOpenCalendarioInicio] = useState(false);
+  const [openCalendarioFim, setOpenCalendarioFim] = useState(false);
 
-  const dadosFiltrados = useMemo(() => {
-    return data.filter((item) => {
+  const { dadosFiltrados, totais } = useMemo(() => {
+    const filtrado = data.filter((item) => {
       const tipoOk =
         !filtroTipo || filtroTipo === "TODOS"
           ? true
           : "type" in item && item.type === filtroTipo;
+
       const pagoOk =
-        !filtroPago || filtroPago === "TODOS" || ""
+        !filtroPago || filtroPago === "TODOS"
           ? true
           : "baixado" in item &&
             (filtroPago === "true"
               ? item.baixado === true
               : item.baixado === false);
-      const mesOk =
-        !filtroData || filtroData === "TODOS"
-          ? true
-          : "date" in item &&
-            (typeof item.date === "string" || item.date instanceof Date) &&
-            new Date(item.date).getMonth() + 1 === Number(filtroData);
-      return tipoOk && pagoOk && mesOk;
+
+      const dataItem = format(new Date(item.date), "yyyy-MM-dd");
+      const dataI = format(dateInicio, "yyyy-MM-dd");
+      const dataF = format(dateFim, "yyyy-MM-dd");
+
+      const dataDentroDoPeriodo = dataItem >= dataI && dataItem <= dataF;
+
+      return tipoOk && pagoOk && dataDentroDoPeriodo;
     });
-  }, [data, filtroTipo, filtroPago, filtroData]);
+
+    const totais = filtrado.reduce(
+      (acc, item) => {
+        if (item.type === "DESPESA") acc.despesas += Number(item.amount) ?? 0;
+        else if (item.type === "DEPOSITO")
+          acc.receitas += Number(item.amount) ?? 0;
+        else if (item.type === "INVESTIMENTO")
+          acc.investimentos += Number(item.amount) ?? 0;
+        return acc;
+      },
+      { despesas: 0, receitas: 0, investimentos: 0 },
+    );
+
+    return { dadosFiltrados: filtrado, totais };
+  }, [data, filtroTipo, filtroPago, dateInicio, dateFim]);
 
   const table = useReactTable({
     data: dadosFiltrados,
@@ -117,87 +151,202 @@ export function DataTable<TData extends { id: string | number }, TValue>({
                   Filtros{" "}
                 </span>
               </AccordionTrigger>
-              <AccordionContent className="p-1">
-                <div className="grid grid-cols-2 gap-3 text-muted">
-                  <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-                    <SelectTrigger className="w-full bg-muted/50 text-muted-foreground">
-                      <SelectValue placeholder="Tipo de conta" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel className="text-muted-foreground">
-                          Tipo de conta
-                        </SelectLabel>
-                        <SelectItem value="TODOS">
-                          <span className="flex gap-2">
-                            <Banknote size={20} />
-                            Todos
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="DEPOSITO">
-                          <span className="flex gap-2">
-                            <TrendingUp size={20} /> Depósitos
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="DESPESA">
-                          <span className="flex gap-2">
-                            <TrendingDown size={20} /> Despesas
-                          </span>
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <Select value={filtroPago} onValueChange={setFiltroPago}>
-                    <SelectTrigger className="w-full bg-muted/50 text-muted-foreground">
-                      <SelectValue placeholder="Status da conta" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel className="text-muted-foreground">
-                          Status da conta
-                        </SelectLabel>
-                        <SelectItem value="TODOS">
-                          <span className="flex gap-2">
-                            <CheckCheck size={20} /> Todos
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="true">
-                          <span className="flex gap-2">
-                            <Check size={20} /> Pago
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="false">
-                          <span className="flex gap-2">
-                            <X size={20} /> Pendente
-                          </span>
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <Select value={filtroData} onValueChange={setFiltroData}>
-                    <SelectTrigger className="w-full bg-muted/50 text-muted-foreground">
-                      <SelectValue placeholder="Filtrar por mês" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="TODOS">Todos</SelectItem>
-                      <SelectItem value="1">Janeiro</SelectItem>
-                      <SelectItem value="2">Fevereiro</SelectItem>
-                      <SelectItem value="3">Março</SelectItem>
-                      <SelectItem value="4">Abril</SelectItem>
-                      <SelectItem value="5">Maio</SelectItem>
-                      <SelectItem value="6">Junho</SelectItem>
-                      <SelectItem value="7">Julho</SelectItem>
-                      <SelectItem value="8">Agosto</SelectItem>
-                      <SelectItem value="9">Setembro</SelectItem>
-                      <SelectItem value="10">Outubro</SelectItem>
-                      <SelectItem value="11">Novembro</SelectItem>
-                      <SelectItem value="12">Dezembro</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <AccordionContent className="space-y-2 p-1">
+                <div className="flex w-full flex-col md:w-1/4">
+                  <span className="mb-1 text-xs font-bold text-gray-500">
+                    Tipo de conta
+                  </span>
+
+                  <div className="flex items-center gap-2">
+                    <Select value={filtroTipo} onValueChange={setFiltroTipo}>
+                      <SelectTrigger className="w-full bg-muted/50 text-muted-foreground">
+                        <SelectValue placeholder="Tipo de conta" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel className="text-muted-foreground">
+                            Tipo de conta
+                          </SelectLabel>
+                          <SelectItem value="TODOS">
+                            <span className="flex gap-2">
+                              <Banknote size={20} />
+                              Todos
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="DEPOSITO">
+                            <span className="flex gap-2">
+                              <TrendingUp size={20} /> Depósitos
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="DESPESA">
+                            <span className="flex gap-2">
+                              <TrendingDown size={20} /> Despesas
+                            </span>
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex w-full flex-col md:w-1/4">
+                  <span className="mb-1 text-xs font-bold text-gray-500">
+                    Status da conta
+                  </span>
+
+                  <div className="flex items-center gap-2">
+                    <Select value={filtroPago} onValueChange={setFiltroPago}>
+                      <SelectTrigger className="w-full bg-muted/50 text-muted-foreground">
+                        <SelectValue placeholder="Status da conta" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel className="text-muted-foreground">
+                            Status da conta
+                          </SelectLabel>
+                          <SelectItem value="TODOS">
+                            <span className="flex gap-2">
+                              <CheckCheck size={20} /> Todos
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="true">
+                            <span className="flex gap-2">
+                              <Check size={20} /> Pago
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="false">
+                            <span className="flex gap-2">
+                              <X size={20} /> Pendente
+                            </span>
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex w-full flex-col md:w-1/4">
+                  <span className="mb-1 text-xs font-bold text-gray-500">
+                    Data Inicio
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {/* Popover do calendário */}
+                    <Popover
+                      open={openCalendarioInicio}
+                      onOpenChange={setOpenCalendarioInicio}
+                    >
+                      <PopoverTrigger asChild className="w-full">
+                        <Button
+                          variant="outline"
+                          className="flex w-full items-center justify-center gap-2 text-gray-600"
+                        >
+                          <CalendarDays className="h-4 w-4" />
+                          {format(dateInicio, "dd/MM/yyyy")}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="z-[9999] w-auto overflow-hidden p-2"
+                        align="end"
+                      >
+                        <Calendar
+                          locale={ptBR}
+                          mode="single"
+                          selected={dateInicio}
+                          captionLayout="dropdown"
+                          onSelect={(d) => {
+                            if (d) {
+                              setDateInicio(d);
+                              setOpenCalendarioInicio(false);
+                            }
+                          }}
+                          className="rounded-md border shadow-sm"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+                <div className="flex w-full flex-col md:w-1/4">
+                  <span className="mb-1 text-xs font-bold text-gray-500">
+                    Data Fim
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {/* Popover do calendário */}
+                    <Popover
+                      open={openCalendarioFim}
+                      onOpenChange={setOpenCalendarioFim}
+                    >
+                      <PopoverTrigger asChild className="w-full">
+                        <Button
+                          variant="outline"
+                          className="flex w-full items-center justify-center gap-2 text-gray-600"
+                        >
+                          <CalendarDays className="h-4 w-4" />
+                          {format(dateFim, "dd/MM/yyyy")}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="z-[9999] w-auto overflow-hidden p-2"
+                        align="end"
+                      >
+                        <Calendar
+                          locale={ptBR}
+                          mode="single"
+                          selected={dateFim}
+                          captionLayout="dropdown"
+                          onSelect={(d) => {
+                            if (d) {
+                              setDateFim(d);
+                              setOpenCalendarioFim(false);
+                            }
+                          }}
+                          className="rounded-md border shadow-sm"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <SumaryCard
+            className="justify-between space-y-1 p-1 text-sm"
+            title="Receitas"
+            icon={
+              <TrendingUp
+                size={16}
+                className="text-end text-green-500 md:text-start"
+              />
+            }
+            amount={totais.receitas}
+            size="small"
+          />
+
+          <SumaryCard
+            className="justify-between space-y-1 p-1 text-sm"
+            title="Despesas"
+            icon={
+              <TrendingDown
+                size={16}
+                className="text-end text-red-500 md:text-start"
+              />
+            }
+            amount={totais.despesas}
+            size="small"
+          />
+
+          {/* <SumaryCard
+            className="justify-between space-y-1 p-4"
+            title="Investimentos"
+            icon={
+              <PiggyBank
+                size={16}
+                className="text-primary-500 text-end md:text-start"
+              />
+            }
+            amount={totais.investimentos}
+            size="small"
+          /> */}
         </div>
         {data.length > 0 ? (
           data.map((item, index) => {
@@ -318,82 +467,197 @@ export function DataTable<TData extends { id: string | number }, TValue>({
           Filtros:{" "}
         </span>
         <div className="flex gap-3 text-muted">
-          <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-            <SelectTrigger className="w-[180px] bg-muted/50 text-muted-foreground">
-              <SelectValue placeholder="Tipo de conta" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel className="text-muted-foreground">
-                  Tipo de conta
-                </SelectLabel>
-                <SelectItem value="TODOS">
-                  <span className="flex gap-2">
-                    <Banknote size={20} />
-                    Todos
-                  </span>
-                </SelectItem>
-                <SelectItem value="DEPOSITO">
-                  <span className="flex gap-2">
-                    <TrendingUp size={20} /> Depósitos
-                  </span>
-                </SelectItem>
-                <SelectItem value="DESPESA">
-                  <span className="flex gap-2">
-                    <TrendingDown size={20} /> Despesas
-                  </span>
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Select value={filtroPago} onValueChange={setFiltroPago}>
-            <SelectTrigger className="w-[180px] bg-muted/50 text-muted-foreground">
-              <SelectValue placeholder="Status da conta" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel className="text-muted-foreground">
-                  Status da conta
-                </SelectLabel>
-                <SelectItem value="TODOS">
-                  <span className="flex gap-2">
-                    <CheckCheck size={20} /> Todos
-                  </span>
-                </SelectItem>
-                <SelectItem value="true">
-                  <span className="flex gap-2">
-                    <Check size={20} /> Pago
-                  </span>
-                </SelectItem>
-                <SelectItem value="false">
-                  <span className="flex gap-2">
-                    <X size={20} /> Pendente
-                  </span>
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Select value={filtroData} onValueChange={setFiltroData}>
-            <SelectTrigger className="w-[180px] bg-muted/50 text-muted-foreground">
-              <SelectValue placeholder="Filtrar por mês" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="TODOS">Todos</SelectItem>
-              <SelectItem value="1">Janeiro</SelectItem>
-              <SelectItem value="2">Fevereiro</SelectItem>
-              <SelectItem value="3">Março</SelectItem>
-              <SelectItem value="4">Abril</SelectItem>
-              <SelectItem value="5">Maio</SelectItem>
-              <SelectItem value="6">Junho</SelectItem>
-              <SelectItem value="7">Julho</SelectItem>
-              <SelectItem value="8">Agosto</SelectItem>
-              <SelectItem value="9">Setembro</SelectItem>
-              <SelectItem value="10">Outubro</SelectItem>
-              <SelectItem value="11">Novembro</SelectItem>
-              <SelectItem value="12">Dezembro</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex w-full flex-col md:w-1/4">
+            <span className="mb-1 text-xs font-bold text-gray-500">
+              Tipo de conta
+            </span>
+            <div className="flex items-center gap-2">
+              <Select value={filtroTipo} onValueChange={setFiltroTipo}>
+                <SelectTrigger className="w-[180px] bg-muted/50 text-muted-foreground">
+                  <SelectValue placeholder="Tipo de conta" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel className="text-muted-foreground">
+                      Tipo de conta
+                    </SelectLabel>
+                    <SelectItem value="TODOS">
+                      <span className="flex gap-2">
+                        <Banknote size={20} />
+                        Todos
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="DEPOSITO">
+                      <span className="flex gap-2">
+                        <TrendingUp size={20} /> Depósitos
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="DESPESA">
+                      <span className="flex gap-2">
+                        <TrendingDown size={20} /> Despesas
+                      </span>
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex w-full flex-col md:w-1/4">
+            <span className="mb-1 text-xs font-bold text-gray-500">
+              Status da conta
+            </span>
+            <div className="flex items-center gap-2">
+              <Select value={filtroPago} onValueChange={setFiltroPago}>
+                <SelectTrigger className="w-[180px] bg-muted/50 text-muted-foreground">
+                  <SelectValue placeholder="Status da conta" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel className="text-muted-foreground">
+                      Status da conta
+                    </SelectLabel>
+                    <SelectItem value="TODOS">
+                      <span className="flex gap-2">
+                        <CheckCheck size={20} /> Todos
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="true">
+                      <span className="flex gap-2">
+                        <Check size={20} /> Pago
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="false">
+                      <span className="flex gap-2">
+                        <X size={20} /> Pendente
+                      </span>
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex w-full flex-col md:w-1/4">
+            <span className="mb-1 text-xs font-bold text-gray-500">
+              Data Inicio
+            </span>
+            <div className="flex items-center gap-2">
+              {/* Popover do calendário */}
+              <Popover
+                open={openCalendarioInicio}
+                onOpenChange={setOpenCalendarioInicio}
+              >
+                <PopoverTrigger asChild className="w-full">
+                  <Button
+                    variant="outline"
+                    className="flex w-full items-center justify-center gap-2 text-gray-600"
+                  >
+                    <CalendarDays className="h-4 w-4" />
+                    {format(dateInicio, "dd/MM/yyyy")}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="z-[9999] w-auto overflow-hidden p-2"
+                  align="end"
+                >
+                  <Calendar
+                    locale={ptBR}
+                    mode="single"
+                    selected={dateInicio}
+                    captionLayout="dropdown"
+                    onSelect={(d) => {
+                      if (d) {
+                        setDateInicio(d);
+                        setOpenCalendarioInicio(false);
+                      }
+                    }}
+                    className="rounded-md border shadow-sm"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+          <div className="flex w-full flex-col md:w-1/4">
+            <span className="mb-1 text-xs font-bold text-gray-500">
+              Data Fim
+            </span>
+            <div className="flex items-center gap-2">
+              {/* Popover do calendário */}
+              <Popover
+                open={openCalendarioFim}
+                onOpenChange={setOpenCalendarioFim}
+              >
+                <PopoverTrigger asChild className="w-full">
+                  <Button
+                    variant="outline"
+                    className="flex w-full items-center justify-center gap-2 text-gray-600"
+                  >
+                    <CalendarDays className="h-4 w-4" />
+                    {format(dateFim, "dd/MM/yyyy")}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="z-[9999] w-auto overflow-hidden p-2"
+                  align="end"
+                >
+                  <Calendar
+                    locale={ptBR}
+                    mode="single"
+                    selected={dateFim}
+                    captionLayout="dropdown"
+                    onSelect={(d) => {
+                      if (d) {
+                        setDateFim(d);
+                        setOpenCalendarioFim(false);
+                      }
+                    }}
+                    className="rounded-md border shadow-sm"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
         </div>
+      </div>
+      <div className="flex gap-6">
+        <SumaryCard
+          className="w-full"
+          title="Receitas"
+          icon={
+            <TrendingUp
+              size={16}
+              className="text-end text-green-500 md:text-start"
+            />
+          }
+          amount={totais.receitas}
+          size="small"
+        />
+
+        <SumaryCard
+          className="w-full"
+          title="Despesas"
+          icon={
+            <TrendingDown
+              size={16}
+              className="text-end text-red-500 md:text-start"
+            />
+          }
+          amount={totais.despesas}
+          size="small"
+        />
+
+        <SumaryCard
+          className="w-full"
+          title="Investimentos"
+          icon={
+            <PiggyBank
+              size={16}
+              className="text-primary-500 text-end md:text-start"
+            />
+          }
+          amount={totais.investimentos}
+          size="small"
+        />
       </div>
       <div className="rounded-md border">
         <Table>

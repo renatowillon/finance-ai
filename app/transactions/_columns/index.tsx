@@ -12,7 +12,7 @@ import { ConfirmarDelete } from "../_components/confirmDelete";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-type TransactionWithCategoria = Prisma.TransactionGetPayload<{
+export type TransactionWithCategoria = Prisma.TransactionGetPayload<{
   include: { categoria: true };
 }>;
 

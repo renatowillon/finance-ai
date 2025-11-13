@@ -23,6 +23,7 @@ import {
 } from "../_components/ui/tooltip";
 import { useState } from "react";
 import TelaCarregamento from "./components/telaAnimacao";
+import { toast } from "sonner";
 // 👈 importa a animação
 
 const LoginPage = () => {
@@ -39,11 +40,12 @@ const LoginPage = () => {
         email: values.email,
         senha: values.senha,
       });
-
+      toast.success("Login realizado com sucesso");
       console.log("✅ Login sucesso:", res.data);
       setShowAnimation(true); // 🔥 mostra animação
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+      toast.error("Erro no Login! verifique email e senha");
       console.error(
         "❌ erro no Login: ",
         error.response?.data || error.message,
