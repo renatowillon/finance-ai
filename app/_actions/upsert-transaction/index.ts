@@ -80,7 +80,7 @@ export const inserirOuAtualizarTransacao = async (
 
       const totalQueSeraCriado = parametros.repeteQtd; // 1 principal + (repeteQtd - 1 repetições)
 
-      if (totalNoMes + totalQueSeraCriado > 10) {
+      if (!podeAdicionar && totalNoMes + totalQueSeraCriado > 10) {
         throw new Error(
           "Essa transação repetida ultrapassaria seu limite mensal de 10 transações no plano FREE.",
         );
