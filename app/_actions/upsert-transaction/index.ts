@@ -37,6 +37,10 @@ export const inserirOuAtualizarTransacao = async (
     redirect("/login");
   }
 
+  console.log(">>> repeteQtd:", parametros.repeteQtd);
+  console.log(">>> repetePeriodo:", parametros.repetePeriodo);
+  console.log(">>> tipo repetePeriodo:", typeof parametros.repetePeriodo);
+
   const usuario = await obterUsuarioPorToken(token!);
   if (!usuario) {
     redirect("/login");
