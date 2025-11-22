@@ -24,6 +24,7 @@ import {
   PiggyBank,
   TrendingDown,
   TrendingUp,
+  WalletIcon,
   X,
 } from "lucide-react";
 import {
@@ -335,6 +336,19 @@ export function DataTable<
             size="small"
           />
 
+          <SumaryCard
+            className="col-span-2 justify-between space-y-1 p-1 text-sm"
+            title="Balanço período"
+            icon={
+              <WalletIcon
+                size={16}
+                className="text-end text-primary md:text-start"
+              />
+            }
+            amount={totais.receitas - totais.despesas}
+            size="small"
+          />
+
           {/* <SumaryCard
             className="justify-between space-y-1 p-4"
             title="Investimentos"
@@ -643,6 +657,18 @@ export function DataTable<
             />
           }
           amount={totais.despesas}
+          size="small"
+        />
+        <SumaryCard
+          className="w-full"
+          title="Balanço período"
+          icon={
+            <WalletIcon
+              size={16}
+              className="text-end text-primary md:text-start"
+            />
+          }
+          amount={totais.receitas - totais.despesas}
           size="small"
         />
 

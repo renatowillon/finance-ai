@@ -27,10 +27,10 @@ const SumaryCards = async ({
     <div className="space-y-4 sm:space-y-6">
       {/* Card de Saldo - sempre ocupa toda largura */}
       <CardBancosDashboard />
-      <div>
+      <div className="bg-azulEscuro">
         <SumaryCard
           icon={<WalletIcon size={16} />}
-          title="Saldo mensal"
+          title="Balanço mensal"
           amount={saldo}
           size="large"
           userCanAddTransaction={userCanAddTransaction}
@@ -45,7 +45,7 @@ const SumaryCards = async ({
           <div className="sm:order-2">
             <SumaryCard
               icon={<TrendingUpIcon size={16} className="text-primary" />}
-              title="Receitas"
+              title="Entradas"
               amount={totalDepositos}
               size="small"
             />
@@ -58,7 +58,7 @@ const SumaryCards = async ({
                   className="text-end text-red-500 md:text-start"
                 />
               }
-              title="Despesas"
+              title="Saídas"
               amount={totalDespesas}
               size="small"
             />
@@ -69,7 +69,7 @@ const SumaryCards = async ({
         <div className="sm:order-1">
           <SumaryCard
             icon={<PiggyBankIcon size={16} />}
-            title="Investido"
+            title="Investimento"
             amount={totalInvestimentos}
             size="small"
           />

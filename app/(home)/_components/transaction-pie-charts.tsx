@@ -60,7 +60,7 @@ const TransactionsPieChats = ({
     },
   ];
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col bg-azulEscuro">
       <CardContent className="flex-1">
         <ChartContainer
           config={configuracaoGrafico}
