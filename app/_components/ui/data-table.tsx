@@ -372,7 +372,7 @@ export function DataTable<
               <div
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 key={(item as any).id}
-                className="rounded-lg border bg-muted/30 p-4 shadow-lg transition-shadow duration-300 hover:shadow-xl"
+                className="rounded-lg border bg-azulMuted p-4 shadow-lg transition-shadow duration-300 hover:shadow-xl"
               >
                 <div className="mb-3 flex items-center justify-between">
                   <div className="flex-1 space-y-2 pr-4">

@@ -99,8 +99,9 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
   const pathname = usePathname();
   const [expandedItems, setExpandedItems] = useState<string[]>(["carteira"]);
   const [, setIsMobileMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  // const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const [openCarteira, setOpenCarteira] = useState(false);
 
   const toggleExpanded = async (itemId: string) => {
     setExpandedItems((prev) =>
@@ -114,9 +115,9 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
     setIsMobileMenuOpen(false);
   };
 
-  const toggleDropdown = (dropdownId: string) => {
-    setActiveDropdown(activeDropdown === dropdownId ? null : dropdownId);
-  };
+  // const toggleDropdown = (dropdownId: string) => {
+  //   setActiveDropdown(activeDropdown === dropdownId ? null : dropdownId);
+  // };
 
   const isPathActive = (href?: string) => {
     return pathname === href;
@@ -257,85 +258,78 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
           </div>
 
           {/* Carteira com dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => toggleDropdown("carteira")}
-              className="flex w-full flex-col items-center justify-center py-2"
-            >
-              <div
-                className={cn(
-                  "flex flex-col items-center justify-center rounded-lg px-3 py-2 transition-colors",
-                  (isPathActive("/bancos") || isPathActive("/investimentos")) &&
-                    "text-primary",
-                )}
-              >
-                <Wallet
+          <Sheet open={openCarteira} onOpenChange={setOpenCarteira}>
+            <SheetTrigger asChild>
+              <button className="flex w-full flex-col items-center justify-center py-2">
+                <div
                   className={cn(
-                    "mb-1 h-5 w-5",
-                    isPathActive("/bancos") || isPathActive("/investimentos")
-                      ? "text-primary"
-                      : "text-muted-foreground",
-                  )}
-                />
-                <span
-                  className={cn(
-                    "text-xs",
-                    isPathActive("/bancos") || isPathActive("/investimentos")
-                      ? "font-medium text-primary"
-                      : "text-muted-foreground",
+                    "flex flex-col items-center justify-center rounded-lg px-3 py-2 transition-colors",
+                    open ? "text-primary" : "text-muted-foreground",
                   )}
                 >
-                  Carteira
-                </span>
-              </div>
-            </button>
-
-            {/* Dropdown Menu para Carteira */}
-            {activeDropdown === "carteira" && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setActiveDropdown(null)}
-                />
-                <div className="absolute bottom-full left-1/2 z-50 mb-2 min-w-[140px] -translate-x-1/2 transform rounded-lg border bg-background shadow-lg">
-                  <Link
-                    href="/bancos"
-                    onClick={() => setActiveDropdown(null)}
+                  <Wallet className="mb-1 h-5 w-5" />
+                  <span
                     className={cn(
-                      "flex items-center rounded-t-lg px-4 py-3 transition-colors hover:bg-muted",
-                      isPathActive("/bancos") && "font-medium text-primary",
+                      "text-xs",
+                      open
+                        ? "font-medium text-primary"
+                        : "text-muted-foreground",
                     )}
                   >
-                    <Building2 className="mr-2 h-4 w-4" />
-                    <span className="text-sm">Bancos</span>
-                  </Link>
-                  <Link
-                    href="/investimentos"
-                    onClick={() => setActiveDropdown(null)}
-                    className={cn(
-                      "flex items-center rounded-b-lg px-4 py-3 transition-colors hover:bg-muted",
-                      isPathActive("/investimentos") &&
-                        "font-medium text-primary",
-                    )}
-                  >
-                    <TrendingUp className="mr-2 h-4 w-4" />
-                    <span className="text-sm">Investimentos</span>
-                  </Link>
-                  <Link
-                    href="/categorias"
-                    onClick={() => setActiveDropdown(null)}
-                    className={cn(
-                      "flex items-center rounded-t-lg px-4 py-3 transition-colors hover:bg-muted",
-                      isPathActive("/categorias") && "font-medium text-primary",
-                    )}
-                  >
-                    <Tags className="mr-2 h-4 w-4" />
-                    <span className="text-sm">Categorias</span>
-                  </Link>
+                    Carteira
+                  </span>
                 </div>
-              </>
-            )}
-          </div>
+              </button>
+            </SheetTrigger>
+
+            <SheetContent
+              side="bottom"
+              className="rounded-t-2xl border-t bg-background pb-8"
+            >
+              <SheetHeader className="flex items-center justify-between">
+                <SheetTitle className="w-full text-center text-muted-foreground">
+                  Carteira
+                </SheetTitle>
+              </SheetHeader>
+
+              <div className="mt-6 space-y-2 px-2">
+                <Link
+                  href="/bancos"
+                  onClick={() => setOpenCarteira(false)}
+                  className={cn(
+                    "flex items-center rounded-lg bg-azulMuted px-4 py-3 transition-colors hover:bg-muted",
+                    isPathActive("/bancos") && "font-medium text-primary",
+                  )}
+                >
+                  <Building2 className="mr-2 h-4 w-4" />
+                  <span className="text-sm">Bancos</span>
+                </Link>
+                <Link
+                  href="/investimentos"
+                  onClick={() => setOpenCarteira(false)}
+                  className={cn(
+                    "flex items-center rounded-lg bg-azulMuted px-4 py-3 transition-colors hover:bg-muted",
+                    isPathActive("/investimentos") &&
+                      "font-medium text-primary",
+                  )}
+                >
+                  <TrendingUp className="mr-2 h-4 w-4" />
+                  <span className="text-sm">Investimentos</span>
+                </Link>
+                <Link
+                  href="/categorias"
+                  onClick={() => setOpenCarteira(false)}
+                  className={cn(
+                    "flex items-center rounded-lg bg-azulMuted px-4 py-3 transition-colors hover:bg-muted",
+                    isPathActive("/categorias") && "font-medium text-primary",
+                  )}
+                >
+                  <Tags className="mr-2 h-4 w-4" />
+                  <span className="text-sm">Categorias</span>
+                </Link>
+              </div>
+            </SheetContent>
+          </Sheet>
 
           {/* Mais com dropdown */}
           <Sheet open={open} onOpenChange={setOpen}>
@@ -376,7 +370,7 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
                 <Link
                   href="/subscription"
                   onClick={() => setOpen(false)}
-                  className="flex items-center rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-muted"
+                  className="flex items-center rounded-lg bg-azulMuted px-4 py-3 transition-colors hover:bg-muted"
                 >
                   <FileText className="mr-3 h-5 w-5 text-primary" />
                   Assinatura
