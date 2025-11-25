@@ -6,18 +6,28 @@ import { formatCurrency } from "@/app/_utils/currency";
 import { ROTULOS_TIPO_CONTA } from "@/app/_constants/transactions";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { pegarSaldoPrevisto } from "@/app/fetche/saldoPrevisto";
 
 interface Props {
   dataBanco: TypeBanco;
   editBanco: (banco: TypeBanco) => void;
+  mes: string;
 }
 
-export const CardBanco = ({ dataBanco, editBanco }: Props) => {
+export const CardBanco = ({ dataBanco, editBanco, mes }: Props) => {
   const { data, isLoading } = useQuery({
     queryKey: ["saldo", dataBanco.id],
     queryFn: async () => {
       const res = await axios.get(`/api/bancos/saldo/${dataBanco.id}`);
       return res.data as number;
+    },
+  });
+
+  const { data: saldoPrevisto, isLoading: loadingSaldo } = useQuery({
+    queryKey: ["saldoPrevisto", mes, dataBanco.id],
+    queryFn: async () => {
+      const res = await pegarSaldoPrevisto(dataBanco.id, mes);
+      return res;
     },
   });
 
@@ -77,6 +87,21 @@ export const CardBanco = ({ dataBanco, editBanco }: Props) => {
             <div className="text-sm text-gray-500">Saldo Inicial</div>
             <div className="text-sm font-bold text-green-500">
               {formatCurrency(dataBanco.saldoInicial)}
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-500">Saldo Previsto</div>
+            <div className="text-sm font-bold text-green-500">
+              {loadingSaldo && (
+                <>
+                  <p className="flex gap-2 text-sm font-semibold">
+                    <Loader2 className="animate-spin text-green-500 duration-1000" />
+                  </p>
+                </>
+              )}
+              {saldoPrevisto !== undefined && (
+                <>{formatCurrency(saldoPrevisto! ?? 0)}</>
+              )}
             </div>
           </div>
         </div>
