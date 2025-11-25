@@ -20,7 +20,7 @@ export const saldoPrevistoController = async (
       userId: Number(usuarioLogado),
       baixado: false,
       date: {
-        gte: startDate,
+        //gte: startDate,
         lt: endDate,
       },
     },
@@ -34,7 +34,7 @@ export const saldoPrevistoController = async (
       userId: Number(usuarioLogado),
       baixado: false,
       date: {
-        gte: startDate,
+        //gte: startDate,
         lt: endDate,
       },
     },

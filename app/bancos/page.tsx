@@ -11,11 +11,13 @@ import { CardBanco } from "../_components/bancos/cardBanco";
 import { InfoSemDados } from "../_components/bancos/infoSemDados";
 import { Loading } from "../_components/loading";
 import { useAuth } from "../context/AuthContext";
+import SeletorMes from "../_components/seletorMes";
 
 const Bancos = () => {
   const { criarMutation, atualizarMutation } = useMutations();
   const [abrirFormBanco, setAbrirFormBanco] = useState(false);
   const [bancoSelecionado, setBancoSelecionado] = useState<TypeBanco>();
+  const [mesSelecionado, setMesSelecionado] = useState("2025-11");
   const { userId } = useAuth();
 
   const { data, isLoading } = useQuery({
@@ -66,6 +68,9 @@ const Bancos = () => {
           <Plus /> Adicionar Banco
         </Button>
       </div>
+      <div className="flex w-full items-center justify-center">
+        <SeletorMes value={mesSelecionado} onChange={setMesSelecionado} />
+      </div>
       <Formbanco
         open={abrirFormBanco}
         onOpenChange={setAbrirFormBanco}
@@ -87,7 +92,7 @@ const Bancos = () => {
             key={banco.id}
             dataBanco={banco}
             editBanco={EditarBanco}
-            mes={"2025-12"}
+            mes={mesSelecionado}
           />
         ))}
       </div>

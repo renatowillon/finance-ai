@@ -1,43 +1,47 @@
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Button } from "./ui/button";
-import { Calendar } from "./ui/calendar";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export function MonthYearCalendar({
-  onSelect,
-}: {
-  onSelect: (date: Date) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>();
+interface SeletorMesProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export default function SeletorMes({ value, onChange }: SeletorMesProps) {
+  function changeMonth(direction: "prev" | "next") {
+    const [year, month] = value.split("-").map(Number);
+    const date = new Date(year, month - 1, 1);
+
+    if (direction === "prev") {
+      date.setMonth(date.getMonth() - 1);
+    } else {
+      date.setMonth(date.getMonth() + 1);
+    }
+
+    const newYear = date.getFullYear();
+    const newMonth = String(date.getMonth() + 1).padStart(2, "0");
+
+    onChange(`${newYear}-${newMonth}`);
+  }
+
+  const [year, month] = value.split("-").map(Number);
+
+  const formatted = new Intl.DateTimeFormat("pt-BR", {
+    month: "long",
+    year: "numeric",
+  }).format(new Date(year, month - 1, 1));
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button variant="outline">
-          {date
-            ? format(date, "MMMM yyyy", { locale: ptBR })
-            : "Selecione mês e ano"}
-        </Button>
-      </PopoverTrigger>
+    <div className="flex items-center gap-4">
+      <button onClick={() => changeMonth("prev")}>
+        <ChevronLeft />
+      </button>
 
-      <PopoverContent className="p-0">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={(d) => {
-            if (!d) return;
-            setDate(d);
-            setOpen(false);
-            onSelect(d);
-          }}
-          captionLayout="dropdown"
-          fromYear={2024}
-          toYear={2100}
-        />
-      </PopoverContent>
-    </Popover>
+      <span className="w-[150px] text-center text-sm font-semibold">
+        {formatted.charAt(0).toUpperCase() + formatted.slice(1)}
+      </span>
+
+      <button onClick={() => changeMonth("next")}>
+        <ChevronRight />
+      </button>
+    </div>
   );
 }
