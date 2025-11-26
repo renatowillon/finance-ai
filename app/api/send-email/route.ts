@@ -20,7 +20,6 @@ export async function POST(req: Request) {
       to: email,
       subject: "Renovação de Hospedagem - Black Friday",
       html: `
-        
     <table
       role="presentation"
       cellpadding="0"
@@ -328,8 +327,6 @@ export async function POST(req: Request) {
         </td>
       </tr>
     </table>
- 
-
       `,
     });
 
