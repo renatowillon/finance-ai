@@ -1,6 +1,6 @@
 import { Badge } from "@/app/_components/ui/badge";
 import { Transaction, TransactionType } from "@prisma/client";
-import { CircleIcon } from "lucide-react";
+import { CircleIcon, CreditCard } from "lucide-react";
 
 interface TransactionsTypeBadgeProps {
   transaction: Transaction;
@@ -31,6 +31,14 @@ const TransactionTypeBadge = ({ transaction }: TransactionsTypeBadgeProps) => {
           className="mr-2 fill-violet-600 text-violet-600"
         />
         Investimento
+      </Badge>
+    );
+  }
+  if (transaction.type === TransactionType.CARTAOCREDITO) {
+    return (
+      <Badge className="hover:bg-violet-600-600/40 w-32 items-center justify-center bg-violet-600/40 font-bold">
+        <CreditCard size={15} className="mr-2" />
+        Cartão
       </Badge>
     );
   }

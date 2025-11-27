@@ -54,6 +54,10 @@ export const OPCOES_TIPOS_TRANSACAO = [
     value: TransactionType.INVESTIMENTO,
     label: "Investimento",
   },
+  {
+    value: TransactionType.CARTAOCREDITO,
+    label: "Cartão de Crédito",
+  },
 ];
 
 export const OPCOES_METODOS_PAGAMENTO_TRANSACAO = [

@@ -20,6 +20,7 @@ import {
   CalendarDays,
   Check,
   CheckCheck,
+  CreditCard,
   Filter,
   PiggyBank,
   TrendingDown,
@@ -106,6 +107,8 @@ export function DataTable<
           acc.receitas += Number(item.amount) ?? 0;
         else if (item.type === "INVESTIMENTO")
           acc.investimentos += Number(item.amount) ?? 0;
+        else if (item.type === "CARTAOCREDITO")
+          acc.despesas += Number(item.amount) ?? 0;
         return acc;
       },
       { despesas: 0, receitas: 0, investimentos: 0 },
@@ -183,6 +186,11 @@ export function DataTable<
                           <SelectItem value="DESPESA">
                             <span className="flex gap-2">
                               <TrendingDown size={20} /> Despesas
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="CARTAOCREDITO">
+                            <span className="flex gap-2">
+                              <CreditCard size={20} /> Cartão
                             </span>
                           </SelectItem>
                         </SelectGroup>
@@ -510,6 +518,11 @@ export function DataTable<
                     <SelectItem value="DESPESA">
                       <span className="flex gap-2">
                         <TrendingDown size={20} /> Despesas
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="CARTAOCREDITO">
+                      <span className="flex gap-2">
+                        <CreditCard size={20} /> Cartão
                       </span>
                     </SelectItem>
                   </SelectGroup>

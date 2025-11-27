@@ -65,7 +65,7 @@ export const TransactionsColumns: ColumnDef<TransactionWithCategoria>[] = [
     header: "Valor",
     cell: ({ row: { original: transaction } }) => (
       <div
-        className={`${transaction.type === "DESPESA" ? "text-red-600" : transaction.type === "DEPOSITO" ? "text-green-500" : transaction.type === "INVESTIMENTO" ? "text-violet-500" : ""}`}
+        className={`${transaction.type === "DESPESA" ? "text-red-600" : transaction.type === "DEPOSITO" ? "text-green-500" : transaction.type === "INVESTIMENTO" ? "text-violet-500" : transaction.type === "CARTAOCREDITO" ? "text-violet-500" : ""}`}
       >
         {formatCurrency(Number(transaction.amount))}
       </div>

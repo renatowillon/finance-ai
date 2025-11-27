@@ -153,8 +153,17 @@ const DialogoInserirOuAtualizarTransacao = ({
       if (tipoSelecionado === "DESPESA") return cat.tipo === "DESPESA";
       if (tipoSelecionado === "INVESTIMENTO") return cat.tipo === "DESPESA";
       if (tipoSelecionado === "DEPOSITO") return cat.tipo === "DEPOSITO";
+      if (tipoSelecionado === "CARTAOCREDITO") return cat.tipo === "DESPESA";
     },
   );
+
+  const bancoFiltrado = (bancos || []).filter((banco: TypeBanco) => {
+    if (!tipoSelecionado) return true;
+    if (tipoSelecionado != "CARTAOCREDITO")
+      return banco.tipo === "CONTA_CORRENTE" || banco.tipo === "POUPANCA";
+    if (tipoSelecionado === "CARTAOCREDITO")
+      return banco.tipo === "CARTAO_CREDITO";
+  });
 
   useEffect(() => {
     if (!eAtualizacao) {
@@ -259,34 +268,6 @@ const DialogoInserirOuAtualizarTransacao = ({
                   </FormItem>
                 )}
               />
-              <FormField
-                control={formulario.control}
-                name="bancoId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Escolha o Banco</FormLabel>
-                    <Select
-                      onOpenChange={(aberto) => setSelectAberto(aberto)}
-                      onValueChange={(val) => field.onChange(Number(val))}
-                      defaultValue={field.value ? String(field.value) : ""}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o banco"></SelectValue>
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {bancos?.map((bancos: TypeBanco) => (
-                          <SelectItem key={bancos.id} value={String(bancos.id)}>
-                            {bancos.nome}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <div className="flex w-full items-center justify-center gap-4">
                 <FormField
                   control={formulario.control}
@@ -349,6 +330,34 @@ const DialogoInserirOuAtualizarTransacao = ({
                   )}
                 />
               </div>
+              <FormField
+                control={formulario.control}
+                name="bancoId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Escolha o Banco</FormLabel>
+                    <Select
+                      onOpenChange={(aberto) => setSelectAberto(aberto)}
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      defaultValue={field.value ? String(field.value) : ""}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o banco"></SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {bancoFiltrado?.map((bancos: TypeBanco) => (
+                          <SelectItem key={bancos.id} value={String(bancos.id)}>
+                            {bancos.nome}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={formulario.control}
