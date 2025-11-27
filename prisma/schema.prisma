@@ -61,6 +61,9 @@ model Banco {
   tipo TipoContas
   saldoInicial  Decimal @db.Decimal(10, 2)
   saldoAtual  Decimal @db.Decimal(10, 2)
+  diaFechamento String?
+  diaVencimento String?
+  limite Decimal? @db.Decimal(10, 2)
   cor String
   transactionsBanco Transaction[]
   userId Int  @default(1)
@@ -135,6 +138,7 @@ enum TransactionType {
   DEPOSITO
   DESPESA
   INVESTIMENTO
+  CARTAOCREDITO
 }
 
 enum TransactionCategory {
