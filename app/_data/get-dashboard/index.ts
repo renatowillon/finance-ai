@@ -74,6 +74,10 @@ export const obterDashboard = async (mes: string) => {
       totalTransacoes > 0
         ? Math.round((totalInvestimentos / totalTransacoes) * 100)
         : 0,
+    [TransactionType.CARTAOCREDITO]:
+      totalTransacoes > 0
+        ? Math.round((totalInvestimentos / totalTransacoes) * 100)
+        : 0,
   };
 
   const transacoes = await db.transaction.findMany({
