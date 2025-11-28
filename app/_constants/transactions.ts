@@ -41,6 +41,13 @@ export const ICONES_METODOS_PAGAMENTO_TRANSACAO = {
   [TransactionPaymentMethods.CARTAO_CREDITO]: "credito.svg",
 };
 
+export const ICONES_TIPOS_TRANSACAO = {
+  [TransactionType.CARTAOCREDITO]: "credito.svg",
+  [TransactionType.DEPOSITO]: "deposito.svg",
+  [TransactionType.DESPESA]: "despesa.svg",
+  [TransactionType.INVESTIMENTO]: "investimento.svg",
+};
+
 export const OPCOES_TIPOS_TRANSACAO = [
   {
     value: TransactionType.DEPOSITO,

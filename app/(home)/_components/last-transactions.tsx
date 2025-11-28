@@ -1,7 +1,7 @@
 import { Button } from "@/app/_components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/app/_components/ui/card";
 import { ScrollArea } from "@/app/_components/ui/scroll-area";
-import { ICONES_METODOS_PAGAMENTO_TRANSACAO } from "@/app/_constants/transactions";
+import { ICONES_TIPOS_TRANSACAO } from "@/app/_constants/transactions";
 import { formatCurrency } from "@/app/_utils/currency";
 import { Transaction, TransactionType } from "@prisma/client";
 import Image from "next/image";
@@ -46,11 +46,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
             <div className="flex items-center gap-2">
               <div className="rounded-lg bg-white bg-opacity-[3%] p-2">
                 <Image
-                  src={
-                    ICONES_METODOS_PAGAMENTO_TRANSACAO[
-                      transaction.paymentMethod
-                    ]
-                  }
+                  src={ICONES_TIPOS_TRANSACAO[transaction.type]}
                   height={20}
                   width={20}
                   alt="Pix"
