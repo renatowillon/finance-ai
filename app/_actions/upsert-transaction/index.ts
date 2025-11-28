@@ -16,7 +16,7 @@ interface ParametrosInserirOuAtualizarTransacao {
   tipo: TransactionType;
   valor: number;
   categoriaId: number;
-  metodoPagamento: TransactionPaymentMethods;
+  metodoPagamento?: TransactionPaymentMethods;
   data: Date;
   bancoId: number;
   baixado: boolean;

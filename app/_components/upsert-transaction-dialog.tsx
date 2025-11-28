@@ -26,10 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import {
-  OPCOES_METODOS_PAGAMENTO_TRANSACAO,
-  OPCOES_TIPOS_TRANSACAO,
-} from "../_constants/transactions";
+import { OPCOES_TIPOS_TRANSACAO } from "../_constants/transactions";
 import { DatePicker } from "./ui/date-piker";
 import { z } from "zod";
 import { TransactionPaymentMethods, TransactionType } from "@prisma/client";
@@ -67,9 +64,11 @@ const esquemaFormulario = z.object({
       required_error: "A categoria é obrigatória",
     })
     .min(1, { message: "A categoria é obrigatória" }),
-  metodoPagamento: z.nativeEnum(TransactionPaymentMethods, {
-    required_error: "O método de pagamento é obrigatório",
-  }),
+  metodoPagamento: z
+    .nativeEnum(TransactionPaymentMethods, {
+      required_error: "O método de pagamento é obrigatório",
+    })
+    .optional(),
   data: z.date({ required_error: "A data é obrigatória" }),
   bancoId: z.number({ required_error: "Banco é Obrigatorio" }),
   baixado: z.boolean(),
@@ -359,7 +358,7 @@ const DialogoInserirOuAtualizarTransacao = ({
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 control={formulario.control}
                 name="metodoPagamento"
                 render={({ field }) => (
@@ -386,7 +385,7 @@ const DialogoInserirOuAtualizarTransacao = ({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               {!idTransacao && (
                 <FormField
                   control={formulario.control}

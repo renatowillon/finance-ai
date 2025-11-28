@@ -18,7 +18,7 @@ model Transaction {
   name          String
   type          TransactionType
   amount        Decimal                   @db.Decimal(10, 2)
-  paymentMethod TransactionPaymentMethods
+  paymentMethod TransactionPaymentMethods?
   date          DateTime
   createAt      DateTime                  @default(now())
   updateAt      DateTime                  @updatedAt
