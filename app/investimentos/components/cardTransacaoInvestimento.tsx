@@ -9,7 +9,7 @@ export const CardTransacaoInvestimento = ({
   transacao,
 }: CardTransacaoInvestimentoProps) => {
   return (
-    <Card className="flex items-center justify-between p-3 px-5">
+    <Card className="flex items-center justify-between bg-azulMuted/50 p-3 px-5">
       <div className="flex items-center gap-5">
         <p
           className={`rounded-full ${transacao.tipo === "DEPOSITO" ? "bg-green-500/20 p-1 text-green-500" : "bg-red-500/20 p-1 text-red-500"}`}

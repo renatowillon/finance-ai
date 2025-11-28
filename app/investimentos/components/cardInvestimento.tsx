@@ -58,7 +58,7 @@ export const CardInvestimento = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogHeader>
         <DialogTrigger>
-          <Card className="space-y-4 bg-secondary/20 p-6">
+          <Card className="space-y-4 bg-azulMuted/50 p-6">
             <div className="flex items-center gap-3">
               <p className="rounded-lg bg-violet-500/20 p-2 text-violet-500">
                 <ChartSpline />
@@ -140,7 +140,7 @@ export const CardInvestimento = ({
             <p className="font-bold">{investimento.nome}</p>
           </span>
         </DialogTitle>
-        <Card className="space-y-3 bg-muted/20 p-6">
+        <Card className="space-y-3 bg-azulMuted p-6">
           <div className="flex w-full">
             <div className="w-full">
               <div className="text-sm text-muted-foreground">Valor Total</div>
