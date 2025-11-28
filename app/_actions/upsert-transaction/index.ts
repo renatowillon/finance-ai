@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/app/_lib/prisma";
-import { TransactionPaymentMethods, TransactionType } from "@prisma/client";
+import { TransactionType } from "@prisma/client";
 import { esquemaInserirOuAtualizarTransacao } from "./schema";
 import { revalidatePath } from "next/cache";
 import { obterUsuarioPorToken } from "@/app/_lib/session";
@@ -16,7 +16,6 @@ interface ParametrosInserirOuAtualizarTransacao {
   tipo: TransactionType;
   valor: number;
   categoriaId: number;
-  metodoPagamento?: TransactionPaymentMethods;
   data: Date;
   bancoId: number;
   baixado: boolean;
@@ -61,7 +60,6 @@ export const inserirOuAtualizarTransacao = async (
     type: parametros.tipo,
     amount: parametros.valor,
     categoriaId: Number(parametros.categoriaId),
-    paymentMethod: parametros.metodoPagamento,
     date: parametros.data,
     userId: idUsuario,
     bancoId: parametros.bancoId,

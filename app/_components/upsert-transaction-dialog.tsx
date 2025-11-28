@@ -29,7 +29,7 @@ import {
 import { OPCOES_TIPOS_TRANSACAO } from "../_constants/transactions";
 import { DatePicker } from "./ui/date-piker";
 import { z } from "zod";
-import { TransactionPaymentMethods, TransactionType } from "@prisma/client";
+import { TransactionType } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { inserirOuAtualizarTransacao } from "../_actions/upsert-transaction";
@@ -64,11 +64,6 @@ const esquemaFormulario = z.object({
       required_error: "A categoria é obrigatória",
     })
     .min(1, { message: "A categoria é obrigatória" }),
-  metodoPagamento: z
-    .nativeEnum(TransactionPaymentMethods, {
-      required_error: "O método de pagamento é obrigatório",
-    })
-    .optional(),
   data: z.date({ required_error: "A data é obrigatória" }),
   bancoId: z.number({ required_error: "Banco é Obrigatorio" }),
   baixado: z.boolean(),
@@ -110,7 +105,6 @@ const DialogoInserirOuAtualizarTransacao = ({
           valor: 0,
           categoriaId: 0,
           tipo: "DEPOSITO",
-          metodoPagamento: "DINHEIRO",
           data: new Date(),
           baixado: false,
         },
