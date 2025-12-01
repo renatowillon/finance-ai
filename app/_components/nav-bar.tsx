@@ -27,6 +27,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import InstallButton from "./InstallButton";
+import * as pacote from "@/package.json";
 
 import AddTransactionMobile from "./add-transactions-mobile";
 import {
@@ -379,6 +380,10 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
                 <div className="rounded-xl bg-muted/30 p-4">
                   <UserMenu />
                 </div>
+                <div className="flex items-center justify-center gap-3 px-3 text-[12px] text-muted-foreground">
+                  <p>Versão: {pacote.version}</p>
+                  <p>Build: {pacote.builder}</p>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
@@ -409,6 +414,10 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
         {/* Footer */}
         <div className="border-t p-4">
           <UserMenu />
+        </div>
+        <div className="flex items-center justify-center gap-3 px-3 text-[10px] text-muted-foreground">
+          <p>Versão: {pacote.version}</p>
+          <p>Build: {pacote.builder}</p>
         </div>
         <div className="border-t">
           <InstallButton />
