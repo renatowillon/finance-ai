@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/app/_lib/prisma";
-import { TransactionType } from "@prisma/client";
+import { Prisma, TransactionType } from "@prisma/client";
 import { esquemaInserirOuAtualizarTransacao } from "./schema";
 import { revalidatePath } from "next/cache";
 import { obterUsuarioPorToken } from "@/app/_lib/session";
@@ -31,23 +31,15 @@ export const inserirOuAtualizarTransacao = async (
 
   const armazenadorCookie = cookies();
   const token = armazenadorCookie.get("session_token")?.value;
+  type TransacaoCriar = Omit<Prisma.TransactionUncheckedCreateInput, "id">;
 
-  if (!token) {
-    redirect("/login");
-  }
-
-  console.log(">>> repeteQtd:", parametros.repeteQtd);
-  console.log(">>> repetePeriodo:", parametros.repetePeriodo);
-  console.log(">>> tipo repetePeriodo:", typeof parametros.repetePeriodo);
+  if (!token) redirect("/login");
 
   const usuario = await obterUsuarioPorToken(token!);
-  if (!usuario) {
-    redirect("/login");
-  }
+  if (!usuario) redirect("/login");
 
   const idUsuario = usuario.userId;
 
-  // ✅ VALIDAÇÃO DO LIMITE AQUI
   const podeAdicionar = await canUserAddTransaction();
   if (!podeAdicionar) {
     throw new Error(
@@ -69,18 +61,17 @@ export const inserirOuAtualizarTransacao = async (
     repetePeriodo: parametros.repetePeriodo ?? null,
   };
 
-  // ⚙️ ATUALIZAÇÃO
+  // ⚙️ ATUALIZAÇÃO NORMAL
   if (parametros.id) {
     await db.transaction.update({
       where: { id: parametros.id },
       data: dadosTransacao,
     });
   } else {
-    // ✅ ANTES DE CRIAR REPETIÇÕES, VERIFICA O TOTAL QUE SERÁ CRIADO
+    // 🛑 VERIFICA LIMITE
     if (parametros.repeteQtd) {
       const totalNoMes = await getCurrentMonthTransactions(String(idUsuario));
-
-      const totalQueSeraCriado = parametros.repeteQtd; // 1 principal + (repeteQtd - 1 repetições)
+      const totalQueSeraCriado = parametros.repeteQtd;
 
       if (!podeAdicionar && totalNoMes + totalQueSeraCriado > 10) {
         throw new Error(
@@ -89,19 +80,51 @@ export const inserirOuAtualizarTransacao = async (
       }
     }
 
+    // 🟢 Define nome da primeira recorrência
+    const nomeBase = parametros.nome;
+    let nomePrincipal = nomeBase;
+
+    if (parametros.repeteQtd && parametros.repeteQtd > 1) {
+      nomePrincipal = `${nomeBase} 1/${parametros.repeteQtd}`;
+    }
+
     const transacaoPrincipal = await db.transaction.create({
-      data: dadosTransacao,
+      data: {
+        ...dadosTransacao,
+        name: nomePrincipal,
+      },
     });
 
+    // 🔁 Repetições
     if (parametros.repeteQtd && parametros.repetePeriodo) {
-      const transacoesRepetidas = [];
+      const transacoesRepetidas: TransacaoCriar[] = [];
+
+      let dataAnterior = new Date(parametros.data); // <- BASE VAI ATUALIZANDO
 
       for (let i = 1; i < parametros.repeteQtd; i++) {
-        const novaData = new Date(parametros.data);
-        novaData.setDate(novaData.getDate() + parametros.repetePeriodo * i);
+        const numero = i + 1;
+
+        let novaData = new Date(dataAnterior); // <- sempre usa a última data
+
+        if (parametros.repetePeriodo === 30) {
+          const diaOriginal = dataAnterior.getDate();
+
+          const ano = dataAnterior.getFullYear();
+          const mes = dataAnterior.getMonth() + 1; // próximo mês
+
+          const ultimoDiaMes = new Date(ano, mes + 1, 0).getDate();
+
+          novaData = new Date(ano, mes, Math.min(diaOriginal, ultimoDiaMes));
+        } else {
+          novaData.setDate(dataAnterior.getDate() + parametros.repetePeriodo);
+        }
+
+        // Atualiza a base para próxima repetição
+        dataAnterior = new Date(novaData);
 
         transacoesRepetidas.push({
           ...dadosTransacao,
+          name: `${nomeBase} ${numero}/${parametros.repeteQtd}`,
           date: novaData,
           repeteId: transacaoPrincipal.id,
         });

@@ -104,7 +104,7 @@ const DialogoInserirOuAtualizarTransacao = ({
           nome: "",
           valor: 0,
           categoriaId: 0,
-          tipo: "DEPOSITO",
+          tipo: "DESPESA",
           data: new Date(),
           baixado: false,
         },
