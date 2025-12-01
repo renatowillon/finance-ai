@@ -17,8 +17,11 @@ const Bancos = () => {
   const { criarMutation, atualizarMutation } = useMutations();
   const [abrirFormBanco, setAbrirFormBanco] = useState(false);
   const [bancoSelecionado, setBancoSelecionado] = useState<TypeBanco>();
-  const [mesSelecionado, setMesSelecionado] = useState("2025-11");
+
   const { userId } = useAuth();
+  const hoje = new Date();
+  const mesAtual = String(`${hoje.getFullYear()}-${hoje.getMonth() + 1}`);
+  const [mesSelecionado, setMesSelecionado] = useState(mesAtual);
 
   const { data, isLoading } = useQuery({
     queryKey: ["bancos"],
