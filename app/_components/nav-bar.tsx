@@ -379,10 +379,10 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
 
                 <div className="rounded-xl bg-muted/30 p-4">
                   <UserMenu />
-                </div>
-                <div className="flex items-center justify-center gap-3 px-3 text-[12px] text-muted-foreground">
-                  <p>Versão: {pacote.version}</p>
-                  <p>Build: {pacote.builder}</p>
+                  <div className="flex items-center justify-center gap-3 px-3 text-[12px] text-muted-foreground">
+                    <p>Versão: {pacote.version}</p>
+                    <p>Build: {pacote.builder}</p>
+                  </div>
                 </div>
               </div>
             </SheetContent>
@@ -414,11 +414,12 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
         {/* Footer */}
         <div className="border-t p-4">
           <UserMenu />
+          <div className="flex items-center justify-center gap-3 px-3 text-[10px] text-muted-foreground">
+            <p>Versão: {pacote.version}</p>
+            <p>Build: {pacote.builder}</p>
+          </div>
         </div>
-        <div className="flex items-center justify-center gap-3 px-3 text-[10px] text-muted-foreground">
-          <p>Versão: {pacote.version}</p>
-          <p>Build: {pacote.builder}</p>
-        </div>
+
         <div className="border-t">
           <InstallButton />
         </div>
