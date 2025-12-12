@@ -370,9 +370,10 @@ export function DataTable<
             size="small"
           /> */}
         </div>
-        {data.length > 0 ? (
-          data.map((item, index) => {
-            const cells = table.getRowModel().rows[index]?.getVisibleCells();
+        {table.getRowModel().rows.length > 0 ? (
+          table.getRowModel().rows.map((row) => {
+            const cells = row.getVisibleCells();
+            const item = row.original;
 
             if (!cells) return null;
 
