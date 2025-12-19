@@ -8,6 +8,7 @@ import { BancosTransacao } from "../_components/bancos-transacao";
 import { Badge } from "@/app/_components/ui/badge";
 import { formatCurrency } from "@/app/_utils/currency";
 import { ConfirmarDelete } from "../_components/confirmDelete";
+import { ConfirmarBaixa } from "../_components/confirmBaixa";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -79,6 +80,8 @@ export const TransactionsColumns: ColumnDef<TransactionWithCategoria>[] = [
         <div className="space-x-1">
           <EditTransactionButton transacao={transaction} />
           <ConfirmarDelete transacao={transaction} />
+          <ConfirmarBaixa transacao={transaction} />
+
           {/* <Button
             variant="ghost"
             size="icon"
@@ -90,6 +93,7 @@ export const TransactionsColumns: ColumnDef<TransactionWithCategoria>[] = [
       );
     },
   },
+
   {
     accessorKey: "baixado",
     header: "",
