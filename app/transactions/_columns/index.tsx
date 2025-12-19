@@ -80,7 +80,9 @@ export const TransactionsColumns: ColumnDef<TransactionWithCategoria>[] = [
         <div className="space-x-1">
           <EditTransactionButton transacao={transaction} />
           <ConfirmarDelete transacao={transaction} />
-          <ConfirmarBaixa transacao={transaction} />
+          {transaction.baixado === false && (
+            <ConfirmarBaixa transacao={transaction} />
+          )}
 
           {/* <Button
             variant="ghost"

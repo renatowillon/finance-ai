@@ -24,6 +24,7 @@ export const ConfirmarBaixa = ({ transacao }: Props) => {
           variant="ghost"
           size="icon"
           onClick={() => setDialogAberto(true)}
+          className="bg-green-600/20"
           //
         >
           <Banknote />
