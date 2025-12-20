@@ -25,13 +25,24 @@ export const saldoBancoController = async (bancoId: number) => {
     _sum: { amount: true },
   });
 
+  const { _sum: investimentosBanco } = await db.transaction.aggregate({
+    where: {
+      type: "INVESTIMENTO",
+      bancoId,
+      userId: Number(usuarioLogado),
+      baixado: true,
+    },
+    _sum: { amount: true },
+  });
+
   const saldoBancoInicial = await db.banco.findUnique({
     where: { id: bancoId, userId: Number(usuarioLogado) },
     select: { saldoInicial: true },
   });
   const despesas = despesasBanco.amount?.toNumber() ?? 0;
   const receitas = receitasBanco.amount?.toNumber() ?? 0;
+  const investimentos = investimentosBanco.amount?.toNumber() ?? 0;
   const ValorBancoInicial = saldoBancoInicial?.saldoInicial.toNumber() ?? 0;
 
-  return ValorBancoInicial + receitas - despesas;
+  return ValorBancoInicial + receitas - despesas - investimentos;
 };
