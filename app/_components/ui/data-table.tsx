@@ -353,7 +353,7 @@ export function DataTable<
                 className="text-end text-primary md:text-start"
               />
             }
-            amount={totais.receitas - totais.despesas}
+            amount={totais.receitas - totais.despesas - totais.investimentos}
             size="small"
           />
 
