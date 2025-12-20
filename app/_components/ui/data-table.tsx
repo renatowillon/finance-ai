@@ -143,10 +143,7 @@ export function DataTable<
       <div className="space-y-4">
         {/* filtros de pesquisas */}
 
-        <div
-          title="Filtro em estado de implementação"
-          className="flex-row items-center justify-evenly gap-3 space-y-3 rounded-md border bg-muted/50 p-3 text-muted"
-        >
+        <div className="flex-row items-center justify-evenly gap-3 space-y-3 rounded-md border bg-muted/50 p-3 text-muted">
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="filtro">
               <AccordionTrigger>
@@ -481,10 +478,7 @@ export function DataTable<
   return (
     <div className="space-y-6">
       {/* filtros de pesquisas */}
-      <div
-        title="Filtro em estado de implementação"
-        className="flex items-center gap-3 rounded-md border bg-muted/50 p-3 text-muted"
-      >
+      <div className="flex items-center gap-3 rounded-md border bg-muted/50 p-3 text-muted">
         <span className="flex items-center gap-2 text-sm text-muted-foreground">
           <Filter size={20} />
           Filtros:{" "}

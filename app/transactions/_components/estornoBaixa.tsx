@@ -1,4 +1,4 @@
-import { baixarTransacaoAction } from "@/app/_actions/baixar-transaction";
+import { estornarTransacaoAction } from "@/app/_actions/baixar-transaction";
 import { Button } from "@/app/_components/ui/button";
 import { CardContent } from "@/app/_components/ui/card";
 import {
@@ -15,28 +15,28 @@ interface Props {
   transacao: Transaction;
 }
 
-export const ConfirmarBaixa = ({ transacao }: Props) => {
+export const EstonarBaixa = ({ transacao }: Props) => {
   const [dialogAberto, setDialogAberto] = useState(false);
   return (
     <>
       <Dialog open={dialogAberto} onOpenChange={setDialogAberto}>
         <Button
-          title="Baixar"
+          title="Estonar"
           variant="ghost"
           size="icon"
           onClick={() => setDialogAberto(true)}
-          className="bg-green-600/20 hover:bg-green-600/60"
+          className="bg-red-600/20 hover:bg-red-600/60"
           //
         >
           <Banknote />
         </Button>
 
         <DialogContent>
-          <DialogHeader>Confirmação de Baixa</DialogHeader>
+          <DialogHeader>Estornar Transação</DialogHeader>
           <CardContent>
             <div className="space-y-6">
               <div className="">
-                <p>Deseja realmente baixar a transação de:</p>
+                <p>Deseja realmente estornar a transação de:</p>
                 <p className="pl-6 text-muted-foreground">
                   {transacao.name} - {formatCurrency(Number(transacao.amount))}
                 </p>
@@ -47,7 +47,7 @@ export const ConfirmarBaixa = ({ transacao }: Props) => {
                 </Button>
                 <Button
                   onClick={() => {
-                    baixarTransacaoAction(transacao.id);
+                    estornarTransacaoAction(transacao.id);
                     setDialogAberto(false);
                   }}
                 >
