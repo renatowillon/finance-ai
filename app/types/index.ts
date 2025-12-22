@@ -59,3 +59,14 @@ export interface TypeUsuario {
   plano: "FREE" | "PREMIUM" | "DEV";
 }
 export type TypeUsuarioInput = Omit<TypeUsuario, "id">;
+
+export interface TypeCartaoCredito {
+  id: number;
+  userId: number;
+  nome: string;
+  limite: number;
+  diaFechamento: number;
+  diaVencimento: number;
+  cor: string;
+}
+export type TypeCartaoCreditoInput = Omit<TypeCartaoCredito, "id">;
