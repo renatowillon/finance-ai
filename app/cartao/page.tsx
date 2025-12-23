@@ -3,12 +3,50 @@ import { Plus } from "lucide-react";
 import { Button } from "../_components/ui/button";
 import { useState } from "react";
 import { FormCriarCartao } from "./components/formCriarCartao";
-import { TypeCartaoCreditoInput } from "../types";
+import { TypeCartaoCredito, TypeCartaoCreditoInput } from "../types";
+import { useQuery } from "@tanstack/react-query";
+import { pegarCartoes } from "../fetche/cartaoFetch";
+import { useMutations } from "../mutetions/cartaoMutation";
+import { CardCartao } from "./components/cardCartao";
+import { Loading } from "../_components/loading";
+import { useAuth } from "../context/AuthContext";
 
 const Cartao = () => {
+  const { userId } = useAuth();
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [cartaoSelecionado, setcartaoSelecionado] =
+    useState<TypeCartaoCredito>();
+  const { criarMutation, atualizarMutation } = useMutations();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["cartao"],
+    queryFn: pegarCartoes,
+    staleTime: 5 * (60 * 1000), //5 minutos
+  });
 
   function AdicionarCartaoCredito(values: TypeCartaoCreditoInput) {
+    if (cartaoSelecionado) {
+      const cartaoParaAtualizar = cartaoSelecionado;
+      atualizarMutation.mutate({
+        id: cartaoSelecionado.id,
+        cartao: {
+          id: cartaoParaAtualizar.id,
+          nome: values.nome,
+          cor: values.cor,
+          limite: values.limite,
+          diaFechamento: values.diaFechamento,
+          diaVencimento: values.diaVencimento,
+          userId: Number(userId),
+        },
+      });
+    } else {
+      const cartaoNovo: TypeCartaoCreditoInput = { ...values };
+      criarMutation.mutate(cartaoNovo);
+    }
+  }
+  function EditarCartao(values: TypeCartaoCredito) {
+    setcartaoSelecionado(values);
+    setOpenModal(true);
     console.log(values);
   }
 
@@ -17,7 +55,12 @@ const Cartao = () => {
       {/* titulo e botão */}
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Cartões de Crédito</h1>
-        <Button onClick={() => setOpenModal(true)}>
+        <Button
+          onClick={() => {
+            setOpenModal(true);
+            setcartaoSelecionado(undefined);
+          }}
+        >
           <Plus /> Adicionar Cartão
         </Button>
       </div>
@@ -25,7 +68,18 @@ const Cartao = () => {
         open={openModal}
         onOpenChange={setOpenModal}
         onSubmit={AdicionarCartaoCredito}
+        cartaoSelecionado={cartaoSelecionado!}
       />
+      {isLoading && <Loading />}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {data?.map((cartao: TypeCartaoCredito) => (
+          <CardCartao
+            key={cartao.id}
+            dataCartao={cartao}
+            editCartao={EditarCartao}
+          />
+        ))}
+      </div>
     </div>
   );
 };

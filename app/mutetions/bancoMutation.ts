@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { atualizarBanco, criarBanco, deletarBanco } from "../fetche/bancoFetch";
-
 import { TypeBanco } from "../types";
 
 export const useMutations = () => {
@@ -10,7 +9,7 @@ export const useMutations = () => {
     mutationFn: criarBanco,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["bancos"] }),
     onError: (error) => {
-      console.error("Erro ao criar projeto:", error);
+      console.error("Erro ao criar banco:", error);
     },
   });
 
@@ -19,7 +18,7 @@ export const useMutations = () => {
       atualizarBanco(id, banco),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["bancos"] }),
     onError: (error) => {
-      console.error("Erro ao atualizar projeto:", error);
+      console.error("Erro ao atualizar banco:", error);
     },
   });
 
@@ -27,7 +26,7 @@ export const useMutations = () => {
     mutationFn: deletarBanco,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["bancos"] }),
     onError: (error) => {
-      console.error("Erro ao deletar projeto:", error);
+      console.error("Erro ao deletar banco:", error);
     },
   });
 

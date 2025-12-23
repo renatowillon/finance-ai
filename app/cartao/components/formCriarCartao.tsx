@@ -10,7 +10,7 @@ import { Label } from "@/app/_components/ui/label";
 import { useAuth } from "@/app/context/AuthContext";
 import { CorBanco } from "@/app/models";
 import { CartaoSchema } from "@/app/schemas/cartaoSchema";
-import { TypeCartaoCreditoInput } from "@/app/types";
+import { TypeCartaoCredito, TypeCartaoCreditoInput } from "@/app/types";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -18,8 +18,14 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (Cartao: TypeCartaoCreditoInput) => void;
+  cartaoSelecionado: TypeCartaoCredito;
 }
-export const FormCriarCartao = ({ open, onOpenChange, onSubmit }: Props) => {
+export const FormCriarCartao = ({
+  open,
+  onOpenChange,
+  onSubmit,
+  cartaoSelecionado,
+}: Props) => {
   const { userId } = useAuth();
   const [formData, setFormData] = useState({
     nome: "",
@@ -31,16 +37,27 @@ export const FormCriarCartao = ({ open, onOpenChange, onSubmit }: Props) => {
   });
   useEffect(() => {
     if (open) {
-      setFormData({
-        nome: "",
-        limite: "",
-        diaFechamento: "",
-        diaVencimento: "",
-        cor: "",
-        userId: undefined as number | undefined,
-      });
+      if (cartaoSelecionado) {
+        setFormData({
+          nome: cartaoSelecionado.nome,
+          limite: String(cartaoSelecionado.limite),
+          diaFechamento: String(cartaoSelecionado.diaFechamento),
+          diaVencimento: String(cartaoSelecionado.diaVencimento),
+          cor: cartaoSelecionado.cor,
+          userId: cartaoSelecionado.userId,
+        });
+      } else {
+        setFormData({
+          nome: "",
+          limite: "",
+          diaFechamento: "",
+          diaVencimento: "",
+          cor: "",
+          userId: undefined as number | undefined,
+        });
+      }
     }
-  }, [open]);
+  }, [open, cartaoSelecionado, userId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +94,11 @@ export const FormCriarCartao = ({ open, onOpenChange, onSubmit }: Props) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogTitle>Criar Cartão de Crédito</DialogTitle>
+        <DialogTitle>
+          {cartaoSelecionado
+            ? "Atualizar Cartão de Crédito"
+            : "Criar Cartão de Crédito"}
+        </DialogTitle>
         <form onSubmit={handleSubmit} className="space-y-2">
           <div className="space-y-1">
             <Label>Nome do Cartão</Label>
@@ -163,7 +184,7 @@ export const FormCriarCartao = ({ open, onOpenChange, onSubmit }: Props) => {
               Cancelar
             </Button>
             <Button type="submit" className="flex-1">
-              Criar
+              {cartaoSelecionado ? "Atualizar" : "Criar"}
             </Button>
           </div>
         </form>
