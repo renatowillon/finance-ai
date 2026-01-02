@@ -20,9 +20,11 @@ const Bancos = () => {
 
   const { userId } = useAuth();
   const hoje = new Date();
-  const mesAtual = String(`${hoje.getFullYear()}-${hoje.getMonth() + 1}`);
+  const mesAtual = String(
+    `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, "0")}`,
+  );
   const [mesSelecionado, setMesSelecionado] = useState(mesAtual);
-
+  console.log(mesSelecionado);
   const { data, isLoading } = useQuery({
     queryKey: ["bancos"],
     queryFn: fetchBanco,
