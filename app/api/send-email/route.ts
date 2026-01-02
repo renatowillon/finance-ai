@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     await transporter.sendMail({
       from: "Renovação de Hospedagem",
       to: email,
-      subject: "Renovação de Hospedagem - Black Friday",
+      subject: "Renovação de Hospedagem",
       html: `
     <table
       role="presentation"
@@ -67,8 +67,8 @@ export async function POST(req: Request) {
                   🚨 Sua hospedagem está prestes a expirar!
                 </h1>
                 <p style="color: #374151; margin-top: 8px; font-size: 15px">
-                  Oferta exclusiva de <strong>Black Friday</strong> — válida até
-                  28 Novembro 2025
+                  Oferta exclusiva para <strong>Primeira Renovação</strong> — válida até
+                  09 Janeiro 2026
                 </p>
               </td>
             </tr>
@@ -176,7 +176,7 @@ export async function POST(req: Request) {
                     >
                       <h3 style="margin: 0; font-size: 18px">Plano 6 Meses</h3>
                       <p style="margin: 8px 0; font-size: 14px; opacity: 0.8">
-                        🔥 Oferta Black Friday
+                        🔥 Mais Escolhidos!
                       </p>
                       <p
                         style="
