@@ -11,7 +11,8 @@ export async function middleware(req: NextRequest) {
     path.startsWith("/api/cadastro") ||
     path.startsWith("/api/eu") ||
     path.startsWith("/api/logout") ||
-    path.startsWith("/api/send-email");
+    path.startsWith("/api/send-email") ||
+    path.startsWith("/api/pegarCookie");
 
   if (!token && !isPublicPath) {
     return NextResponse.redirect(new URL("/login", req.url));
