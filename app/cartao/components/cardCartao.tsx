@@ -1,9 +1,10 @@
 "use client";
 import { Card } from "@/app/_components/ui/card";
 import { TypeCartaoCredito } from "@/app/types";
-import { Building2, EllipsisVertical } from "lucide-react";
+import { Building2, ChevronRight, EllipsisVertical } from "lucide-react";
 import { Button } from "@/app/_components/ui/button";
 import { formatCurrency } from "@/app/_utils/currency";
+import { useRouter } from "next/navigation";
 
 interface Props {
   dataCartao: TypeCartaoCredito;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export const CardCartao = ({ dataCartao, editCartao }: Props) => {
+  const route = useRouter();
   return (
     <>
       <Card
@@ -61,6 +63,14 @@ export const CardCartao = ({ dataCartao, editCartao }: Props) => {
               {dataCartao.diaVencimento}
             </div>
           </div>
+        </div>
+        <div className="flex">
+          <Button
+            className="w-full"
+            onClick={() => route.push(`cartao/${dataCartao.id}`)}
+          >
+            Ver Faturas <ChevronRight />
+          </Button>
         </div>
       </Card>
     </>

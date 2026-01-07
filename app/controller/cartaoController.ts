@@ -16,7 +16,7 @@ export const pegarUmCartao = async (id: number) => {
   const sessao = await obterSessao();
   const usuarioLogado = sessao?.userId;
 
-  return db.cartaoCredito.findMany({
+  return db.cartaoCredito.findUnique({
     where: { id, userId: Number(usuarioLogado) },
   });
 };

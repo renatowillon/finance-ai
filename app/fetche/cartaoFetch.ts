@@ -6,6 +6,11 @@ export const pegarCartoes = async () => {
   return response.data;
 };
 
+export const pegarUmCartao = async (id: number) => {
+  const response = await axios.get(`/api/cartaoCredito/${id}`);
+  return response.data;
+};
+
 export const criarCartao = async (dados: TypeCartaoCreditoInput) => {
   const response = await axios.post("/api/cartaoCredito", dados);
   return response.data;
