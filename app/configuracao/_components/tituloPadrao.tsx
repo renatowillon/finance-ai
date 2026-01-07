@@ -2,7 +2,7 @@ import { Button } from "@/app/_components/ui/button";
 import { UserPlus } from "lucide-react";
 
 interface TituloPadraoProps {
-  titulo: string;
+  titulo: string | null | undefined;
   descricao: string;
   tituloButao?: string;
   onClick?: () => void;
