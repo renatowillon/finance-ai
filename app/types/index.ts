@@ -61,7 +61,7 @@ export interface TypeUsuario {
 export type TypeUsuarioInput = Omit<TypeUsuario, "id">;
 
 export interface TypeCartaoCredito {
-  id: number;
+  id: string;
   userId: number;
   nome: string;
   limite: number;

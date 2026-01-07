@@ -14,7 +14,7 @@ export const useMutations = () => {
   });
 
   const atualizarMutation = useMutation({
-    mutationFn: ({ id, cartao }: { id: number; cartao: TypeCartaoCredito }) =>
+    mutationFn: ({ id, cartao }: { id: string; cartao: TypeCartaoCredito }) =>
       atualizarCartao(id, cartao),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cartao"] }),
     onError: (error) => {

@@ -12,7 +12,7 @@ export const pegarCartao = async () => {
   });
 };
 
-export const pegarUmCartao = async (id: number) => {
+export const pegarUmCartao = async (id: string) => {
   const sessao = await obterSessao();
   const usuarioLogado = sessao?.userId;
 
@@ -25,14 +25,14 @@ export const criarCartao = (data: TypeCartaoCreditoInput) => {
   return db.cartaoCredito.create({ data });
 };
 
-export const atualizarCartao = async (id: number, data: TypeCartaoCredito) => {
+export const atualizarCartao = async (id: string, data: TypeCartaoCredito) => {
   return db.cartaoCredito.update({
     where: { id },
     data,
   });
 };
 
-export const deletarCartao = (id: number) => {
+export const deletarCartao = (id: string) => {
   return db.cartaoCredito.delete({
     where: { id },
   });

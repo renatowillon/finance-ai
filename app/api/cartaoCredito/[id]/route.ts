@@ -9,8 +9,8 @@ export async function PUT(
   { params }: { params: { id: string } },
 ) {
   try {
-    const cartaoId = Number(params.id);
-    if (isNaN(cartaoId)) {
+    const cartaoId = params.id;
+    if (!cartaoId) {
       return NextResponse.json({ error: "ID Inválido" }, { status: 400 });
     }
     const cartaoAtualizado = await request.json();
@@ -30,8 +30,8 @@ export async function GET(
   { params }: { params: { id: string } },
 ) {
   try {
-    const cartaoId = Number(params.id);
-    if (isNaN(cartaoId)) {
+    const cartaoId = params.id;
+    if (!cartaoId) {
       return NextResponse.json({ error: "ID Invalido" }, { status: 400 });
     }
 

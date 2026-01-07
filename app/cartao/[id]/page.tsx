@@ -10,11 +10,11 @@ import { useParams, useRouter } from "next/navigation";
 
 const FaturaDetalhada = () => {
   const params = useParams();
-  const cartaoId = Number(params.id);
+  const cartaoId = String(params.id);
   const route = useRouter();
   const { data: cartao, isLoading } = useQuery<TypeCartaoCredito | null>({
     queryKey: ["cartao", cartaoId],
-    queryFn: () => pegarUmCartao(Number(cartaoId)),
+    queryFn: () => pegarUmCartao(cartaoId),
     enabled: !!cartaoId,
   });
 

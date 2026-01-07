@@ -6,7 +6,7 @@ export const pegarCartoes = async () => {
   return response.data;
 };
 
-export const pegarUmCartao = async (id: number) => {
+export const pegarUmCartao = async (id: string) => {
   const response = await axios.get(`/api/cartaoCredito/${id}`);
   return response.data;
 };
@@ -16,7 +16,7 @@ export const criarCartao = async (dados: TypeCartaoCreditoInput) => {
   return response.data;
 };
 
-export const atualizarCartao = async (id: number, dados: TypeCartaoCredito) => {
+export const atualizarCartao = async (id: string, dados: TypeCartaoCredito) => {
   const response = await axios.put(`/api/cartaoCredito/${id}`, dados);
   return response.data;
 };
