@@ -1,4 +1,5 @@
 "use client";
+import { Loading } from "@/app/_components/loading";
 import { Button } from "@/app/_components/ui/button";
 import { TituloPadrao } from "@/app/configuracao/_components/tituloPadrao";
 import { pegarUmCartao } from "@/app/fetche/cartaoFetch";
@@ -11,7 +12,7 @@ const FaturaDetalhada = () => {
   const params = useParams();
   const cartaoId = Number(params.id);
   const route = useRouter();
-  const { data: cartao } = useQuery<TypeCartaoCredito | null>({
+  const { data: cartao, isLoading } = useQuery<TypeCartaoCredito | null>({
     queryKey: ["cartao", cartaoId],
     queryFn: () => pegarUmCartao(Number(cartaoId)),
     enabled: !!cartaoId,
@@ -20,7 +21,9 @@ const FaturaDetalhada = () => {
   function voltarCartao() {
     route.push("/cartao");
   }
-
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="space-y-6 p-6">
       {/* titulo e botão */}
