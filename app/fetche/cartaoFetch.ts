@@ -20,3 +20,8 @@ export const atualizarCartao = async (id: string, dados: TypeCartaoCredito) => {
   const response = await axios.put(`/api/cartaoCredito/${id}`, dados);
   return response.data;
 };
+
+export const deletarCartao = async (id: string) => {
+  const response = await axios.delete(`/api/cartaoCredito/${id}`);
+  return response.data;
+};

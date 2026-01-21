@@ -10,13 +10,16 @@ import { useMutations } from "../mutetions/cartaoMutation";
 import { CardCartao } from "./components/cardCartao";
 import { Loading } from "../_components/loading";
 import { useAuth } from "../context/AuthContext";
+import { DialogConfirm } from "../_components/dialogConfirm";
 
 const Cartao = () => {
   const { userId } = useAuth();
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openModalDeleteCartao, setOpenModalDeleteCartao] =
+    useState<boolean>(false);
   const [cartaoSelecionado, setcartaoSelecionado] =
     useState<TypeCartaoCredito>();
-  const { criarMutation, atualizarMutation } = useMutations();
+  const { criarMutation, atualizarMutation, deletarMutation } = useMutations();
 
   const { data, isLoading } = useQuery({
     queryKey: ["cartao"],
@@ -50,6 +53,11 @@ const Cartao = () => {
     console.log(values);
   }
 
+  function DeletarCartao(id: string) {
+    deletarMutation.mutate(id);
+    setOpenModalDeleteCartao(false);
+  }
+
   return (
     <div className="space-y-6 p-6">
       {/* titulo e botão */}
@@ -77,9 +85,24 @@ const Cartao = () => {
             key={cartao.id}
             dataCartao={cartao}
             editCartao={EditarCartao}
+            deleteCartao={() => {
+              setcartaoSelecionado(cartao);
+              setOpenModalDeleteCartao(!openModalDeleteCartao);
+            }}
           />
         ))}
       </div>
+      <DialogConfirm
+        titulo="Confirmação de Exclusão"
+        mensagem="Deseja realmente excluir o cartão: "
+        subtitulo={`${cartaoSelecionado?.nome}`}
+        open={openModalDeleteCartao}
+        onOpenChange={setOpenModalDeleteCartao}
+        onClick={() => {
+          if (!cartaoSelecionado) return;
+          DeletarCartao(cartaoSelecionado?.id);
+        }}
+      />
     </div>
   );
 };

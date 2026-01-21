@@ -1,7 +1,7 @@
 "use client";
 import { Card } from "@/app/_components/ui/card";
 import { TypeCartaoCredito } from "@/app/types";
-import { Building2, ChevronRight, EllipsisVertical } from "lucide-react";
+import { Building2, ChevronRight, EllipsisVertical, Trash } from "lucide-react";
 import { Button } from "@/app/_components/ui/button";
 import { formatCurrency } from "@/app/_utils/currency";
 import { useRouter } from "next/navigation";
@@ -9,9 +9,10 @@ import { useRouter } from "next/navigation";
 interface Props {
   dataCartao: TypeCartaoCredito;
   editCartao: (cartao: TypeCartaoCredito) => void;
+  deleteCartao: (id: string) => void;
 }
 
-export const CardCartao = ({ dataCartao, editCartao }: Props) => {
+export const CardCartao = ({ dataCartao, editCartao, deleteCartao }: Props) => {
   const route = useRouter();
   return (
     <>
@@ -37,12 +38,20 @@ export const CardCartao = ({ dataCartao, editCartao }: Props) => {
               <p className="text-lg font-bold">{dataCartao.nome}</p>
             </div>
           </div>
-          <Button
-            onClick={() => editCartao(dataCartao)}
-            className="bg-secondary/25 hover:bg-secondary"
-          >
-            <EllipsisVertical />
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => editCartao(dataCartao)}
+              className="bg-secondary/25 hover:bg-secondary"
+            >
+              <EllipsisVertical />
+            </Button>
+            <Button
+              onClick={() => deleteCartao(dataCartao.id)}
+              className="bg-secondary/25 hover:bg-secondary"
+            >
+              <Trash />
+            </Button>
+          </div>
         </div>
         <div className="space-y-1">
           <div className="flex items-center justify-between">

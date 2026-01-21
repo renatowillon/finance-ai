@@ -2,6 +2,12 @@
 import SumaryCard from "@/app/(home)/_components/summary-card";
 import { Loading } from "@/app/_components/loading";
 import { Button } from "@/app/_components/ui/button";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/app/_components/ui/tabs";
 import { TituloPadrao } from "@/app/configuracao/_components/tituloPadrao";
 import { pegarUmCartao } from "@/app/fetche/cartaoFetch";
 import { TypeCartaoCredito } from "@/app/types";
@@ -77,6 +83,18 @@ const FaturaDetalhada = () => {
           />
         </div>
       )}
+      <div>
+        <Tabs defaultValue="fatAberta">
+          <TabsList className="border bg-azulMuted">
+            <TabsTrigger value="fatAberta">Fatura Aberta</TabsTrigger>
+            <TabsTrigger value="fatPagamento">Aguardando Pagamento</TabsTrigger>
+            <TabsTrigger value="fatHistorico">Histórico</TabsTrigger>
+          </TabsList>
+          <TabsContent value="fatAberta">Fatura Aberta</TabsContent>
+          <TabsContent value="fatPagamento">Aguardando Pagamento</TabsContent>
+          <TabsContent value="fatHistorico">Histórico</TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
