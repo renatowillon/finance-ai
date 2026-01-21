@@ -24,6 +24,7 @@ import {
 import { useState } from "react";
 import TelaCarregamento from "./components/telaAnimacao";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 // 👈 importa a animação
 
 const LoginPage = () => {
@@ -33,7 +34,7 @@ const LoginPage = () => {
     resolver: zodResolver(formSchemaUser),
     defaultValues: { email: "", senha: "" },
   });
-
+  const router = useRouter();
   const onSubmit = async (values: z.infer<typeof formSchemaUser>) => {
     try {
       const res = await axios.post("/api/login", {
@@ -43,6 +44,7 @@ const LoginPage = () => {
       toast.success("Login realizado com sucesso");
       console.log("✅ Login sucesso:", res.data);
       setShowAnimation(true); // 🔥 mostra animação
+      router.refresh();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error("Erro no Login! verifique email e senha");
