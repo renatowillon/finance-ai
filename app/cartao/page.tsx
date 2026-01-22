@@ -11,6 +11,7 @@ import { CardCartao } from "./components/cardCartao";
 import { Loading } from "../_components/loading";
 import { useAuth } from "../context/AuthContext";
 import { DialogConfirm } from "../_components/dialogConfirm";
+import { InfoSemDados } from "../_components/bancos/infoSemDados";
 
 const Cartao = () => {
   const { userId } = useAuth();
@@ -79,6 +80,12 @@ const Cartao = () => {
         cartaoSelecionado={cartaoSelecionado!}
       />
       {isLoading && <Loading />}
+      {data?.length < 1 && (
+        <InfoSemDados
+          titulo="Nenhum cartão cadastrado"
+          subtitulo="Comece adicionando sua primeira cartão"
+        />
+      )}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {data?.map((cartao: TypeCartaoCredito) => (
           <CardCartao

@@ -70,3 +70,19 @@ export interface TypeCartaoCredito {
   cor: string;
 }
 export type TypeCartaoCreditoInput = Omit<TypeCartaoCredito, "id">;
+
+export interface TypeTransacaoCartao {
+  id: string;
+  descricao: string;
+  valor: number;
+  dataCompra: Date;
+  parcelada: boolean;
+  parcelaAtual?: number | null;
+  totalParcelas?: number | null;
+  competencia: Date;
+  pago: boolean;
+  dataPagamento?: Date | null;
+  cartaoCreditoId: string;
+}
+
+export type TypeTransacaoCartaoInput = Omit<TypeTransacaoCartao, "id">;

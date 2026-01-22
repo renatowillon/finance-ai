@@ -116,10 +116,34 @@ model CartaoCredito {
   diaFechamento Int
   diaVencimento Int
   cor String
+  transacoes TransacaoCartaoCredito[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
+  @@map("cartao_credito")
+}
+
+model TransacaoCartaoCredito {
+  id String @id @default(uuid())
+  descricao String
+  valor Decimal @db.Decimal(10,2)
+  dataCompra DateTime
+  parcelada Boolean @default(false)
+  parcelaAtual Int?
+  totalParcelas Int?
+  competencia DateTime
+  pago Boolean @default(false)
+  dataPagamento DateTime?
+
+  cartaoCreditoId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cartaoCredito CartaoCredito @relation(fields: [cartaoCreditoId], references: [id])
+  @@index([cartaoCreditoId, competencia])
+  @@map("transacao_cartaocredito")
 }
 
 enum StatusInvestimento {

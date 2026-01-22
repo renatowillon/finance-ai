@@ -106,7 +106,7 @@ const Categorias = () => {
       {data?.length < 1 && (
         <InfoSemDados
           titulo="Nenhuma categoria cadastrado"
-          subtitulo="Comece adicionando sua primeira ccategoria"
+          subtitulo="Comece adicionando sua primeira categoria"
           tituloBotao="Adicionar Categoria"
           onClick={() => setAbrirFormCategoria(true)}
         />
