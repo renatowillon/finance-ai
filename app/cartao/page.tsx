@@ -12,6 +12,7 @@ import { Loading } from "../_components/loading";
 import { useAuth } from "../context/AuthContext";
 import { DialogConfirm } from "../_components/dialogConfirm";
 import { InfoSemDados } from "../_components/bancos/infoSemDados";
+import { AddTransacaoCartao } from "./components/addTransacaoCartao";
 
 const Cartao = () => {
   const { userId } = useAuth();
@@ -72,6 +73,7 @@ const Cartao = () => {
         >
           <Plus /> Adicionar Cartão
         </Button>
+        <AddTransacaoCartao />
       </div>
       <FormCriarCartao
         open={openModal}
