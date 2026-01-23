@@ -3,7 +3,7 @@ import {
   deletarCartao,
   pegarUmCartao,
 } from "@/app/controller/cartaoController";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
   request: Request,
@@ -27,7 +27,7 @@ export async function PUT(
 }
 
 export async function GET(
-  request: Request,
+  _req: NextRequest,
   { params }: { params: { id: string } },
 ) {
   try {
