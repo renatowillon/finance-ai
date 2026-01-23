@@ -8,6 +8,12 @@ export const PegarTransacaoPorCartao = async (cartaoCreditoId: string) => {
   });
 };
 
+export const PegarUmaTransacaoCartao = async (transacaoCartaoId: string) => {
+  return db.transacaoCartaoCredito.findUnique({
+    where: { id: transacaoCartaoId },
+  });
+};
+
 export const AdicionarTransacaoCartao = async (data: TypeTransacaoCartao) => {
   return db.transacaoCartaoCredito.create({ data });
 };
