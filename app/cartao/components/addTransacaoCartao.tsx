@@ -1,3 +1,4 @@
+import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
 import {
   Dialog,
@@ -9,11 +10,21 @@ import {
 import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
 import { TypeTransacaoCartaoInput } from "@/app/types";
-import { Plus } from "lucide-react";
+import { AlertCircleIcon, CreditCard, Plus } from "lucide-react";
 import React, { useState } from "react";
 
-export const AddTransacaoCartao = () => {
-  const [open, setOpen] = useState(false);
+interface Prop {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  mostrarBotao?: boolean;
+}
+
+export const AddTransacaoCartao = ({
+  open,
+  onOpenChange,
+  mostrarBotao,
+}: Prop) => {
+  // const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<TypeTransacaoCartaoInput>({
     descricao: "",
     valor: 0,
@@ -33,16 +44,23 @@ export const AddTransacaoCartao = () => {
   };
   return (
     <>
-      <Button onClick={() => setOpen(!open)} className="hidden lg:flex">
-        <Plus /> Adicionar Transação
-      </Button>
-      <Button
-        onClick={() => setOpen(!open)}
-        className="size-11 rounded-full font-bold lg:hidden"
-      >
-        <Plus />
-      </Button>
-      <Dialog open={open} onOpenChange={setOpen}>
+      {mostrarBotao && (
+        <div>
+          <Button
+            onClick={() => onOpenChange(!open)}
+            className="hidden lg:flex"
+          >
+            <Plus /> Adicionar Transação
+          </Button>
+          <Button
+            onClick={() => onOpenChange(!open)}
+            className="flex size-36 flex-col lg:hidden"
+          >
+            <CreditCard className="" /> <p className="">Cartão</p>
+          </Button>
+        </div>
+      )}
+      <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogPortal>
           <DialogContent>
             <DialogHeader>
@@ -50,6 +68,12 @@ export const AddTransacaoCartao = () => {
             </DialogHeader>
             <div>
               <form onSubmit={handleSubmit}>
+                <Badge
+                  variant={"destructive"}
+                  className="animate-pulse space-x-3"
+                >
+                  <AlertCircleIcon /> <p>Em Desenvolvimento</p>
+                </Badge>
                 <div className="space-y-1">
                   <Label>Descrição</Label>
                   <Input
