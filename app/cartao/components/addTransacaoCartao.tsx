@@ -62,7 +62,7 @@ export const AddTransacaoCartao = ({
       )}
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogPortal>
-          <DialogContent>
+          <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>Adicionar Transação Cartão</DialogTitle>
             </DialogHeader>
@@ -80,10 +80,12 @@ export const AddTransacaoCartao = ({
                     id="nome"
                     placeholder="Compra com mercado"
                     value={formData.descricao}
-                    autoFocus={false}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, nome: e.target.value }))
-                    }
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        nome: e.target.value,
+                      }));
+                    }}
                   />
                 </div>
               </form>
