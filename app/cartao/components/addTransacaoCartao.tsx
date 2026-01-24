@@ -13,7 +13,7 @@ import { TypeTransacaoCartaoInput } from "@/app/types";
 import { AlertCircleIcon, CreditCard, Plus } from "lucide-react";
 import React, { useState } from "react";
 
-interface Prop {
+interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   mostrarBotao?: boolean;
@@ -23,7 +23,7 @@ export const AddTransacaoCartao = ({
   open,
   onOpenChange,
   mostrarBotao,
-}: Prop) => {
+}: Props) => {
   // const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<TypeTransacaoCartaoInput>({
     descricao: "",
