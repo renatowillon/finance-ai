@@ -80,6 +80,7 @@ export const AddTransacaoCartao = ({
                     id="nome"
                     placeholder="Compra com mercado"
                     value={formData.descricao}
+                    autoFocus={false}
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, nome: e.target.value }))
                     }
