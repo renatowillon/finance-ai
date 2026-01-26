@@ -33,7 +33,7 @@ const FaturaDetalhada = () => {
     return <Loading />;
   }
   return (
-    <div className="space-y-6 p-6">
+    <div className="w-full space-y-6 p-6">
       {/* titulo e botão */}
       <div className="flex w-full items-center justify-between gap-3 md:justify-normal">
         <Button onClick={voltarCartao} variant={"ghost"}>
@@ -88,12 +88,18 @@ const FaturaDetalhada = () => {
           />
         </div>
       )}
-      <div>
-        <Tabs defaultValue="fatAberta">
-          <TabsList className="border bg-azulMuted">
-            <TabsTrigger value="fatAberta">Fatura Aberta</TabsTrigger>
-            <TabsTrigger value="fatPagamento">Aguardando Pagamento</TabsTrigger>
-            <TabsTrigger value="fatHistorico">Histórico</TabsTrigger>
+      <div className="">
+        <Tabs defaultValue="fatAberta" className="">
+          <TabsList className="w-full border bg-azulMuted md:w-auto">
+            <TabsTrigger value="fatAberta" className="text-xs md:text-sm">
+              Fatura Aberta
+            </TabsTrigger>
+            <TabsTrigger value="fatPagamento" className="text-xs md:text-sm">
+              Aguardando Pagamento
+            </TabsTrigger>
+            <TabsTrigger value="fatHistorico" className="text-xs md:text-sm">
+              Histórico
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="fatAberta">
             <DetalheFatura cartaoId={cartao?.id} />
