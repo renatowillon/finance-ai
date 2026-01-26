@@ -71,6 +71,12 @@ const menuItems: MenuItem[] = [
         href: "/bancos",
       },
       {
+        id: "cartao",
+        label: "Cartão de Crédito",
+        icon: CreditCard,
+        href: "/cartao",
+      },
+      {
         id: "investimentos",
         label: "Investimentos",
         icon: TrendingUp,
@@ -305,6 +311,18 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
                   <Building2 className="mr-2 h-4 w-4" />
                   <span className="text-sm">Bancos</span>
                 </Link>
+                <Link
+                  href="/cartao"
+                  onClick={() => setOpenCarteira(false)}
+                  className={cn(
+                    "flex items-center rounded-lg bg-azulMuted px-4 py-3 transition-colors hover:bg-muted",
+                    isPathActive("/cartao") && "font-medium text-primary",
+                  )}
+                >
+                  <Building2 className="mr-2 h-4 w-4" />
+                  <span className="text-sm">Cartão de Crédito</span>
+                </Link>
+
                 <Link
                   href="/investimentos"
                   onClick={() => setOpenCarteira(false)}

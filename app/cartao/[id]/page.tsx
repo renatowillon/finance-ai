@@ -14,6 +14,7 @@ import { TypeCartaoCredito } from "@/app/types";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CreditCard, DollarSign } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { DetalheFatura } from "../components/detalheFatura";
 
 const FaturaDetalhada = () => {
   const params = useParams();
@@ -34,12 +35,16 @@ const FaturaDetalhada = () => {
   return (
     <div className="space-y-6 p-6">
       {/* titulo e botão */}
-      <div className="flex w-full items-center gap-3">
+      <div className="flex w-full items-center justify-between gap-3 md:justify-normal">
         <Button onClick={voltarCartao} variant={"ghost"}>
           <ArrowLeft />
         </Button>
-        <TituloPadrao titulo={cartao?.nome} descricao="Gerencie suas faturas" />
-        {/* <h1 className="text-2xl font-bold">{cartao?.nome}</h1> */}
+        <div>
+          <TituloPadrao
+            titulo={cartao?.nome}
+            descricao="Gerencie suas faturas"
+          />
+        </div>
       </div>
       {cartao && (
         <div className="flex flex-wrap gap-3 md:grid-cols-[repeat(auto-fit,minmax(200px,2fr))]">
@@ -90,7 +95,9 @@ const FaturaDetalhada = () => {
             <TabsTrigger value="fatPagamento">Aguardando Pagamento</TabsTrigger>
             <TabsTrigger value="fatHistorico">Histórico</TabsTrigger>
           </TabsList>
-          <TabsContent value="fatAberta">Fatura Aberta</TabsContent>
+          <TabsContent value="fatAberta">
+            <DetalheFatura cartaoId={cartao?.id} />
+          </TabsContent>
           <TabsContent value="fatPagamento">Aguardando Pagamento</TabsContent>
           <TabsContent value="fatHistorico">Histórico</TabsContent>
         </Tabs>
