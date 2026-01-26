@@ -35,7 +35,7 @@ const AddTransactionMobile = ({
           } `}
         ></div>
         <Sheet open={openMenu} onOpenChange={setOpenMenu}>
-          <SheetTrigger>
+          <SheetTrigger asChild>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -64,14 +64,20 @@ const AddTransactionMobile = ({
             </SheetHeader>
             <div className="mt-5 space-y-3">
               <Button
-                onClick={() => setDialogoEstaAberto(true)}
+                onClick={() => {
+                  setDialogoEstaAberto(true);
+                  setOpenMenu(!openMenu);
+                }}
                 disabled={!usuarioPodeAdicionarTransacao}
                 className="flex w-full items-center rounded-lg bg-azulMuted px-4 py-3 transition-colors hover:bg-muted"
               >
                 <TrendingDown /> Despesa
               </Button>
               <Button
-                onClick={() => setDialogoEstaAberto(true)}
+                onClick={() => {
+                  setDialogoEstaAberto(true);
+                  setOpenMenu(!openMenu);
+                }}
                 disabled={!usuarioPodeAdicionarTransacao}
                 className="flex w-full items-center rounded-lg bg-azulMuted px-4 py-3 transition-colors hover:bg-muted"
               >
