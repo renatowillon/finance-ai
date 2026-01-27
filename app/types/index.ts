@@ -74,7 +74,7 @@ export type TypeCartaoCreditoInput = Omit<TypeCartaoCredito, "id">;
 export interface TypeTransacaoCartao {
   id: string;
   descricao: string;
-  valor: number;
+  valor: string;
   dataCompra: Date;
   parcelada: boolean;
   parcelaAtual?: number | null;

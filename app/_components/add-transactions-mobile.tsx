@@ -84,7 +84,10 @@ const AddTransactionMobile = ({
                 <TrendingUp /> Receitas
               </Button>
               <Button
-                onClick={() => setAbrirDialogCartao(!abrirDialogCartao)}
+                onClick={() => {
+                  setAbrirDialogCartao(!abrirDialogCartao);
+                  setOpenMenu(!openMenu);
+                }}
                 className="flex w-full items-center rounded-lg bg-azulMuted px-4 py-3 transition-colors hover:bg-muted"
               >
                 <Banknote /> Despesa Cartão

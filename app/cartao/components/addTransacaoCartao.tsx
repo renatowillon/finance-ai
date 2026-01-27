@@ -1,5 +1,7 @@
+import { MoneyInput } from "@/app/_components/money-input";
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
+import { DatePicker } from "@/app/_components/ui/date-piker";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +11,9 @@ import {
 } from "@/app/_components/ui/dialog";
 import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
+import { Switch } from "@/app/_components/ui/switch";
 import { TypeTransacaoCartaoInput } from "@/app/types";
-import { AlertCircleIcon, CreditCard, Plus } from "lucide-react";
+import { AlertCircleIcon, CreditCard, Plus, RefreshCcw } from "lucide-react";
 import React, { useState } from "react";
 
 interface Props {
@@ -27,7 +30,7 @@ export const AddTransacaoCartao = ({
   // const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<TypeTransacaoCartaoInput>({
     descricao: "",
-    valor: 0,
+    valor: "",
     dataCompra: new Date(),
     parcelada: false,
     parcelaAtual: 0,
@@ -60,14 +63,15 @@ export const AddTransacaoCartao = ({
           </Button>
         </div>
       )}
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onOpenChange={onOpenChange} modal={false}>
         <DialogPortal>
+          <div className="fixed inset-0 bg-black/70 transition-opacity duration-500" />
           <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>Adicionar Transação Cartão</DialogTitle>
             </DialogHeader>
             <div>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className="space-y-2">
                 <Badge
                   variant={"destructive"}
                   className="animate-pulse space-x-3"
@@ -84,6 +88,52 @@ export const AddTransacaoCartao = ({
                       setFormData((prev) => ({
                         ...prev,
                         nome: e.target.value,
+                      }));
+                    }}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label>Valor</Label>
+                  <MoneyInput
+                    value={formData.valor}
+                    placeholder="Digite o valor"
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        valor: e.target.value,
+                      }));
+                    }}
+                    // onValueChange={({ floatValue }) => {
+                    //   field.onChange(floatValue);
+                    // }}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label>Data da Compra</Label>
+                  <DatePicker
+                    value={formData.dataCompra}
+                    onChange={(date) => {
+                      if (!date) return;
+
+                      setFormData((prev) => ({
+                        ...prev,
+                        dataCompra: date,
+                      }));
+                    }}
+                  />
+                </div>
+                <div className="flex items-center gap-2 space-y-1 pt-1">
+                  <Label className="flex items-center gap-2">
+                    <RefreshCcw size={20} />
+                    <p>Pacelada</p>
+                  </Label>
+                  <Switch
+                    id="repete"
+                    checked={formData.parcelada}
+                    onCheckedChange={(checked) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        parcelada: checked,
                       }));
                     }}
                   />

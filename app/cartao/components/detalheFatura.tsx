@@ -15,12 +15,23 @@ import { pegarTransacaoPorCartao } from "@/app/fetche/transacaoCartao";
 import { TypeTransacaoCartao } from "@/app/types";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 interface Props {
   cartaoId: string | null | undefined;
 }
 
+const getMesAtual = () => {
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+  return `${ano}-${mes}`;
+};
+
 export const DetalheFatura = ({ cartaoId }: Props) => {
+  const [mesSelecionado, setMesSelecionado] = useState<string | null>(
+    getMesAtual,
+  );
   const enabled = !!cartaoId;
   const { data: transacaoCartao, isLoading } = useQuery({
     queryKey: ["transacaoCartao", cartaoId],
@@ -34,23 +45,98 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
     enabled,
   });
 
+  // Navegação de meses
+  const navegarMes = (direcao: "anterior" | "proximo") => {
+    if (!mesSelecionado) return;
+    const [ano, mes] = mesSelecionado.split("-").map(Number);
+    let novoAno = ano;
+    let novoMes = mes;
+    if (direcao === "anterior") {
+      novoMes = mes - 1;
+      if (novoMes < 1) {
+        novoMes = 12;
+        novoAno = ano - 1;
+      }
+    } else {
+      novoMes = mes + 1;
+      if (novoMes > 12) {
+        novoMes = 1;
+        novoAno = ano + 1;
+      }
+    }
+
+    const novoMesRef = `${novoAno}-${String(novoMes).padStart(2, "0")}`;
+    setMesSelecionado(novoMesRef);
+  };
+
+  const formatMesCompleto = (mesRef: string) => {
+    const [ano, mes] = mesRef.split("-");
+    const meses = [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ];
+    return `${meses[parseInt(mes) - 1]} ${ano}`;
+  };
+
+  // const formatMesReferencia = (mesRef: string) => {
+  //   const [ano, mes] = mesRef.split("-");
+  //   const meses = [
+  //     "Jan",
+  //     "Fev",
+  //     "Mar",
+  //     "Abr",
+  //     "Mai",
+  //     "Jun",
+  //     "Jul",
+  //     "Ago",
+  //     "Set",
+  //     "Out",
+  //     "Nov",
+  //     "Dez",
+  //   ];
+  //   return `${meses[parseInt(mes) - 1]}/${ano}`;
+  // };
+
   return (
     <div className="space-y-5">
       {/* menu de calendario e faturas */}
       <div className="w-full rounded-lg border">
         <div className="flex items-center justify-center gap-3 p-5 text-center">
-          <Button variant={"ghost"}>
+          <Button
+            variant={"ghost"}
+            size={"icon"}
+            onClick={() => navegarMes("anterior")}
+          >
             <ChevronLeft />
           </Button>
           <div className="">
             <p className="flex items-center justify-center gap-3 text-xl font-bold">
-              <Calendar size={25} /> <p>Janeiro 2026</p>
+              <Calendar size={25} />{" "}
+              <p>
+                {mesSelecionado
+                  ? formatMesCompleto(mesSelecionado)
+                  : "Selecione um mês"}
+              </p>
             </p>
             <p>
               <Badge variant={"outline"}>Fatura aberta</Badge>
             </p>
           </div>
-          <Button variant={"ghost"}>
+          <Button
+            variant={"ghost"}
+            size={"icon"}
+            onClick={() => navegarMes("proximo")}
+          >
             <ChevronRight />{" "}
           </Button>
         </div>
