@@ -11,8 +11,18 @@ import {
 } from "@/app/_components/ui/dialog";
 import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/_components/ui/select";
 import { Switch } from "@/app/_components/ui/switch";
-import { TypeTransacaoCartaoInput } from "@/app/types";
+import { formatCurrency } from "@/app/_utils/currency";
+import { pegarCartoes } from "@/app/fetche/cartaoFetch";
+import { TypeCartaoCredito, TypeTransacaoCartaoInput } from "@/app/types";
+import { useQuery } from "@tanstack/react-query";
 import { AlertCircleIcon, CreditCard, Plus, RefreshCcw } from "lucide-react";
 import React, { useState } from "react";
 
@@ -40,6 +50,10 @@ export const AddTransacaoCartao = ({
     dataPagamento: new Date(),
     cartaoCreditoId: "",
   });
+  const { data: cartao } = useQuery({
+    queryKey: ["cartaoCredito"],
+    queryFn: pegarCartoes,
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +80,11 @@ export const AddTransacaoCartao = ({
       <Dialog open={open} onOpenChange={onOpenChange} modal={false}>
         <DialogPortal>
           <div className="fixed inset-0 bg-black/70 transition-opacity duration-500" />
-          <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
+          <DialogContent
+            onOpenAutoFocus={(e) => e.preventDefault()}
+            onPointerDownOutside={(e) => e.preventDefault()}
+            onInteractOutside={(e) => e.preventDefault()}
+          >
             <DialogHeader>
               <DialogTitle>Adicionar Transação Cartão</DialogTitle>
             </DialogHeader>
@@ -107,6 +125,30 @@ export const AddTransacaoCartao = ({
                     //   field.onChange(floatValue);
                     // }}
                   />
+                </div>
+                <div className="space-y-1">
+                  <Label>Banco</Label>
+                  <Select
+                    value={formData.cartaoCreditoId}
+                    onValueChange={(valor) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        cartaoCreditoId: String(valor),
+                      }));
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione um cartão"></SelectValue>
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {cartao?.map((c: TypeCartaoCredito) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.nome} - {formatCurrency(c.limite)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-1">
                   <Label>Data da Compra</Label>
