@@ -15,12 +15,6 @@ export async function POST(req: NextRequest) {
     if (!transacaoCartao.valor) {
       return NextResponse.json({ error: "Preencha o valor" }, { status: 400 });
     }
-    if (!transacaoCartao.competencia) {
-      return NextResponse.json(
-        { error: "competencia não preenchida" },
-        { status: 400 },
-      );
-    }
     const criarTransacaoCartao =
       await AdicionarTransacaoCartao(transacaoCartao);
     return NextResponse.json(criarTransacaoCartao, { status: 201 });
