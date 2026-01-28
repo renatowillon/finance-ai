@@ -4,6 +4,7 @@ import { Button } from "@/app/_components/ui/button";
 import { DatePicker } from "@/app/_components/ui/date-piker";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogPortal,
@@ -19,6 +20,7 @@ import {
   SelectValue,
 } from "@/app/_components/ui/select";
 import { Switch } from "@/app/_components/ui/switch";
+import { parseMoney } from "@/app/_lib/utils";
 import { formatCurrency } from "@/app/_utils/currency";
 import { pegarCartoes } from "@/app/fetche/cartaoFetch";
 import { TypeCartaoCredito, TypeTransacaoCartaoInput } from "@/app/types";
@@ -59,6 +61,26 @@ export const AddTransacaoCartao = ({
     e.preventDefault();
     console.log(formData);
   };
+
+  // const consoleteste = (valor:any) => {
+  //   console.log(valor);
+  // };
+
+  const resetForm = () => {
+    setFormData({
+      descricao: "",
+      valor: "",
+      dataCompra: new Date(),
+      parcelada: false,
+      parcelaAtual: 0,
+      totalParcelas: 0,
+      competencia: new Date(),
+      pago: false,
+      dataPagamento: new Date(),
+      cartaoCreditoId: "",
+    });
+  };
+
   return (
     <>
       {mostrarBotao && (
@@ -81,6 +103,7 @@ export const AddTransacaoCartao = ({
         <DialogPortal>
           <div className="fixed inset-0 bg-black/70 transition-opacity duration-500" />
           <DialogContent
+            className="max-h-[90vh] max-w-2xl"
             onOpenAutoFocus={(e) => e.preventDefault()}
             onPointerDownOutside={(e) => e.preventDefault()}
             onInteractOutside={(e) => e.preventDefault()}
@@ -90,22 +113,24 @@ export const AddTransacaoCartao = ({
             </DialogHeader>
             <div>
               <form onSubmit={handleSubmit} className="space-y-2">
-                <Badge
-                  variant={"destructive"}
-                  className="animate-pulse space-x-3"
-                >
-                  <AlertCircleIcon /> <p>Em Desenvolvimento</p>
-                </Badge>
+                <div className="flex w-full items-center justify-center">
+                  <Badge
+                    variant={"destructive"}
+                    className="flex w-full animate-pulse items-center justify-center space-x-3"
+                  >
+                    <AlertCircleIcon /> <p>Em Desenvolvimento</p>
+                  </Badge>
+                </div>
                 <div className="space-y-1">
                   <Label>Descrição</Label>
                   <Input
-                    id="nome"
+                    id="descricao"
                     placeholder="Compra com mercado"
                     value={formData.descricao}
                     onChange={(e) => {
                       setFormData((prev) => ({
                         ...prev,
-                        nome: e.target.value,
+                        descricao: e.target.value,
                       }));
                     }}
                   />
@@ -121,13 +146,14 @@ export const AddTransacaoCartao = ({
                         valor: e.target.value,
                       }));
                     }}
+                    // onBlur={() => consoleteste(formData)}
                     // onValueChange={({ floatValue }) => {
                     //   field.onChange(floatValue);
                     // }}
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label>Banco</Label>
+                  <Label>Cartão</Label>
                   <Select
                     value={formData.cartaoCreditoId}
                     onValueChange={(valor) => {
@@ -176,9 +202,63 @@ export const AddTransacaoCartao = ({
                       setFormData((prev) => ({
                         ...prev,
                         parcelada: checked,
+                        totalParcelas: checked ? prev.totalParcelas : 1,
+                        parcelaAtual: checked ? prev.parcelaAtual : 1,
                       }));
                     }}
                   />
+                </div>
+                {formData.parcelada && (
+                  <div className="space-y-1">
+                    <Label>Número de Parcelas</Label>
+                    <Select
+                      value={
+                        formData.totalParcelas
+                          ? String(formData.totalParcelas)
+                          : undefined
+                      }
+                      onValueChange={(valor) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          totalParcelas: Number(valor),
+                          parcelaAtual: 1,
+                        }));
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o número de parcelas" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        {Array.from({ length: 17 }, (_, i) => {
+                          const parcelas = i + 2;
+                          const valorTotal = parseMoney(formData.valor);
+
+                          if (!valorTotal || valorTotal <= 0) return null;
+
+                          const valorParcela = valorTotal / parcelas;
+
+                          return (
+                            <SelectItem key={parcelas} value={String(parcelas)}>
+                              {parcelas}x de {formatCurrency(valorParcela)}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+                <div className="flex items-center justify-end gap-3">
+                  <DialogClose asChild>
+                    <Button
+                      type="reset"
+                      onClick={resetForm}
+                      variant={"outline"}
+                    >
+                      Cancelar
+                    </Button>
+                  </DialogClose>
+                  <Button type="submit">Adicionar</Button>
                 </div>
               </form>
             </div>

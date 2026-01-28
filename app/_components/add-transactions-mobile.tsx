@@ -27,20 +27,13 @@ const AddTransactionMobile = ({
   return (
     <>
       <div className="relative flex items-center justify-center">
-        <div
-          className={`absolute flex gap-5 transition-all duration-300 ${
-            openMenu
-              ? "-translate-y-14 opacity-100"
-              : "pointer-events-none translate-y-0 opacity-0"
-          } `}
-        ></div>
         <Sheet open={openMenu} onOpenChange={setOpenMenu}>
           <SheetTrigger asChild>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    className="z-10 size-14 rounded-full"
+                    className="z-10 size-14 rounded-full md:hidden"
                     onClick={() => setOpenMenu(!openMenu)}
                     disabled={!usuarioPodeAdicionarTransacao}
                   >
