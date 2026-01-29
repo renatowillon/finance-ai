@@ -5,6 +5,11 @@ export function dataFormatada(data: Date) {
   return dataNova;
 }
 
+export function dataCompetencia(data: Date) {
+  const dataNova = format(data, "MM/yyyy");
+  return dataNova;
+}
+
 export function dataFormatada2(data: Date) {
   new Date(data).toLocaleDateString("pt-BR", {
     day: "2-digit",

@@ -9,7 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/_components/ui/table";
-import { dataFormatada } from "@/app/_utils/functions";
+import { formatCurrency } from "@/app/_utils/currency";
+import { dataCompetencia, dataFormatada } from "@/app/_utils/functions";
 import { pegarUmCartao } from "@/app/fetche/cartaoFetch";
 import { pegarTransacaoPorCartao } from "@/app/fetche/transacaoCartao";
 import { TypeTransacaoCartao } from "@/app/types";
@@ -44,6 +45,20 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
     queryFn: () => pegarUmCartao(cartaoId as string),
     enabled,
   });
+
+  const transacaoFiltrada = transacaoCartao?.filter(
+    (t: TypeTransacaoCartao) => {
+      if (!mesSelecionado || !t.competencia) return null;
+
+      const [anoSel, mesSel] = mesSelecionado.split("-").map(Number);
+
+      const dataCompetencia = new Date(t.competencia);
+      const anoComp = dataCompetencia.getFullYear();
+      const mesComp = dataCompetencia.getMonth() + 1;
+
+      return anoComp === anoSel && mesComp === mesSel;
+    },
+  );
 
   // Navegação de meses
   const navegarMes = (direcao: "anterior" | "proximo") => {
@@ -88,24 +103,30 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
     return `${meses[parseInt(mes) - 1]} ${ano}`;
   };
 
-  // const formatMesReferencia = (mesRef: string) => {
-  //   const [ano, mes] = mesRef.split("-");
-  //   const meses = [
-  //     "Jan",
-  //     "Fev",
-  //     "Mar",
-  //     "Abr",
-  //     "Mai",
-  //     "Jun",
-  //     "Jul",
-  //     "Ago",
-  //     "Set",
-  //     "Out",
-  //     "Nov",
-  //     "Dez",
-  //   ];
-  //   return `${meses[parseInt(mes) - 1]}/${ano}`;
-  // };
+  const formatMesReferencia = (mesRef: string) => {
+    const [ano, mes] = mesRef.split("-");
+    const meses = [
+      "Jan",
+      "Fev",
+      "Mar",
+      "Abr",
+      "Mai",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Set",
+      "Out",
+      "Nov",
+      "Dez",
+    ];
+    return `${meses[parseInt(mes) - 1]}/${ano}`;
+  };
+
+  const totalFatura = transacaoFiltrada?.reduce(
+    (total: number, transacao: TypeTransacaoCartao) =>
+      total + Number(transacao.valor),
+    0,
+  );
 
   return (
     <div className="space-y-5">
@@ -113,13 +134,13 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
       <div className="w-full rounded-lg border">
         <div className="flex items-center justify-center gap-3 p-5 text-center">
           <Button
-            variant={"ghost"}
+            variant={"outline"}
             size={"icon"}
             onClick={() => navegarMes("anterior")}
           >
             <ChevronLeft />
           </Button>
-          <div className="">
+          <div className="w-48">
             <p className="flex items-center justify-center gap-3 text-xl font-bold">
               <Calendar size={25} />{" "}
               <p>
@@ -133,7 +154,7 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
             </p>
           </div>
           <Button
-            variant={"ghost"}
+            variant={"outline"}
             size={"icon"}
             onClick={() => navegarMes("proximo")}
           >
@@ -153,8 +174,10 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
       <div className="rounded-lg border">
         <div className="flex h-[130px] justify-between rounded-t-lg bg-primary px-5 pt-6 text-white">
           <p className="flex flex-col">
-            <span>Fatura Jan/2026</span>
-            <span className="text-xl font-black md:text-3xl">R$ 333,50</span>
+            <span>Fatura {formatMesReferencia(String(mesSelecionado))}</span>
+            <span className="text-xl font-black md:text-3xl">
+              {formatCurrency(totalFatura)}
+            </span>
           </p>
           <p>
             <Badge variant={"secondary"}>Aberta</Badge>
@@ -187,18 +210,30 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
                 <TableRow>
                   <TableHead>Data</TableHead>
                   <TableHead>Descricão</TableHead>
+                  <TableHead>Competência</TableHead>
                   <TableHead>Parcela</TableHead>
                   <TableHead>Valor</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading && <Loading />}
-                {transacaoCartao?.map((transacao: TypeTransacaoCartao) => (
+                {transacaoFiltrada?.map((transacao: TypeTransacaoCartao) => (
                   <TableRow key={transacao.id}>
                     <TableCell>{dataFormatada(transacao.dataCompra)}</TableCell>
                     <TableCell>{transacao.descricao}</TableCell>
-                    <TableCell>{transacao.parcelaAtual}</TableCell>
-                    <TableCell>{transacao.valor}</TableCell>
+                    <TableCell>
+                      {dataCompetencia(transacao.competencia)}
+                    </TableCell>
+                    <TableCell>
+                      {transacao.parcelada === false ? (
+                        1
+                      ) : (
+                        <>
+                          {transacao.parcelaAtual}/{transacao.totalParcelas}
+                        </>
+                      )}
+                    </TableCell>
+                    <TableCell>{formatCurrency(transacao.valor)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
