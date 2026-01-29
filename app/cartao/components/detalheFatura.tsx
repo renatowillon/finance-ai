@@ -13,9 +13,13 @@ import { formatCurrency } from "@/app/_utils/currency";
 import { dataCompetencia, dataFormatada } from "@/app/_utils/functions";
 import { pegarUmCartao } from "@/app/fetche/cartaoFetch";
 import { pegarTransacaoPorCartao } from "@/app/fetche/transacaoCartao";
+import {
+  obterMesesComTransacoes,
+  obterStatusFatura,
+} from "@/app/functions/functions";
 import { TypeTransacaoCartao } from "@/app/types";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, Check, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useState } from "react";
 
 interface Props {
@@ -128,11 +132,14 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
     0,
   );
 
+  const mesesDisponiveis = obterMesesComTransacoes(transacaoCartao);
+  const statusFatura = obterStatusFatura(transacaoFiltrada);
+
   return (
     <div className="space-y-5">
       {/* menu de calendario e faturas */}
-      <div className="w-full rounded-lg border">
-        <div className="flex items-center justify-center gap-3 p-5 text-center">
+      <div className="w-full space-y-3 rounded-lg border p-5">
+        <div className="flex items-center justify-center gap-3 text-center">
           <Button
             variant={"outline"}
             size={"icon"}
@@ -150,7 +157,7 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
               </p>
             </p>
             <p>
-              <Badge variant={"outline"}>Fatura aberta</Badge>
+              <Badge variant={"outline"}>{statusFatura}</Badge>
             </p>
           </div>
           <Button
@@ -163,12 +170,16 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
         </div>
         <div className="flex flex-col items-center justify-center">
           <div className="flex gap-3">
-            <Button className="h-8">Jan/2026</Button>
-            <Button className="h-8">Fev/2026</Button>
+            {mesesDisponiveis.map((mes) => (
+              <Button
+                key={mes.value}
+                variant={mesSelecionado === mes.value ? "default" : "outline"}
+                onClick={() => setMesSelecionado(mes.value)}
+              >
+                {mes.label}
+              </Button>
+            ))}
           </div>
-          <p className="animate-pulse text-sm">
-            BADGE DE MESES QUE JA EXISTEM FATURAS (LANÇAMENTOS DENTRO DE FATUAS)
-          </p>
         </div>
       </div>
       <div className="rounded-lg border">
@@ -202,8 +213,8 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
           {/* table */}
           <div className="py-5">
             <div className="text-sm text-muted-foreground">
-              {transacaoCartao?.length}{" "}
-              {transacaoCartao?.length <= 1 ? "transação" : "transações"}
+              {transacaoFiltrada?.length}{" "}
+              {transacaoFiltrada?.length <= 1 ? "transação" : "transações"}
             </div>
             <Table>
               <TableHeader>
@@ -213,6 +224,7 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
                   <TableHead>Competência</TableHead>
                   <TableHead>Parcela</TableHead>
                   <TableHead>Valor</TableHead>
+                  <TableHead>Pago</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -234,6 +246,17 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
                       )}
                     </TableCell>
                     <TableCell>{formatCurrency(transacao.valor)}</TableCell>
+                    <TableCell>
+                      {transacao.pago === true ? (
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500">
+                          <Check size={14} />
+                        </div>
+                      ) : (
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500">
+                          <X size={14} className="text-red-200" />
+                        </div>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -10,21 +10,36 @@ import {
 } from "@/app/_components/ui/tabs";
 import { TituloPadrao } from "@/app/configuracao/_components/tituloPadrao";
 import { pegarUmCartao } from "@/app/fetche/cartaoFetch";
-import { TypeCartaoCredito } from "@/app/types";
+import { TypeCartaoCredito, TypeTransacaoCartao } from "@/app/types";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CreditCard, DollarSign } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { DetalheFatura } from "../components/detalheFatura";
+import { pegarTransacaoPorCartao } from "@/app/fetche/transacaoCartao";
 
 const FaturaDetalhada = () => {
   const params = useParams();
   const cartaoId = String(params.id);
   const route = useRouter();
+
   const { data: cartao, isLoading } = useQuery<TypeCartaoCredito | null>({
     queryKey: ["cartao", cartaoId],
     queryFn: () => pegarUmCartao(cartaoId),
     enabled: !!cartaoId,
   });
+
+  const { data: transacaoCartao } = useQuery({
+    queryKey: ["transacaoCartao", cartaoId],
+    queryFn: () => pegarTransacaoPorCartao(cartaoId as string),
+  });
+
+  const usoLimiteCartao = (transacaoCartao ?? [])
+    .filter((t: TypeTransacaoCartao) => t.pago === false)
+    .reduce(
+      (total: number, transacao: TypeTransacaoCartao) =>
+        total + Number(transacao?.valor),
+      0,
+    );
 
   function voltarCartao() {
     route.push("/cartao");
@@ -70,7 +85,7 @@ const FaturaDetalhada = () => {
                 className="text-end text-red-500 md:text-start"
               />
             }
-            amount={cartao?.limite}
+            amount={usoLimiteCartao}
             size="small"
           />
 
@@ -83,7 +98,7 @@ const FaturaDetalhada = () => {
                 className="text-end text-green-500 md:text-start"
               />
             }
-            amount={cartao?.limite}
+            amount={cartao?.limite - usoLimiteCartao}
             size="small"
           />
         </div>
