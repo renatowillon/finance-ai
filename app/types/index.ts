@@ -75,14 +75,24 @@ export interface TypeTransacaoCartao {
   id: string;
   descricao: string;
   valor: string;
-  dataCompra: Date;
+  dataCompra: string | Date;
   parcelada: boolean;
-  parcelaAtual?: number | null;
-  totalParcelas?: number | null;
-  competencia: Date;
+  competencia: string | Date;
   pago: boolean;
-  dataPagamento?: Date | null;
+  dataPagamento: string | Date | null;
   cartaoCreditoId: string;
+  parcelaAtual?: number | null | undefined;
+  totalParcelas?: number | null | undefined;
 }
 
 export type TypeTransacaoCartaoInput = Omit<TypeTransacaoCartao, "id">;
+
+export interface TypeFaturaCartao {
+  id: string;
+  cartaoCreditoId: string;
+  competencia: Date;
+  vencimento: Date;
+  valorTotal: number;
+  fechada: boolean;
+  paga: boolean;
+}

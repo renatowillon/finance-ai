@@ -1,4 +1,5 @@
 import { db } from "../_lib/prisma";
+import { parseMoney } from "../_lib/utils";
 import { adicionarMeses, calcularCompetencia } from "../functions/functions";
 import { TypeTransacaoCartao } from "../types";
 
@@ -14,10 +15,6 @@ export const PegarUmaTransacaoCartao = async (transacaoCartaoId: string) => {
     where: { id: transacaoCartaoId },
   });
 };
-
-// export const AdicionarTransacaoCartao = async (data: TypeTransacaoCartao) => {
-//   return db.transacaoCartaoCredito.create({ data });
-// };
 
 export const AdicionarTransacaoCartao = async (data: TypeTransacaoCartao) => {
   const cartao = await db.cartaoCredito.findUnique({
@@ -45,6 +42,7 @@ export const AdicionarTransacaoCartao = async (data: TypeTransacaoCartao) => {
         parcelaAtual: 1,
         totalParcelas: 1,
         competencia: competenciaBase,
+        valor: parseMoney(data.valor),
       },
     });
   }
@@ -52,7 +50,7 @@ export const AdicionarTransacaoCartao = async (data: TypeTransacaoCartao) => {
   // Parcelado → cria N registros
   const transacoes = Array.from({ length: data.totalParcelas }, (_, index) => ({
     descricao: data.descricao,
-    valor: Number(data.valor) / Number(data.totalParcelas),
+    valor: parseMoney(data.valor) / Number(data.totalParcelas),
     dataCompra,
     parcelada: true,
     parcelaAtual: index + 1,

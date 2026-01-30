@@ -1,5 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { pegarTransacaoPorCartao } from "../fetche/transacaoCartao";
+import {
+  atualizarTransacaoCartao,
+  criarTransacaoCartao,
+  pegarTransacaoPorCartao,
+} from "../fetche/transacaoCartao";
+import { TypeTransacaoCartao } from "../types";
 
 export const useMutations = () => {
   const queryClient = useQueryClient();
@@ -12,5 +17,34 @@ export const useMutations = () => {
       console.error("Erro ao pegar transações do Cartão: ", error);
     },
   });
-  return { pegarTransacaoPorCartaoMutation };
+
+  const criarTransacaoCartaoMutation = useMutation({
+    mutationFn: criarTransacaoCartao,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["transacaoCartao"] }),
+    onError: (error) => {
+      console.error("Erro ao criar transação do cartão: ", error);
+    },
+  });
+
+  const editarTransacaoCartaoMutation = useMutation({
+    mutationFn: ({
+      id,
+      transacaoCartao,
+    }: {
+      id: string;
+      transacaoCartao: TypeTransacaoCartao;
+    }) => atualizarTransacaoCartao(id, transacaoCartao),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["transacaoCartao"] }),
+    onError: (error) => {
+      console.error("Erro ao editar transação do cartão: ", error);
+    },
+  });
+
+  return {
+    pegarTransacaoPorCartaoMutation,
+    criarTransacaoCartaoMutation,
+    editarTransacaoCartaoMutation,
+  };
 };

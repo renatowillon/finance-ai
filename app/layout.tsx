@@ -36,7 +36,7 @@ export default async function RootLayout({
               usuarioPodeAdicionarTransacao={usuarioPodeAdicionarTransacao}
             />
             <div className="flex min-h-screen w-full flex-col overflow-y-scroll lg:p-5">
-              <div className="mb-16">{children}</div>
+              <div className="mb-20">{children}</div>
               <SpeedInsights />
             </div>
           </AuthProvider>

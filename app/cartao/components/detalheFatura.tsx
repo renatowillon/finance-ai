@@ -1,3 +1,4 @@
+import { DialogConfirm } from "@/app/_components/dialogConfirm";
 import { Loading } from "@/app/_components/loading";
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
@@ -19,11 +20,20 @@ import {
 } from "@/app/functions/functions";
 import { TypeTransacaoCartao } from "@/app/types";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Check, ChevronLeft, ChevronRight, X } from "lucide-react";
+import {
+  Calendar,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Edit,
+  Trash,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 
 interface Props {
   cartaoId: string | null | undefined;
+  transacaoSelecionada: (transacaoSelecionada: TypeTransacaoCartao) => void;
 }
 
 const getMesAtual = () => {
@@ -33,12 +43,13 @@ const getMesAtual = () => {
   return `${ano}-${mes}`;
 };
 
-export const DetalheFatura = ({ cartaoId }: Props) => {
+export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
   const [mesSelecionado, setMesSelecionado] = useState<string | null>(
     getMesAtual,
   );
+
   const enabled = !!cartaoId;
-  const { data: transacaoCartao, isLoading } = useQuery({
+  const { data: transacaoCartao = [], isLoading } = useQuery({
     queryKey: ["transacaoCartao", cartaoId],
     queryFn: () => pegarTransacaoPorCartao(cartaoId as string),
     enabled,
@@ -135,6 +146,12 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
   const mesesDisponiveis = obterMesesComTransacoes(transacaoCartao);
   const statusFatura = obterStatusFatura(transacaoFiltrada);
 
+  const [openDialogDelete, setOpenDialogDelete] = useState(false);
+
+  function deletarTransacao(id: string) {
+    console.log("id da transação: ", id);
+  }
+
   return (
     <div className="space-y-5">
       {/* menu de calendario e faturas */}
@@ -168,13 +185,14 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
             <ChevronRight />{" "}
           </Button>
         </div>
-        <div className="flex flex-col items-center justify-center">
-          <div className="flex gap-3">
+        <div className="w-full overflow-hidden">
+          <div className="scrollbar-hide flex touch-pan-x gap-3 overflow-x-auto overscroll-x-contain scroll-smooth whitespace-nowrap px-2 md:items-center md:justify-center">
             {mesesDisponiveis.map((mes) => (
               <Button
                 key={mes.value}
                 variant={mesSelecionado === mes.value ? "default" : "outline"}
                 onClick={() => setMesSelecionado(mes.value)}
+                className="shrink-0"
               >
                 {mes.label}
               </Button>
@@ -225,16 +243,19 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
                   <TableHead>Parcela</TableHead>
                   <TableHead>Valor</TableHead>
                   <TableHead>Pago</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading && <Loading />}
                 {transacaoFiltrada?.map((transacao: TypeTransacaoCartao) => (
                   <TableRow key={transacao.id}>
-                    <TableCell>{dataFormatada(transacao.dataCompra)}</TableCell>
+                    <TableCell>
+                      {dataFormatada(transacao.dataCompra as Date)}
+                    </TableCell>
                     <TableCell>{transacao.descricao}</TableCell>
                     <TableCell>
-                      {dataCompetencia(transacao.competencia)}
+                      {dataCompetencia(transacao.competencia as Date)}
                     </TableCell>
                     <TableCell>
                       {transacao.parcelada === false ? (
@@ -257,6 +278,34 @@ export const DetalheFatura = ({ cartaoId }: Props) => {
                         </div>
                       )}
                     </TableCell>
+                    <TableCell>
+                      <Button
+                        variant={"ghost"}
+                        onClick={() => transacaoSelecionada(transacao)}
+                      >
+                        <Edit size={20} />{" "}
+                      </Button>
+                      <Button
+                        variant={"ghost"}
+                        onClick={() => {
+                          setOpenDialogDelete(true);
+                        }}
+                      >
+                        <Trash size={20} />{" "}
+                      </Button>
+                    </TableCell>
+                    <DialogConfirm
+                      key={transacao.id}
+                      titulo="Deseja Realmente deletar a transação?"
+                      subtitulo={`${transacao.descricao} no valor de ${formatCurrency(transacao.valor)}`}
+                      mensagem="Essa ação é irreversível"
+                      open={openDialogDelete}
+                      onOpenChange={setOpenDialogDelete}
+                      onClick={() => {
+                        setOpenDialogDelete(false);
+                        deletarTransacao(transacao.id);
+                      }}
+                    />
                   </TableRow>
                 ))}
               </TableBody>

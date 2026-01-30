@@ -23,23 +23,34 @@ import { Switch } from "@/app/_components/ui/switch";
 import { parseMoney } from "@/app/_lib/utils";
 import { formatCurrency } from "@/app/_utils/currency";
 import { pegarCartoes } from "@/app/fetche/cartaoFetch";
-import { TypeCartaoCredito, TypeTransacaoCartaoInput } from "@/app/types";
+import { TransacaoCartaoSchama } from "@/app/schemas/transacaoCartaoSchema";
+import {
+  TypeCartaoCredito,
+  TypeTransacaoCartao,
+  TypeTransacaoCartaoInput,
+} from "@/app/types";
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircleIcon, CreditCard, Plus, RefreshCcw } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   mostrarBotao?: boolean;
+  onSubmit?: (transacaoCartao: TypeTransacaoCartaoInput) => void;
+  transacaoSelecionada?: TypeTransacaoCartao;
 }
 
 export const AddTransacaoCartao = ({
   open,
   onOpenChange,
   mostrarBotao,
+  onSubmit,
+  transacaoSelecionada,
 }: Props) => {
   // const [open, setOpen] = useState(false);
+
   const [formData, setFormData] = useState<TypeTransacaoCartaoInput>({
     descricao: "",
     valor: "",
@@ -59,12 +70,28 @@ export const AddTransacaoCartao = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
-  };
 
-  // const consoleteste = (valor:any) => {
-  //   console.log(valor);
-  // };
+    const result = TransacaoCartaoSchama.safeParse(formData);
+    if (!result.success) {
+      const mensagem = Object.values(result.error.flatten().fieldErrors)
+        .flat()
+        .filter(Boolean);
+      toast.error("Erro ao salvar transação", {
+        description:
+          mensagem.join("\n") || "Preencha todos os campos corretamente.",
+        className: "font-bold whitespace-pre-line",
+      });
+      return;
+    }
+    if (onSubmit) {
+      onSubmit(result.data!);
+    }
+
+    resetForm();
+
+    console.log(formData);
+    onOpenChange(false);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -81,21 +108,56 @@ export const AddTransacaoCartao = ({
     });
   };
 
+  useEffect(() => {
+    if (open) {
+      if (transacaoSelecionada) {
+        setFormData({
+          descricao: transacaoSelecionada.descricao,
+          valor: transacaoSelecionada.valor,
+          dataCompra: transacaoSelecionada.dataCompra,
+          parcelada: transacaoSelecionada.parcelada,
+          parcelaAtual: transacaoSelecionada.parcelaAtual,
+          totalParcelas: transacaoSelecionada.totalParcelas,
+          competencia: transacaoSelecionada.competencia,
+          pago: transacaoSelecionada.pago,
+          dataPagamento: transacaoSelecionada.dataPagamento,
+          cartaoCreditoId: transacaoSelecionada.cartaoCreditoId,
+        });
+      } else {
+        setFormData({
+          descricao: "",
+          valor: "",
+          dataCompra: new Date(),
+          parcelada: false,
+          parcelaAtual: 0,
+          totalParcelas: 0,
+          competencia: new Date(),
+          pago: false,
+          dataPagamento: new Date(),
+          cartaoCreditoId: "",
+        });
+      }
+    }
+  }, [open, transacaoSelecionada]);
+
   return (
     <>
       {mostrarBotao && (
         <div>
           <Button
-            onClick={() => onOpenChange(!open)}
-            className="hidden lg:flex"
+            onClick={() => {
+              onOpenChange(!open);
+            }}
+            className="hidden rounded-full lg:flex"
           >
             <Plus /> Adicionar Transação
           </Button>
           <Button
             onClick={() => onOpenChange(!open)}
-            className="flex size-36 flex-col lg:hidden"
+            className="flex items-center rounded-full lg:hidden"
           >
-            <CreditCard className="" /> <p className="">Cartão</p>
+            <Plus />
+            <CreditCard className="" />
           </Button>
         </div>
       )}
@@ -109,7 +171,11 @@ export const AddTransacaoCartao = ({
             onInteractOutside={(e) => e.preventDefault()}
           >
             <DialogHeader>
-              <DialogTitle>Adicionar Transação Cartão</DialogTitle>
+              <DialogTitle>
+                {transacaoSelecionada
+                  ? "Atualizar transação cartão"
+                  : "Adicionar transação cartão"}
+              </DialogTitle>
             </DialogHeader>
             <div>
               <form onSubmit={handleSubmit} className="space-y-2">
@@ -179,7 +245,7 @@ export const AddTransacaoCartao = ({
                 <div className="space-y-1">
                   <Label>Data da Compra</Label>
                   <DatePicker
-                    value={formData.dataCompra}
+                    value={formData.dataCompra as Date}
                     onChange={(date) => {
                       if (!date) return;
 
@@ -258,7 +324,9 @@ export const AddTransacaoCartao = ({
                       Cancelar
                     </Button>
                   </DialogClose>
-                  <Button type="submit">Adicionar</Button>
+                  <Button type="submit">
+                    {transacaoSelecionada ? "Atualizar" : "Adicionar"}
+                  </Button>
                 </div>
               </form>
             </div>

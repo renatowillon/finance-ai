@@ -45,7 +45,7 @@ export function obterMesesComTransacoes(
 ): MesCompetencia[] {
   const mapa = new Map<string, MesCompetencia>();
 
-  transacoes.forEach((t) => {
+  transacoes?.forEach((t) => {
     if (!t.competencia) return;
 
     const data = new Date(t.competencia);

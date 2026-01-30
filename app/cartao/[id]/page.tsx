@@ -10,14 +10,24 @@ import {
 } from "@/app/_components/ui/tabs";
 import { TituloPadrao } from "@/app/configuracao/_components/tituloPadrao";
 import { pegarUmCartao } from "@/app/fetche/cartaoFetch";
-import { TypeCartaoCredito, TypeTransacaoCartao } from "@/app/types";
+import {
+  TypeCartaoCredito,
+  TypeTransacaoCartao,
+  TypeTransacaoCartaoInput,
+} from "@/app/types";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CreditCard, DollarSign } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { DetalheFatura } from "../components/detalheFatura";
 import { pegarTransacaoPorCartao } from "@/app/fetche/transacaoCartao";
+import { AddTransacaoCartao } from "../components/addTransacaoCartao";
+import { useState } from "react";
+import { useMutations } from "@/app/mutetions/transacaoCartaoMutation";
 
 const FaturaDetalhada = () => {
+  const [openFormCartao, setOpenFormCartao] = useState(false);
+  const [transacaoSelecionada, setTransacaoSelecionada] =
+    useState<TypeTransacaoCartao>();
   const params = useParams();
   const cartaoId = String(params.id);
   const route = useRouter();
@@ -40,6 +50,34 @@ const FaturaDetalhada = () => {
         total + Number(transacao?.valor),
       0,
     );
+  const { criarTransacaoCartaoMutation, editarTransacaoCartaoMutation } =
+    useMutations();
+
+  function AdicionarTransacaoCartao(values: TypeTransacaoCartaoInput) {
+    if (transacaoSelecionada) {
+      const transacaoAtualizada = transacaoSelecionada;
+      editarTransacaoCartaoMutation.mutate({
+        id: transacaoAtualizada.id,
+        transacaoCartao: {
+          id: transacaoAtualizada.id,
+          cartaoCreditoId: values.cartaoCreditoId,
+          competencia: values.competencia,
+          dataCompra: values.dataCompra,
+          dataPagamento: values.dataPagamento,
+          descricao: values.descricao,
+          pago: values.pago,
+          parcelada: values.parcelada,
+          valor: values.valor,
+          parcelaAtual: values.parcelaAtual,
+          totalParcelas: values.totalParcelas,
+        },
+      });
+    } else {
+      const transacaoNova = { ...values };
+      criarTransacaoCartaoMutation.mutate(transacaoNova);
+    }
+    console.log(values);
+  }
 
   function voltarCartao() {
     route.push("/cartao");
@@ -50,16 +88,29 @@ const FaturaDetalhada = () => {
   return (
     <div className="w-full space-y-6 p-6">
       {/* titulo e botão */}
-      <div className="flex w-full items-center justify-between gap-3 md:justify-normal">
-        <Button onClick={voltarCartao} variant={"ghost"}>
-          <ArrowLeft />
-        </Button>
-        <div>
+      <div className="flex w-full items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Button onClick={voltarCartao} variant={"ghost"}>
+            <ArrowLeft />
+          </Button>
           <TituloPadrao
             titulo={cartao?.nome}
             descricao="Gerencie suas faturas"
           />
         </div>
+
+        <AddTransacaoCartao
+          transacaoSelecionada={transacaoSelecionada}
+          onSubmit={AdicionarTransacaoCartao}
+          mostrarBotao
+          open={openFormCartao}
+          onOpenChange={(open) => {
+            if (open) {
+              setTransacaoSelecionada(undefined);
+            }
+            setOpenFormCartao(open);
+          }}
+        />
       </div>
       {cartao && (
         <div className="flex flex-wrap gap-3 md:grid-cols-[repeat(auto-fit,minmax(200px,2fr))]">
@@ -117,7 +168,13 @@ const FaturaDetalhada = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="fatAberta">
-            <DetalheFatura cartaoId={cartao?.id} />
+            <DetalheFatura
+              transacaoSelecionada={(value) => {
+                setTransacaoSelecionada(value);
+                setOpenFormCartao(true);
+              }}
+              cartaoId={cartao?.id}
+            />
           </TabsContent>
           <TabsContent value="fatPagamento">Aguardando Pagamento</TabsContent>
           <TabsContent value="fatHistorico">Histórico</TabsContent>

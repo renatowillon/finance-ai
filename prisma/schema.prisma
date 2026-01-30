@@ -120,6 +120,7 @@ model CartaoCredito {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  fatura FaturaCartao[]
   user User @relation(fields: [userId], references: [id])
   @@map("cartao_credito")
 }
@@ -135,15 +136,32 @@ model TransacaoCartaoCredito {
   competencia DateTime
   pago Boolean @default(false)
   dataPagamento DateTime?
-
+  faturaId String?
   cartaoCreditoId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  fatura FaturaCartao? @relation(fields: [faturaId], references: [id])
   cartaoCredito CartaoCredito @relation(fields: [cartaoCreditoId], references: [id])
   @@index([cartaoCreditoId, competencia])
   @@map("transacao_cartaocredito")
+}
+
+model FaturaCartao {
+  id String @id @default(uuid())
+  cartaoCreditoId String
+  competencia DateTime
+  vencimento DateTime
+  valorTotal Decimal @db.Decimal(10,2)
+  fechada Boolean
+  paga Boolean
+  createdAt DateTime @default(now())
+  
+  cartao CartaoCredito @relation(fields: [cartaoCreditoId], references: [id])
+  transacoes TransacaoCartaoCredito[]
+  
+  @@map("fatura_cartao")
 }
 
 enum StatusInvestimento {
