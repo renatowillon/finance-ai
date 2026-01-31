@@ -18,6 +18,7 @@ import {
   obterMesesComTransacoes,
   obterStatusFatura,
 } from "@/app/functions/functions";
+import { useMutations } from "@/app/mutetions/transacaoCartaoMutation";
 import { TypeTransacaoCartao } from "@/app/types";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -30,6 +31,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface Props {
   cartaoId: string | null | undefined;
@@ -47,6 +49,9 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
   const [mesSelecionado, setMesSelecionado] = useState<string | null>(
     getMesAtual,
   );
+  const [transacaoSelecionadaDelete, setTransacaoSelecionadaDelete] = useState<
+    TypeTransacaoCartao | undefined | null
+  >();
 
   const enabled = !!cartaoId;
   const { data: transacaoCartao = [], isLoading } = useQuery({
@@ -148,8 +153,15 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
 
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
 
+  const { deletarTransacaoCartaoMutation } = useMutations();
+
   function deletarTransacao(id: string) {
-    console.log("id da transação: ", id);
+    try {
+      deletarTransacaoCartaoMutation.mutate(id);
+      toast.success("Transação deletada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao apagar transação: ", error);
+    }
   }
 
   return (
@@ -288,28 +300,30 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
                       <Button
                         variant={"ghost"}
                         onClick={() => {
+                          setTransacaoSelecionadaDelete(transacao);
                           setOpenDialogDelete(true);
                         }}
                       >
                         <Trash size={20} />{" "}
                       </Button>
                     </TableCell>
-                    <DialogConfirm
-                      key={transacao.id}
-                      titulo="Deseja Realmente deletar a transação?"
-                      subtitulo={`${transacao.descricao} no valor de ${formatCurrency(transacao.valor)}`}
-                      mensagem="Essa ação é irreversível"
-                      open={openDialogDelete}
-                      onOpenChange={setOpenDialogDelete}
-                      onClick={() => {
-                        setOpenDialogDelete(false);
-                        deletarTransacao(transacao.id);
-                      }}
-                    />
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            {transacaoSelecionadaDelete && (
+              <DialogConfirm
+                titulo="Deseja Realmente deletar a transação?"
+                subtitulo={`${transacaoSelecionadaDelete?.descricao} no valor de ${formatCurrency(transacaoSelecionadaDelete?.valor)}`}
+                mensagem="Essa ação é irreversível"
+                open={openDialogDelete}
+                onOpenChange={setOpenDialogDelete}
+                onClick={() => {
+                  setOpenDialogDelete(false);
+                  deletarTransacao(transacaoSelecionadaDelete?.id);
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

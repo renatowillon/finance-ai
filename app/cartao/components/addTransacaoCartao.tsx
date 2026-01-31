@@ -1,5 +1,4 @@
 import { MoneyInput } from "@/app/_components/money-input";
-import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
 import { DatePicker } from "@/app/_components/ui/date-piker";
 import {
@@ -30,7 +29,7 @@ import {
   TypeTransacaoCartaoInput,
 } from "@/app/types";
 import { useQuery } from "@tanstack/react-query";
-import { AlertCircleIcon, CreditCard, Plus, RefreshCcw } from "lucide-react";
+import { CreditCard, Plus, RefreshCcw } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -179,14 +178,6 @@ export const AddTransacaoCartao = ({
             </DialogHeader>
             <div>
               <form onSubmit={handleSubmit} className="space-y-2">
-                <div className="flex w-full items-center justify-center">
-                  <Badge
-                    variant={"destructive"}
-                    className="flex w-full animate-pulse items-center justify-center space-x-3"
-                  >
-                    <AlertCircleIcon /> <p>Em Desenvolvimento</p>
-                  </Badge>
-                </div>
                 <div className="space-y-1">
                   <Label>Descrição</Label>
                   <Input

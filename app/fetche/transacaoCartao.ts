@@ -18,3 +18,8 @@ export const atualizarTransacaoCartao = async (
   const response = await axios.put(`/api/transacaoCartao/${id}`, data);
   return response.data;
 };
+
+export const deletarTransacaoCartao = async (id: string) => {
+  const response = await axios.delete(`/api/transacaoCartao/${id}`);
+  return response.data;
+};

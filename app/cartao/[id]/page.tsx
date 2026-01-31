@@ -23,6 +23,7 @@ import { pegarTransacaoPorCartao } from "@/app/fetche/transacaoCartao";
 import { AddTransacaoCartao } from "../components/addTransacaoCartao";
 import { useState } from "react";
 import { useMutations } from "@/app/mutetions/transacaoCartaoMutation";
+import { toast } from "sonner";
 
 const FaturaDetalhada = () => {
   const [openFormCartao, setOpenFormCartao] = useState(false);
@@ -72,11 +73,12 @@ const FaturaDetalhada = () => {
           totalParcelas: values.totalParcelas,
         },
       });
+      toast.success("Transação atualizada com sucesso");
     } else {
       const transacaoNova = { ...values };
       criarTransacaoCartaoMutation.mutate(transacaoNova);
+      toast.success("Transação adicionada com sucesso");
     }
-    console.log(values);
   }
 
   function voltarCartao() {

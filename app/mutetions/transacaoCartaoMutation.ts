@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   atualizarTransacaoCartao,
   criarTransacaoCartao,
+  deletarTransacaoCartao,
   pegarTransacaoPorCartao,
 } from "../fetche/transacaoCartao";
 import { TypeTransacaoCartao } from "../types";
@@ -42,9 +43,19 @@ export const useMutations = () => {
     },
   });
 
+  const deletarTransacaoCartaoMutation = useMutation({
+    mutationFn: deletarTransacaoCartao,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["transacaoCartao"] }),
+    onError: (error) => {
+      console.error("Erro ao deletar transação do cartão: ", error);
+    },
+  });
+
   return {
     pegarTransacaoPorCartaoMutation,
     criarTransacaoCartaoMutation,
     editarTransacaoCartaoMutation,
+    deletarTransacaoCartaoMutation,
   };
 };

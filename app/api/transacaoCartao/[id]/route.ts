@@ -76,7 +76,7 @@ export async function DELETE(
     await DeletarTransacaoCartao(transacaoCartaoId);
     return NextResponse.json(
       { mensagem: "Transação deletada com sucesso." },
-      { status: 204 },
+      { status: 200 },
     );
   } catch (error) {
     console.error("Erro ao deletar transação: ", error);
