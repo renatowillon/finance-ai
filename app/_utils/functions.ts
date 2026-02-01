@@ -17,6 +17,15 @@ export function dataFormatada2(data: Date) {
     year: "numeric",
   });
 }
+
+export function formatarCompetencia(data: Date | string) {
+  const d = new Date(data);
+  const ano = d.getUTCFullYear();
+  const mes = d.getUTCMonth() + 1;
+
+  return `${String(mes).padStart(2, "0")}/${ano}`;
+}
+
 export function formatarTelefone(telefone: string): string {
   // Remove tudo que não é número
   if (!telefone) return "";
@@ -24,4 +33,13 @@ export function formatarTelefone(telefone: string): string {
 
   // Aplica o padrão (99) 99999-9999
   return numeros.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+}
+export function proximaCompetencia(mesRef: string): string {
+  const [ano, mes] = mesRef.split("-").map(Number);
+
+  if (mes === 12) {
+    return `${ano + 1}-01`;
+  }
+
+  return `${ano}-${String(mes + 1).padStart(2, "0")}`;
 }

@@ -11,8 +11,13 @@ import {
   TableRow,
 } from "@/app/_components/ui/table";
 import { formatCurrency } from "@/app/_utils/currency";
-import { dataCompetencia, dataFormatada } from "@/app/_utils/functions";
+import {
+  dataFormatada,
+  formatarCompetencia,
+  proximaCompetencia,
+} from "@/app/_utils/functions";
 import { pegarUmCartao } from "@/app/fetche/cartaoFetch";
+import { verificarFaturaFechada } from "@/app/fetche/faturaFetch";
 import { pegarTransacaoPorCartao } from "@/app/fetche/transacaoCartao";
 import {
   obterMesesComTransacoes,
@@ -46,6 +51,7 @@ const getMesAtual = () => {
 };
 
 export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
+  const [openDialogFatura, setOpenDialogFatura] = useState(false);
   const [mesSelecionado, setMesSelecionado] = useState<string | null>(
     getMesAtual,
   );
@@ -66,19 +72,30 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
     enabled,
   });
 
-  const transacaoFiltrada = transacaoCartao?.filter(
-    (t: TypeTransacaoCartao) => {
-      if (!mesSelecionado || !t.competencia) return null;
+  const { data: faturaFechada } = useQuery({
+    queryKey: ["fatura-fechada", cartaoId, mesSelecionado],
+    queryFn: () =>
+      verificarFaturaFechada({
+        competencia: competenciaEscolhida!,
+        cartaoCreditoId: cartaoId!,
+      }),
+    enabled: !!cartaoId && !!mesSelecionado,
+  });
 
-      const [anoSel, mesSel] = mesSelecionado.split("-").map(Number);
+  const competenciaEscolhida = proximaCompetencia(mesSelecionado!);
 
-      const dataCompetencia = new Date(t.competencia);
-      const anoComp = dataCompetencia.getFullYear();
-      const mesComp = dataCompetencia.getMonth() + 1;
+  const transacaoFiltrada = transacaoCartao.filter((t: TypeTransacaoCartao) => {
+    if (!mesSelecionado || !t.competencia) return false;
+    const competenciaEsperada = proximaCompetencia(mesSelecionado);
 
-      return anoComp === anoSel && mesComp === mesSel;
-    },
-  );
+    // se competencia vier como Date
+    const data = new Date(t.competencia);
+    const competenciaTransacao = `${data.getUTCFullYear()}-${String(
+      data.getUTCMonth() + 1,
+    ).padStart(2, "0")}`;
+
+    return competenciaTransacao === competenciaEsperada;
+  });
 
   // Navegação de meses
   const navegarMes = (direcao: "anterior" | "proximo") => {
@@ -102,6 +119,7 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
 
     const novoMesRef = `${novoAno}-${String(novoMes).padStart(2, "0")}`;
     setMesSelecionado(novoMesRef);
+    console.log(novoMesRef);
   };
 
   const formatMesCompleto = (mesRef: string) => {
@@ -163,7 +181,10 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
       console.error("Erro ao apagar transação: ", error);
     }
   }
-
+  function fecharFatura(competencia: string, cartaoCreditoId: string) {
+    console.log({ competencia, cartaoCreditoId });
+    // falta criar o fetch apenas
+  }
   return (
     <div className="space-y-5">
       {/* menu de calendario e faturas */}
@@ -221,7 +242,11 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
             </span>
           </p>
           <p>
-            <Badge variant={"secondary"}>Aberta</Badge>
+            {faturaFechada === true ? (
+              <Badge variant={"destructive"}>Fatura já fechada</Badge>
+            ) : (
+              <Badge variant={"secondary"}>Aberta</Badge>
+            )}
           </p>
         </div>
         <div className="p-5">
@@ -246,6 +271,11 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
               {transacaoFiltrada?.length}{" "}
               {transacaoFiltrada?.length <= 1 ? "transação" : "transações"}
             </div>
+            {isLoading && (
+              <div className="w-full">
+                <Loading />
+              </div>
+            )}
             <Table>
               <TableHeader>
                 <TableRow>
@@ -258,8 +288,7 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
                   <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {isLoading && <Loading />}
+              <TableBody className="w-full">
                 {transacaoFiltrada?.map((transacao: TypeTransacaoCartao) => (
                   <TableRow key={transacao.id}>
                     <TableCell>
@@ -267,7 +296,7 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
                     </TableCell>
                     <TableCell>{transacao.descricao}</TableCell>
                     <TableCell>
-                      {dataCompetencia(transacao.competencia as Date)}
+                      {formatarCompetencia(transacao.competencia as Date)}
                     </TableCell>
                     <TableCell>
                       {transacao.parcelada === false ? (
@@ -324,6 +353,24 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
                 }}
               />
             )}
+            <DialogConfirm
+              titulo="Deseja realmente fechar a fatura?"
+              subtitulo="confira se já lançou todas as suas compras no cartão de crédito"
+              open={openDialogFatura}
+              onOpenChange={setOpenDialogFatura}
+              onClick={() => {
+                setOpenDialogFatura(false);
+                fecharFatura(competenciaEscolhida, cartaoId as string);
+              }}
+            />
+          </div>
+          <div className="w-full">
+            <Button
+              className="w-full"
+              onClick={() => setOpenDialogFatura(true)}
+            >
+              Fechar Fatura - {competenciaEscolhida}
+            </Button>
           </div>
         </div>
       </div>

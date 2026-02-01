@@ -73,3 +73,14 @@ export const obterStatusFatura = (transacoes: TypeTransacaoCartao[]) => {
   const todasPagas = transacoes.every((t) => t.pago === true);
   return todasPagas ? "Fatura paga" : "Fatura aberta";
 };
+
+export function calcularVencimento(
+  competencia: Date,
+  diaVencimento: number,
+): Date {
+  const ano = competencia.getFullYear();
+  const mes = competencia.getMonth(); // 0-based
+
+  // mês seguinte
+  return new Date(ano, mes + 1, diaVencimento);
+}
