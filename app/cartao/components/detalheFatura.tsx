@@ -24,6 +24,7 @@ import {
   obterStatusFatura,
 } from "@/app/functions/functions";
 import { useMutations } from "@/app/mutetions/transacaoCartaoMutation";
+import { useMutations as fecharFaturaMutation } from "@/app/mutetions/fecharFaturaMutation";
 import { TypeTransacaoCartao } from "@/app/types";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -81,6 +82,8 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
       }),
     enabled: !!cartaoId && !!mesSelecionado,
   });
+
+  const { fechamentoFaturaMutation } = fecharFaturaMutation();
 
   const competenciaEscolhida = proximaCompetencia(mesSelecionado!);
 
@@ -182,6 +185,13 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
     }
   }
   function fecharFatura(competencia: string, cartaoCreditoId: string) {
+    try {
+      fechamentoFaturaMutation.mutate({ competencia, cartaoCreditoId });
+      toast.success("Fatura fechada com sucesso.");
+    } catch (error) {
+      console.error("Erro ao fechar fatura: ", error);
+    }
+
     console.log({ competencia, cartaoCreditoId });
     // falta criar o fetch apenas
   }
@@ -368,6 +378,7 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
             <Button
               className="w-full"
               onClick={() => setOpenDialogFatura(true)}
+              disabled={faturaFechada}
             >
               Fechar Fatura - {competenciaEscolhida}
             </Button>
