@@ -24,6 +24,7 @@ import { AddTransacaoCartao } from "../components/addTransacaoCartao";
 import { useState } from "react";
 import { useMutations } from "@/app/mutetions/transacaoCartaoMutation";
 import { toast } from "sonner";
+import { FaturasFechadas } from "../components/faturasFechadas";
 
 const FaturaDetalhada = () => {
   const [openFormCartao, setOpenFormCartao] = useState(false);
@@ -178,7 +179,9 @@ const FaturaDetalhada = () => {
               cartaoId={cartao?.id}
             />
           </TabsContent>
-          <TabsContent value="fatPagamento">Aguardando Pagamento</TabsContent>
+          <TabsContent value="fatPagamento">
+            <FaturasFechadas />
+          </TabsContent>
           <TabsContent value="fatHistorico">Histórico</TabsContent>
         </Tabs>
       </div>

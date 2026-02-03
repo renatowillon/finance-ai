@@ -19,3 +19,8 @@ export async function verificarFaturaFechada(
 
   return data.fechada;
 }
+
+export async function PegarFaturas(id: string) {
+  const response = await axios.get(`/api/fatura/${id}`);
+  return response.data;
+}

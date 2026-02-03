@@ -375,13 +375,24 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
             />
           </div>
           <div className="w-full">
-            <Button
-              className="w-full"
-              onClick={() => setOpenDialogFatura(true)}
-              disabled={faturaFechada}
-            >
-              Fechar Fatura - {competenciaEscolhida}
-            </Button>
+            {faturaFechada === true ? (
+              <Button
+                className="w-full"
+                // onClick={() => setOpenDialogFatura(true)}
+                variant={"destructive"}
+                disabled={!faturaFechada}
+              >
+                Reabrir Fatura - {competenciaEscolhida}
+              </Button>
+            ) : (
+              <Button
+                className="w-full"
+                onClick={() => setOpenDialogFatura(true)}
+                disabled={faturaFechada}
+              >
+                Fechar Fatura - {competenciaEscolhida}
+              </Button>
+            )}
           </div>
         </div>
       </div>
