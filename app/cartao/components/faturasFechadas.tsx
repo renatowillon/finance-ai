@@ -29,7 +29,7 @@ export const FaturasFechadas = () => {
                   <div className="flex items-center gap-3 text-lg font-black">
                     <Lock size={25} /> Janeiro 2026 <Badge>Fechada</Badge>
                   </div>
-                  <div className="flex items-center gap-3 pl-3 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-3 pl-3 text-xs text-muted-foreground">
                     <Calendar size={20} /> Vence dia 17 2 transações
                   </div>
                 </div>
