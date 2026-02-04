@@ -1,5 +1,7 @@
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
+import { formatCurrency } from "@/app/_utils/currency";
+import { dataFormatada, formatarCompetencia } from "@/app/_utils/functions";
 // import { dataFormatada } from "@/app/_utils/functions";
 import { PegarFaturas } from "@/app/fetche/faturaFetch";
 import { TypeFaturaCartao } from "@/app/types";
@@ -27,15 +29,20 @@ export const FaturasFechadas = () => {
                 <div className="rounded-full bg-primary p-1" />
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-lg font-black">
-                    <Lock size={25} /> Janeiro 2026 <Badge>Fechada</Badge>
+                    <Lock size={25} /> {formatarCompetencia(fatura.competencia)}{" "}
+                    <Badge>Fechada</Badge>
                   </div>
                   <div className="flex items-center gap-3 pl-3 text-xs text-muted-foreground">
-                    <Calendar size={20} /> Vence dia 17 2 transações
+                    <Calendar size={20} />{" "}
+                    <p>vencimento dia {dataFormatada(fatura.vencimento)}</p>
+                    <p>2 transações</p>
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="text-2xl font-black">R$ 200,00</div>
+                <div className="text-2xl font-black">
+                  {formatCurrency(fatura.valorTotal)}
+                </div>
                 <Button variant={"outline"}>Ver Transações</Button>
                 <Button>Pagar</Button>
               </div>
