@@ -8,9 +8,9 @@ export function calcularCompetencia(
     throw new Error("Data de compra inválida");
   }
 
-  const ano = dataCompra.getUTCFullYear();
-  const mes = dataCompra.getUTCMonth();
-  const dia = dataCompra.getUTCDate();
+  const ano = dataCompra.getFullYear();
+  const mes = dataCompra.getMonth();
+  const dia = dataCompra.getDate();
 
   let competenciaMes = mes;
   let competenciaAno = ano;
@@ -78,9 +78,14 @@ export function calcularVencimento(
   competencia: Date,
   diaVencimento: number,
 ): Date {
-  const ano = competencia.getFullYear();
-  const mes = competencia.getMonth(); // 0-based
+  const ano = competencia.getUTCFullYear();
+  const mesSeguinte = competencia.getUTCMonth() + 1;
 
-  // mês seguinte
-  return new Date(ano, mes + 1, diaVencimento);
+  const ultimoDiaMesSeguinte = new Date(
+    Date.UTC(ano, mesSeguinte + 1, 0),
+  ).getUTCDate();
+
+  const diaFinal = Math.min(diaVencimento, ultimoDiaMesSeguinte);
+
+  return new Date(Date.UTC(ano, mesSeguinte, diaFinal));
 }

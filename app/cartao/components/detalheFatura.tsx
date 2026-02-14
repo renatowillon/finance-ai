@@ -11,11 +11,7 @@ import {
   TableRow,
 } from "@/app/_components/ui/table";
 import { formatCurrency } from "@/app/_utils/currency";
-import {
-  dataFormatada,
-  formatarCompetencia,
-  proximaCompetencia,
-} from "@/app/_utils/functions";
+import { dataFormatada, formatarCompetencia } from "@/app/_utils/functions";
 import { pegarUmCartao } from "@/app/fetche/cartaoFetch";
 import { verificarFaturaFechada } from "@/app/fetche/faturaFetch";
 import { pegarTransacaoPorCartao } from "@/app/fetche/transacaoCartao";
@@ -85,20 +81,37 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
 
   const { fechamentoFaturaMutation } = fecharFaturaMutation();
 
-  const competenciaEscolhida = proximaCompetencia(mesSelecionado!);
+  const competenciaEscolhida = mesSelecionado!;
 
   const transacaoFiltrada = transacaoCartao.filter((t: TypeTransacaoCartao) => {
     if (!mesSelecionado || !t.competencia) return false;
-    const competenciaEsperada = proximaCompetencia(mesSelecionado);
 
-    // se competencia vier como Date
-    const data = new Date(t.competencia);
-    const competenciaTransacao = `${data.getUTCFullYear()}-${String(
-      data.getUTCMonth() + 1,
-    ).padStart(2, "0")}`;
+    let competenciaTransacao: string;
 
-    return competenciaTransacao === competenciaEsperada;
+    if (typeof t.competencia === "string") {
+      const [ano, mes] = t.competencia.split(" ")[0].split("-");
+      competenciaTransacao = `${ano}-${mes}`;
+    } else {
+      const ano = t.competencia.getFullYear();
+      const mes = String(t.competencia.getMonth() + 1).padStart(2, "0");
+      competenciaTransacao = `${ano}-${mes}`;
+    }
+
+    return competenciaTransacao === mesSelecionado;
   });
+
+  // const transacaoFiltrada = transacaoCartao.filter((t: TypeTransacaoCartao) => {
+  //   if (!mesSelecionado || !t.competencia) return false;
+  //   const competenciaEsperada = proximaCompetencia(mesSelecionado);
+
+  //   // se competencia vier como Date
+  //   const data = new Date(t.competencia);
+  //   const competenciaTransacao = `${data.getUTCFullYear()}-${String(
+  //     data.getMonth() + 1,
+  //   ).padStart(2, "0")}`;
+
+  //   return competenciaTransacao === competenciaEsperada;
+  // });
 
   // Navegação de meses
   const navegarMes = (direcao: "anterior" | "proximo") => {

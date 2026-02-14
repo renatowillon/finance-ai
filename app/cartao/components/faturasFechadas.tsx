@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/app/_components/ui/dialog";
 import { formatCurrency } from "@/app/_utils/currency";
-import { dataFormatada, formatarCompetencia } from "@/app/_utils/functions";
+import { dataCompetenciaUtc, dataFormatada } from "@/app/_utils/functions";
 // import { dataFormatada } from "@/app/_utils/functions";
 import { PegarFaturas } from "@/app/fetche/faturaFetch";
 import { pegarTransacaoFatura } from "@/app/fetche/transacaoFaturaFetch";
@@ -45,7 +45,7 @@ export const FaturasFechadas = () => {
                 <div className="rounded-full bg-primary p-1" />
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-lg font-black">
-                    <Lock size={25} /> {formatarCompetencia(fatura.competencia)}{" "}
+                    <Lock size={25} /> {dataCompetenciaUtc(fatura.competencia)}{" "}
                     <Badge>Fechada</Badge>
                   </div>
                   <div className="flex items-center gap-3 pl-3 text-xs text-muted-foreground">

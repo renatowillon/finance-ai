@@ -41,7 +41,7 @@ export const AdicionarTransacaoCartao = async (data: TypeTransacaoCartao) => {
         dataCompra,
         parcelaAtual: 1,
         totalParcelas: 1,
-        competencia: competenciaBase,
+        competencia: adicionarMeses(competenciaBase, 0),
         valor: parseMoney(data.valor),
       },
     });

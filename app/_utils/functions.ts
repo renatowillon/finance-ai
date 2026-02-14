@@ -10,6 +10,15 @@ export function dataCompetencia(data: Date) {
   return dataNova;
 }
 
+export function dataCompetenciaUtc(data: Date | string) {
+  const dateObj = new Date(data);
+
+  const mes = String(dateObj.getUTCMonth() + 1).padStart(2, "0");
+  const ano = dateObj.getUTCFullYear();
+
+  return `${mes}/${ano}`;
+}
+
 export function dataFormatada2(data: Date) {
   new Date(data).toLocaleDateString("pt-BR", {
     day: "2-digit",
@@ -20,8 +29,8 @@ export function dataFormatada2(data: Date) {
 
 export function formatarCompetencia(data: Date | string) {
   const d = new Date(data);
-  const ano = d.getUTCFullYear();
-  const mes = d.getUTCMonth() + 1;
+  const ano = d.getFullYear();
+  const mes = d.getMonth() + 1;
 
   return `${String(mes).padStart(2, "0")}/${ano}`;
 }
