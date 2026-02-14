@@ -24,7 +24,7 @@ export function calcularCompetencia(
     competenciaAno += 1;
   }
 
-  return new Date(Date.UTC(competenciaAno, competenciaMes, 1));
+  return new Date(competenciaAno, competenciaMes, 1);
 }
 
 export function adicionarMeses(data: Date, meses: number): Date {
@@ -78,14 +78,13 @@ export function calcularVencimento(
   competencia: Date,
   diaVencimento: number,
 ): Date {
-  const ano = competencia.getUTCFullYear();
-  const mesSeguinte = competencia.getUTCMonth() + 1;
+  const ano = competencia.getFullYear();
+  const mes = competencia.getMonth();
 
-  const ultimoDiaMesSeguinte = new Date(
-    Date.UTC(ano, mesSeguinte + 1, 0),
-  ).getUTCDate();
+  // pega último dia do mesmo mês da competência
+  const ultimoDiaMes = new Date(ano, mes + 1, 0).getDate();
 
-  const diaFinal = Math.min(diaVencimento, ultimoDiaMesSeguinte);
+  const diaFinal = Math.min(diaVencimento, ultimoDiaMes);
 
-  return new Date(Date.UTC(ano, mesSeguinte, diaFinal));
+  return new Date(ano, mes, diaFinal);
 }

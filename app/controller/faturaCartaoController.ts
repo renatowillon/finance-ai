@@ -42,7 +42,7 @@ export const fecharFatura = async ({
   competencia,
 }: FecharFaturaProps) => {
   const [ano, mes] = competencia.split("-").map(Number);
-  const dataCompetencia = new Date(Date.UTC(ano, mes - 1, 1));
+  const dataCompetencia = new Date(ano, mes - 1, 1);
 
   return db.$transaction(async (transacao) => {
     const cartao = await transacao.cartaoCredito.findUnique({
