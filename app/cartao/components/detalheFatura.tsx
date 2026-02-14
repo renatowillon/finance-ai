@@ -299,40 +299,94 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
                 <Loading />
               </div>
             )}
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Descricão</TableHead>
-                  <TableHead>Competência</TableHead>
-                  <TableHead>Parcela</TableHead>
-                  <TableHead>Valor</TableHead>
-                  <TableHead>Pago</TableHead>
-                  <TableHead>Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="w-full">
-                {transacaoFiltrada?.map((transacao: TypeTransacaoCartao) => (
-                  <TableRow key={transacao.id}>
-                    <TableCell>
-                      {dataFormatada(transacao.dataCompra as Date)}
-                    </TableCell>
-                    <TableCell>{transacao.descricao}</TableCell>
-                    <TableCell>
+            {/* aqui fica pra PC */}
+            <div className="hidden md:block">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Data</TableHead>
+                    <TableHead>Descricão</TableHead>
+                    <TableHead>Competência</TableHead>
+                    <TableHead>Parcela</TableHead>
+                    <TableHead>Valor</TableHead>
+                    <TableHead>Pago</TableHead>
+                    <TableHead>Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="w-full">
+                  {transacaoFiltrada?.map((transacao: TypeTransacaoCartao) => (
+                    <TableRow key={transacao.id}>
+                      <TableCell>
+                        {dataFormatada(transacao.dataCompra as Date)}
+                      </TableCell>
+                      <TableCell>{transacao.descricao}</TableCell>
+                      <TableCell>
+                        {formatarCompetencia(transacao.competencia as Date)}
+                      </TableCell>
+                      <TableCell>
+                        {transacao.parcelada === false ? (
+                          1
+                        ) : (
+                          <>
+                            {transacao.parcelaAtual}/{transacao.totalParcelas}
+                          </>
+                        )}
+                      </TableCell>
+                      <TableCell>{formatCurrency(transacao.valor)}</TableCell>
+                      <TableCell>
+                        {transacao.pago === true ? (
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500">
+                            <Check size={14} />
+                          </div>
+                        ) : (
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500">
+                            <X size={14} className="text-red-200" />
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant={"ghost"}
+                          onClick={() => transacaoSelecionada(transacao)}
+                        >
+                          <Edit size={20} />{" "}
+                        </Button>
+                        <Button
+                          variant={"ghost"}
+                          onClick={() => {
+                            setTransacaoSelecionadaDelete(transacao);
+                            setOpenDialogDelete(true);
+                          }}
+                        >
+                          <Trash size={20} />{" "}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            {/* aqui fica pra Mobile */}
+            <div className="space-y-4 md:hidden">
+              {transacaoFiltrada?.map((transacao: TypeTransacaoCartao) => (
+                <div
+                  key={transacao.id}
+                  className="rounded-xl border p-4 shadow-sm"
+                >
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>{dataFormatada(transacao.dataCompra as Date)}</span>
+                    <span>
                       {formatarCompetencia(transacao.competencia as Date)}
-                    </TableCell>
-                    <TableCell>
-                      {transacao.parcelada === false ? (
-                        1
-                      ) : (
-                        <>
-                          {transacao.parcelaAtual}/{transacao.totalParcelas}
-                        </>
-                      )}
-                    </TableCell>
-                    <TableCell>{formatCurrency(transacao.valor)}</TableCell>
-                    <TableCell>
-                      {transacao.pago === true ? (
+                    </span>
+                  </div>
+
+                  <div className="mt-2 flex justify-between px-3 font-medium">
+                    <div className="flex items-center gap-3 text-sm">
+                      {transacao.descricao}{" "}
+                      {transacao.parcelada
+                        ? `${transacao.parcelaAtual}/${transacao.totalParcelas}`
+                        : ""}
+                      {transacao.pago ? (
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500">
                           <Check size={14} />
                         </div>
@@ -341,28 +395,40 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
                           <X size={14} className="text-red-200" />
                         </div>
                       )}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant={"ghost"}
-                        onClick={() => transacaoSelecionada(transacao)}
-                      >
-                        <Edit size={20} />{" "}
-                      </Button>
-                      <Button
-                        variant={"ghost"}
-                        onClick={() => {
-                          setTransacaoSelecionadaDelete(transacao);
-                          setOpenDialogDelete(true);
-                        }}
-                      >
-                        <Trash size={20} />{" "}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                    </div>
+                    <div>{formatCurrency(transacao.valor)}</div>
+                  </div>
+
+                  <div className="mt-2 flex justify-between text-sm">
+                    <span className="font-semibold"></span>
+                  </div>
+
+                  <div className="flex w-full items-center justify-center gap-2">
+                    <Button
+                      className="w-full"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => transacaoSelecionada(transacao)}
+                    >
+                      <Edit size={18} />
+                    </Button>
+
+                    <Button
+                      className="w-full"
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => {
+                        setTransacaoSelecionadaDelete(transacao);
+                        setOpenDialogDelete(true);
+                      }}
+                    >
+                      <Trash size={18} />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
             {transacaoSelecionadaDelete && (
               <DialogConfirm
                 titulo="Deseja Realmente deletar a transação?"
