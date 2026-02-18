@@ -27,7 +27,7 @@ const EditTransactionButton = ({
         definirSeEstaAberto={setDialogoEstaAberto}
         valoresPadrao={{
           nome: transacao.name,
-          valor: Number(transacao.amount),
+          valor: String(transacao.amount),
           tipo: transacao.type,
           categoriaId: Number(transacao.categoriaId),
           data: transacao.date,
