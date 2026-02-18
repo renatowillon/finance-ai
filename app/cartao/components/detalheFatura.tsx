@@ -272,7 +272,7 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
             )}
           </p>
         </div>
-        <div className="p-5">
+        <div className="p-3 md:p-5">
           <div className="flex items-center">
             <div className="w-1/2 items-center text-sm text-muted-foreground">
               <p>Fechamento</p>
@@ -367,54 +367,39 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
               </Table>
             </div>
             {/* aqui fica pra Mobile */}
-            <div className="space-y-4 md:hidden">
+            <div className="space-y-2 md:hidden">
               {transacaoFiltrada?.map((transacao: TypeTransacaoCartao) => (
                 <div
                   key={transacao.id}
-                  className="rounded-xl border p-4 shadow-sm"
+                  className="rounded-xl border p-2 shadow-sm"
                 >
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>{dataFormatada(transacao.dataCompra as Date)}</span>
-                    <span>
-                      {formatarCompetencia(transacao.competencia as Date)}
-                    </span>
-                  </div>
-
-                  <div className="mt-2 flex justify-between px-3 font-medium">
-                    <div className="flex items-center gap-3 text-sm">
-                      {transacao.descricao}{" "}
-                      {transacao.parcelada
-                        ? `${transacao.parcelaAtual}/${transacao.totalParcelas}`
-                        : ""}
-                      {transacao.pago ? (
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500">
-                          <Check size={14} />
-                        </div>
-                      ) : (
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500">
-                          <X size={14} className="text-red-200" />
-                        </div>
-                      )}
+                  <div className="mt-2 flex justify-between">
+                    <div className="flex flex-col text-sm">
+                      <div className="">
+                        {transacao.descricao}{" "}
+                        {transacao.parcelada
+                          ? `${transacao.parcelaAtual}/${transacao.totalParcelas}`
+                          : ""}
+                      </div>
+                      <div className="flex items-start justify-start text-xs text-muted-foreground">
+                        {dataFormatada(transacao.dataCompra as Date)}
+                      </div>
                     </div>
-                    <div>{formatCurrency(transacao.valor)}</div>
+                    <div className="">{formatCurrency(transacao.valor)}</div>
                   </div>
 
-                  <div className="mt-2 flex justify-between text-sm">
-                    <span className="font-semibold"></span>
-                  </div>
-
-                  <div className="flex w-full items-center justify-center gap-2">
+                  <div className="flex w-full items-center justify-end gap-2">
                     <Button
-                      className="w-full"
+                      className=""
                       size="sm"
-                      variant="ghost"
+                      variant="secondary"
                       onClick={() => transacaoSelecionada(transacao)}
                     >
                       <Edit size={18} />
                     </Button>
 
                     <Button
-                      className="w-full"
+                      className=""
                       size="sm"
                       variant="destructive"
                       onClick={() => {
