@@ -71,7 +71,19 @@ export const AtualizarTransacaoCartao = async (
 ) => {
   return db.transacaoCartaoCredito.update({
     where: { id },
-    data,
+    data: {
+      descricao: data.descricao,
+      valor: parseMoney(data.valor),
+      dataCompra: new Date(data.dataCompra),
+      parcelada: data.parcelada,
+      parcelaAtual: data.parcelaAtual ?? null,
+      totalParcelas: data.totalParcelas ?? null,
+      competencia: new Date(data.competencia),
+      pago: data.pago,
+      dataPagamento: data.dataPagamento ? new Date(data.dataPagamento) : null,
+      faturaId: data.faturaId ?? null,
+      cartaoCreditoId: data.cartaoCreditoId,
+    },
   });
 };
 
