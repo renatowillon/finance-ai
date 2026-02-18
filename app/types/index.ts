@@ -83,7 +83,7 @@ export interface TypeTransacaoCartao {
   cartaoCreditoId: string;
   parcelaAtual?: number | null | undefined;
   totalParcelas?: number | null | undefined;
-  faturaId: string;
+  faturaId?: string;
 }
 
 export type TypeTransacaoCartaoInput = Omit<TypeTransacaoCartao, "id">;
