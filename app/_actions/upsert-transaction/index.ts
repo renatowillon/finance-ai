@@ -14,7 +14,7 @@ interface ParametrosInserirOuAtualizarTransacao {
   id?: string;
   nome: string;
   tipo: TransactionType;
-  valor: number;
+  valor: string;
   categoriaId: number;
   data: Date;
   bancoId: number;

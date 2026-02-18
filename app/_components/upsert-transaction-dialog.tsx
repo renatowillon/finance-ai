@@ -53,9 +53,7 @@ interface PropriedadesDialogoInserirOuAtualizarTransacao {
 
 const esquemaFormulario = z.object({
   nome: z.string().trim().min(1, { message: "O nome é obrigatório" }),
-  valor: z.number({ required_error: "valor é obrigatório" }).positive({
-    message: "O valor deve ser positivo",
-  }),
+  valor: z.string({ required_error: "valor é obrigatório" }),
   tipo: z.nativeEnum(TransactionType, {
     required_error: "O tipo é obrigatório",
   }),
@@ -102,7 +100,7 @@ const DialogoInserirOuAtualizarTransacao = ({
         }
       : {
           nome: "",
-          valor: 0,
+          valor: "",
           categoriaId: 0,
           tipo: "DESPESA",
           data: new Date(),
@@ -250,8 +248,8 @@ const DialogoInserirOuAtualizarTransacao = ({
                       <MoneyInput
                         value={field.value}
                         placeholder="Digite o valor"
-                        onValueChange={({ floatValue }) => {
-                          field.onChange(floatValue);
+                        onValueChange={({ value }) => {
+                          field.onChange(value ?? "");
                         }}
                         onBlur={field.onBlur}
                         disabled={field.disabled}
