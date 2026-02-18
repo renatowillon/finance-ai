@@ -38,11 +38,10 @@ export const FaturasFechadas = () => {
     <div className="space-y-5">
       <div className="w-full space-y-3 rounded-lg border p-5">
         <p>Faturas Fechadas</p>
-        <div className="rounded-lg border bg-azulMuted p-3">
+        <div className="rounded-lg border-l-8 border-primary bg-azulMuted p-3">
           {faturasCartao?.map((fatura: TypeFaturaCartao) => (
             <div key={fatura.id} className="flex items-center justify-between">
               <div className="flex space-x-3">
-                <div className="rounded-full bg-primary p-1" />
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-lg font-black">
                     <Lock size={25} /> {dataCompetenciaUtc(fatura.competencia)}{" "}
@@ -51,7 +50,7 @@ export const FaturasFechadas = () => {
                   <div className="flex items-center gap-3 pl-3 text-xs text-muted-foreground">
                     <Calendar size={20} />{" "}
                     <p>vencimento dia {dataFormatada(fatura.vencimento)}</p>
-                    <div className="text-2xl font-black">
+                    <div className="text-2xl font-black md:hidden">
                       {formatCurrency(fatura.valorTotal)}
                     </div>
                   </div>
@@ -104,7 +103,9 @@ export const FaturasFechadas = () => {
                     </span>
                   </div>
 
-                  <div className={`text-lg font-bold text-muted-foreground`}>
+                  <div
+                    className={`text-lg font-bold text-muted-foreground md:hidden`}
+                  >
                     {formatCurrency(transacao.valor)}
                   </div>
                 </div>
