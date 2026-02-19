@@ -1,6 +1,6 @@
 {
   "name": "finance-ai",
-  "version": "1.4.1",
+  "version": "1.5.1",
   "builder": "2026-02-19",
   "private": true,
   "scripts": {

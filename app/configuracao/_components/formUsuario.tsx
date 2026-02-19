@@ -15,7 +15,12 @@ import {
   SelectValue,
 } from "@/app/_components/ui/select";
 import { Switch } from "@/app/_components/ui/switch";
-import { UsuarioFormData, usuarioSchema } from "@/app/schemas/usuarioSchema";
+import {
+  UsuarioFormData,
+  usuarioSchema,
+  UsuarioUpdateFormData,
+  usuarioUpdateSchema,
+} from "@/app/schemas/usuarioSchema";
 import { TypeUsuario } from "@/app/types";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -23,7 +28,7 @@ import { toast } from "sonner";
 interface FormUsuarioProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (usuario: UsuarioFormData) => void;
+  onSubmit: (usuario: UsuarioFormData | UsuarioUpdateFormData) => void;
   usuarioSelecionado: TypeUsuario;
 }
 
@@ -47,7 +52,7 @@ export const FormUsuario = ({
       setFormData({
         name: usuarioSelecionado.name,
         email: usuarioSelecionado.email,
-        senha: usuarioSelecionado.senha,
+        senha: "",
         status: usuarioSelecionado.status,
         plano: usuarioSelecionado.plano,
       });
@@ -65,7 +70,9 @@ export const FormUsuario = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = usuarioSchema.safeParse(formData);
+    const result = usuarioSelecionado
+      ? usuarioUpdateSchema.safeParse(formData)
+      : usuarioSchema.safeParse(formData);
 
     if (!result.success) {
       const mensagem = Object.values(result.error.flatten().fieldErrors)

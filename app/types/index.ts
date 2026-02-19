@@ -52,7 +52,7 @@ export interface TypeUsuario {
   id: number;
   name: string;
   email: string;
-  senha: string;
+  senha?: string | undefined;
   createAt?: Date;
   updateAt?: Date;
   status: boolean;

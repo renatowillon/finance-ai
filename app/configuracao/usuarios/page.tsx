@@ -74,17 +74,21 @@ const Usuarios = () => {
   const AdicionarUsuario = (values: Omit<TypeUsuarioInput, "id">) => {
     if (usuarioSelecionado) {
       const usuarioParaAtualizar = usuarioSelecionado;
+      const usuarioAtualizado: TypeUsuario = {
+        id: usuarioParaAtualizar.id,
+        email: values.email,
+        name: values.name,
+        plano: values.plano,
+        status: values.status,
+        updateAt: new Date(),
+      };
+      if (values.senha && values.senha.trim() !== "") {
+        usuarioAtualizado.senha = values.senha;
+      }
+
       atualizarMutation.mutate({
         id: usuarioSelecionado.id,
-        usuario: {
-          id: usuarioParaAtualizar.id,
-          name: values.name,
-          email: values.email,
-          plano: values.plano,
-          senha: values.senha,
-          status: values.status,
-          updateAt: new Date(Date.now()),
-        },
+        usuario: usuarioAtualizado,
       });
     } else {
       const usuarioNovo: TypeUsuarioInput = {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/_lib/prisma";
 //import bcrypt from "bcrypt";
 import { SignJWT } from "jose";
+import bcrypt from "bcrypt";
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,7 +30,8 @@ export async function POST(req: NextRequest) {
     // }
 
     //  2. Comparar a senha simples (SEM HASH)
-    if (senha !== user.senha) {
+    const isPasswordValid = await bcrypt.compare(senha, user.senha);
+    if (!isPasswordValid) {
       return NextResponse.json(
         { error: "Credenciais inválidas" },
         { status: 401 },
