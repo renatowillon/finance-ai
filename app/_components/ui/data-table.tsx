@@ -316,6 +316,10 @@ export function DataTable<
         </div>
         <div className="grid grid-cols-2 gap-3">
           <SumaryCard
+            onClick={() => {
+              setFiltroPago("false");
+              setFiltroTipo("DEPOSITO");
+            }}
             className="justify-between space-y-1 p-1 text-sm"
             title="Receitas"
             icon={
@@ -329,6 +333,10 @@ export function DataTable<
           />
 
           <SumaryCard
+            onClick={() => {
+              setFiltroPago("false");
+              setFiltroTipo("DESPESA");
+            }}
             className="justify-between space-y-1 p-1 text-sm"
             title="Despesas"
             icon={
@@ -643,6 +651,10 @@ export function DataTable<
       </div>
       <div className="flex gap-6">
         <SumaryCard
+          onClick={() => {
+            setFiltroPago("false");
+            setFiltroTipo("DEPOSITO");
+          }}
           className="w-full"
           title="Receitas"
           icon={
@@ -656,6 +668,10 @@ export function DataTable<
         />
 
         <SumaryCard
+          onClick={() => {
+            setFiltroPago("false");
+            setFiltroTipo("DESPESA");
+          }}
           className="w-full"
           title="Despesas"
           icon={

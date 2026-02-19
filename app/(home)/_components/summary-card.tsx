@@ -11,6 +11,7 @@ interface SumaryCardProps {
   size: "small" | "large";
   userCanAddTransaction?: boolean;
   className?: string;
+  onClick?: () => void;
 }
 
 const SumaryCard = ({
@@ -20,9 +21,11 @@ const SumaryCard = ({
   size,
   userCanAddTransaction,
   className,
+  onClick,
 }: SumaryCardProps) => {
   return (
     <Card
+      onClick={onClick}
       className={cn(
         `${size === "large" ? "bg-white bg-opacity-5" : ""} bg-azulEscuro`,
         className,
