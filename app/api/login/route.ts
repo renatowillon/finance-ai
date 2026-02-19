@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/_lib/prisma";
-//import bcrypt from "bcrypt";
 import { SignJWT } from "jose";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,18 +17,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Comparar a senha fornecida com o hash salvo no banco (de forma segura)
-    // PARA QUANDO FOR USAR HASH
-    // const isPasswordValid = await bcrypt.compare(senha, user.senha); // Assumindo que user.senha é o hash
-
-    // if (!isPasswordValid) {
-    //   return NextResponse.json(
-    //     { error: "Credenciais inválidas" },
-    //     { status: 401 },
-    //   );
-    // }
-
-    //  2. Comparar a senha simples (SEM HASH)
+    //  2. Comparar a senha simples (COM HASH)
     const isPasswordValid = await bcrypt.compare(senha, user.senha);
     if (!isPasswordValid) {
       return NextResponse.json(

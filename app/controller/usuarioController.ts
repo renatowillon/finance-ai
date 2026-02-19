@@ -1,6 +1,6 @@
 import { db } from "../_lib/prisma";
 import { TypeUsuario } from "../types";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export const AdicionaUsuario = async (data: TypeUsuario) => {
   if (!data.senha) {
