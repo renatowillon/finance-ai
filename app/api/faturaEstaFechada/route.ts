@@ -5,9 +5,9 @@ export async function POST(req: Request) {
   try {
     const { competencia, cartaoCreditoId } = await req.json();
 
-    const fechada = await faturaEstaFechada(competencia, cartaoCreditoId);
+    const fatura = await faturaEstaFechada(competencia, cartaoCreditoId);
 
-    return NextResponse.json({ fechada }, { status: 200 });
+    return NextResponse.json(fatura, { status: 200 });
   } catch (error) {
     console.error("Erro ao verificar fatura:", error);
 

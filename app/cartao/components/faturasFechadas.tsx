@@ -1,4 +1,5 @@
 "use client";
+import { InfoSemDados } from "@/app/_components/bancos/infoSemDados";
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
 import {
@@ -6,6 +7,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/app/_components/ui/dialog";
+import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { formatCurrency } from "@/app/_utils/currency";
 import { dataCompetenciaUtc, dataFormatada } from "@/app/_utils/functions";
 // import { dataFormatada } from "@/app/_utils/functions";
@@ -37,24 +39,52 @@ export const FaturasFechadas = () => {
   return (
     <div className="space-y-5">
       <div className="w-full space-y-3 rounded-lg border p-5">
-        <p>Faturas Fechadas</p>
-        <div className="rounded-lg border-l-8 border-primary bg-azulMuted p-3">
-          {faturasCartao?.map((fatura: TypeFaturaCartao) => (
-            <div key={fatura.id} className="flex items-center justify-between">
-              <div className="flex space-x-3">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-lg font-black">
-                    <Lock size={25} /> {dataCompetenciaUtc(fatura.competencia)}{" "}
-                    <Badge>Fechada</Badge>
-                  </div>
-                  <div className="flex items-center gap-3 pl-3 text-xs text-muted-foreground">
-                    <Calendar size={20} />{" "}
-                    <p>vencimento dia {dataFormatada(fatura.vencimento)}</p>
-                    <div className="text-2xl font-black md:hidden">
-                      {formatCurrency(fatura.valorTotal)}
+        {faturasCartao?.length <= 0 ? (
+          <InfoSemDados
+            titulo="Nenhuma fatura fechada!"
+            subtitulo="Feche sua fatura se estiver no periodo que mostrará aqui 😊"
+          />
+        ) : (
+          <>
+            <p>Faturas Fechadas</p>
+            <div className="rounded-lg border-l-8 border-primary bg-azulMuted p-3">
+              {faturasCartao?.map((fatura: TypeFaturaCartao) => (
+                <div
+                  key={fatura.id}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex space-x-3">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 text-lg font-black">
+                        <Lock size={25} />{" "}
+                        {dataCompetenciaUtc(fatura.competencia)}{" "}
+                        <Badge>Fechada</Badge>
+                      </div>
+                      <div className="flex items-center gap-3 pl-3 text-xs text-muted-foreground">
+                        <Calendar size={20} />{" "}
+                        <p>vencimento dia {dataFormatada(fatura.vencimento)}</p>
+                        <div className="text-2xl font-black md:hidden">
+                          {formatCurrency(fatura.valorTotal)}
+                        </div>
+                      </div>
+                      <div className="flex w-full items-center justify-center gap-3 md:hidden">
+                        <Button
+                          variant={"outline"}
+                          onClick={() => {
+                            setFaturaId(fatura.id);
+                            setOpenModal(!openModal);
+                          }}
+                        >
+                          Ver Transações
+                        </Button>
+                        <Button>Pagar</Button>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex w-full items-center justify-center gap-3 md:hidden">
+                  <div className="hidden items-center gap-3 md:flex">
+                    <div className="text-2xl font-black">
+                      {formatCurrency(fatura.valorTotal)}
+                    </div>
                     <Button
                       variant={"outline"}
                       onClick={() => {
@@ -67,52 +97,39 @@ export const FaturasFechadas = () => {
                     <Button>Pagar</Button>
                   </div>
                 </div>
-              </div>
-              <div className="hidden items-center gap-3 md:flex">
-                <div className="text-2xl font-black">
-                  {formatCurrency(fatura.valorTotal)}
-                </div>
-                <Button
-                  variant={"outline"}
-                  onClick={() => {
-                    setFaturaId(fatura.id);
-                    setOpenModal(!openModal);
-                  }}
-                >
-                  Ver Transações
-                </Button>
-                <Button>Pagar</Button>
-              </div>
-            </div>
-          ))}
-          <Dialog open={openModal} onOpenChange={setOpenModal}>
-            <DialogContent className="max-h-[90vh] max-w-2xl">
-              <DialogTitle>Transações da Fatura</DialogTitle>
-              {transacaoFatura?.map((transacao: TypeTransacaoCartao) => (
-                <div
-                  key={transacao.id}
-                  className="flex items-center justify-between rounded-2xl border bg-azulMuted px-6 py-3 shadow-md transition-all duration-300 hover:shadow-lg"
-                >
-                  <div className="flex flex-col">
-                    <h3 className="text-lg font-semibold text-muted-foreground">
-                      {transacao.descricao}
-                    </h3>
-
-                    <span className="mt-1 text-sm text-gray-400">
-                      {dataFormatada(transacao?.dataCompra as Date)}
-                    </span>
-                  </div>
-
-                  <div
-                    className={`text-lg font-bold text-muted-foreground md:hidden`}
-                  >
-                    {formatCurrency(transacao.valor)}
-                  </div>
-                </div>
               ))}
-            </DialogContent>
-          </Dialog>
-        </div>
+              <Dialog open={openModal} onOpenChange={setOpenModal}>
+                <DialogContent className="max-h-[90vh] max-w-2xl">
+                  <DialogTitle>Transações da Fatura</DialogTitle>
+                  <ScrollArea className="max-h-[80vh] rounded-md py-1 pr-3">
+                    {transacaoFatura?.map((transacao: TypeTransacaoCartao) => (
+                      <div
+                        key={transacao.id}
+                        className="mt-3 flex items-center justify-between rounded-2xl border bg-azulMuted px-6 py-3 shadow-md transition-all duration-300 hover:shadow-lg"
+                      >
+                        <div className="flex flex-col">
+                          <h3 className="text-lg font-semibold text-muted-foreground">
+                            {transacao.descricao}
+                          </h3>
+
+                          <span className="mt-1 text-sm text-gray-400">
+                            {dataFormatada(transacao?.dataCompra as Date)}
+                          </span>
+                        </div>
+
+                        <div
+                          className={`text-lg font-bold text-muted-foreground`}
+                        >
+                          {formatCurrency(transacao.valor)}
+                        </div>
+                      </div>
+                    ))}
+                  </ScrollArea>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

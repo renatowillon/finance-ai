@@ -49,6 +49,7 @@ const getMesAtual = () => {
 
 export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
   const [openDialogFatura, setOpenDialogFatura] = useState(false);
+  const [openDialogReabrirFatura, setOpenDialogReabrirFatura] = useState(false);
   const [mesSelecionado, setMesSelecionado] = useState<string | null>(
     getMesAtual,
   );
@@ -79,7 +80,8 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
     enabled: !!cartaoId && !!mesSelecionado,
   });
 
-  const { fechamentoFaturaMutation } = fecharFaturaMutation();
+  const { fechamentoFaturaMutation, reaberturaFaturaMutation } =
+    fecharFaturaMutation();
 
   const competenciaEscolhida = mesSelecionado!;
 
@@ -99,19 +101,6 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
 
     return competenciaTransacao === mesSelecionado;
   });
-
-  // const transacaoFiltrada = transacaoCartao.filter((t: TypeTransacaoCartao) => {
-  //   if (!mesSelecionado || !t.competencia) return false;
-  //   const competenciaEsperada = proximaCompetencia(mesSelecionado);
-
-  //   // se competencia vier como Date
-  //   const data = new Date(t.competencia);
-  //   const competenciaTransacao = `${data.getUTCFullYear()}-${String(
-  //     data.getMonth() + 1,
-  //   ).padStart(2, "0")}`;
-
-  //   return competenciaTransacao === competenciaEsperada;
-  // });
 
   // Navegação de meses
   const navegarMes = (direcao: "anterior" | "proximo") => {
@@ -208,6 +197,15 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
     console.log({ competencia, cartaoCreditoId });
     // falta criar o fetch apenas
   }
+
+  function reabrirFatura(id: string) {
+    try {
+      reaberturaFaturaMutation.mutate({ id });
+      toast.success("Fatura reaberta com sucesso.");
+    } catch (error) {
+      console.error("Erro ao reabrir fatura: ", error);
+    }
+  }
   return (
     <div className="space-y-5">
       {/* menu de calendario e faturas */}
@@ -265,7 +263,7 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
             </span>
           </p>
           <p>
-            {faturaFechada === true ? (
+            {faturaFechada?.fechada === true ? (
               <Badge variant={"destructive"}>Fatura já fechada</Badge>
             ) : (
               <Badge variant={"secondary"}>Aberta</Badge>
@@ -437,14 +435,23 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
                 fecharFatura(competenciaEscolhida, cartaoId as string);
               }}
             />
+            <DialogConfirm
+              titulo="Deseja realmente reabrir fatura?"
+              open={openDialogReabrirFatura}
+              onOpenChange={setOpenDialogReabrirFatura}
+              onClick={() => {
+                setOpenDialogReabrirFatura(false);
+                reabrirFatura(faturaFechada?.faturaId as string);
+              }}
+            />
           </div>
           <div className="w-full">
-            {faturaFechada === true ? (
+            {faturaFechada?.fechada === true ? (
               <Button
                 className="w-full"
-                // onClick={() => setOpenDialogFatura(true)}
+                onClick={() => setOpenDialogReabrirFatura(true)}
                 variant={"destructive"}
-                disabled={!faturaFechada}
+                disabled={!faturaFechada.fechada}
               >
                 Reabrir Fatura - {competenciaEscolhida}
               </Button>
@@ -452,7 +459,7 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
               <Button
                 className="w-full"
                 onClick={() => setOpenDialogFatura(true)}
-                disabled={faturaFechada}
+                disabled={faturaFechada?.fechada}
               >
                 Fechar Fatura - {competenciaEscolhida}
               </Button>

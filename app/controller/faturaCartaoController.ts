@@ -17,7 +17,7 @@ export const pegarFaturas = (id: string) => {
 export const faturaEstaFechada = async (
   competencia: string,
   cartaoCreditoId: string,
-): Promise<boolean> => {
+): Promise<{ fechada: boolean; faturaId: string | null }> => {
   const [ano, mes] = competencia.split("-").map(Number);
 
   const inicioMes = new Date(Date.UTC(ano, mes - 1, 1));
@@ -32,9 +32,29 @@ export const faturaEstaFechada = async (
         lt: fimMes,
       },
     },
+    select: {
+      id: true,
+    },
   });
 
-  return !!fatura;
+  return {
+    fechada: !!fatura,
+    faturaId: fatura?.id ?? null,
+  };
+};
+
+export const reabrirFatura = async (id: string) => {
+  const faturaExiste = await db.faturaCartao.findUnique({
+    where: { id },
+  });
+  if (!faturaExiste) {
+    throw new Error("Fatura não existe");
+  }
+  return db.faturaCartao.delete({
+    where: {
+      id: faturaExiste.id,
+    },
+  });
 };
 
 export const fecharFatura = async ({
