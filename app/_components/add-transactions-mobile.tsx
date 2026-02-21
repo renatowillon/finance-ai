@@ -13,6 +13,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import { toast } from "sonner";
+import { useMutations } from "../mutetions/transacaoCartaoMutation";
+import { TypeTransacaoCartaoInput } from "../types";
 
 interface PropriedadesBotaoAdicionarTransacao {
   usuarioPodeAdicionarTransacao?: boolean;
@@ -23,6 +26,14 @@ const AddTransactionMobile = ({
   const [dialogoEstaAberto, setDialogoEstaAberto] = useState(false);
   const [abrirDialogCartao, setAbrirDialogCartao] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
+
+  const { criarTransacaoCartaoMutation } = useMutations();
+
+  function AdicionarTransacaoCartao(values: TypeTransacaoCartaoInput) {
+    const transacaoNova = { ...values };
+    criarTransacaoCartaoMutation.mutate(transacaoNova);
+    toast.success("Transação adicionada com sucesso");
+  }
 
   return (
     <>
@@ -93,6 +104,7 @@ const AddTransactionMobile = ({
       <AddTransacaoCartao
         open={abrirDialogCartao}
         onOpenChange={setAbrirDialogCartao}
+        onSubmit={AdicionarTransacaoCartao}
       />
       <DialogoInserirOuAtualizarTransacao
         estaAberto={dialogoEstaAberto}
