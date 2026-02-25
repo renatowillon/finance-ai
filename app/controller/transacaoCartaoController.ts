@@ -1,7 +1,7 @@
 import { db } from "../_lib/prisma";
 import { parseMoney } from "../_lib/utils";
 import { adicionarMeses, calcularCompetencia } from "../functions/functions";
-import { TypeTransacaoCartao } from "../types";
+import { CriarTransacaoCartaoDTO, TypeTransacaoCartao } from "../types";
 
 export const PegarTransacaoPorCartao = async (cartaoCreditoId: string) => {
   return db.transacaoCartaoCredito.findMany({
@@ -16,7 +16,9 @@ export const PegarUmaTransacaoCartao = async (transacaoCartaoId: string) => {
   });
 };
 
-export const AdicionarTransacaoCartao = async (data: TypeTransacaoCartao) => {
+export const AdicionarTransacaoCartao = async (
+  data: CriarTransacaoCartaoDTO,
+) => {
   const cartao = await db.cartaoCredito.findUnique({
     where: { id: data.cartaoCreditoId },
   });

@@ -85,6 +85,14 @@ export interface TypeTransacaoCartao {
   totalParcelas?: number | null | undefined;
   faturaId?: string;
 }
+export interface CriarTransacaoCartaoDTO {
+  descricao: string;
+  valor: string;
+  dataCompra: Date | string;
+  parcelada?: boolean;
+  totalParcelas?: number;
+  cartaoCreditoId: string;
+}
 
 export type TypeTransacaoCartaoInput = Omit<TypeTransacaoCartao, "id">;
 
