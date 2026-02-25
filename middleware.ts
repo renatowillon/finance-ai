@@ -18,14 +18,18 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  const rotasApenasDev = ["/configuracao", "/api/usuarios"];
+  const rotasApenasDev = ["/configuracao", "/api/usuarios", "/willon-bot"];
 
   if (rotasApenasDev.some((r) => path.startsWith(r))) {
     try {
       const secret = new TextEncoder().encode(process.env.JWT_SECRET_KEY!);
       const { payload } = await jwtVerify(token!, secret);
       if (payload.plano !== "DEV") {
-        return NextResponse.redirect(new URL("/", req.url));
+        const url = req.nextUrl.clone();
+        url.pathname = "/";
+        url.searchParams.set("erro", "sem_permissao");
+        return NextResponse.redirect(url);
+        // return NextResponse.redirect(new URL("/", req.url));
       }
     } catch (error) {
       console.error("Erro ao verificar token:", error);

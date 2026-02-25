@@ -7,6 +7,8 @@ import RegisterSW from "./_components/RegisterSW";
 import { Provider } from "./context/Provider";
 import { canUserAddTransaction } from "./_data/can-user-add-transaction";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { ButtonBot } from "./_components/Bot";
+import { RouteGuardListener } from "./_components/alertaDeRota";
 
 const mulish = Mulish({
   subsets: ["latin-ext"],
@@ -36,7 +38,11 @@ export default async function RootLayout({
               usuarioPodeAdicionarTransacao={usuarioPodeAdicionarTransacao}
             />
             <div className="flex min-h-screen w-full flex-col overflow-y-scroll lg:p-5">
-              <div className="mb-20 h-full md:mb-0">{children}</div>
+              <div className="mb-20 h-full md:mb-0">
+                <RouteGuardListener />
+                {children}
+                <ButtonBot />
+              </div>
               <SpeedInsights />
             </div>
           </AuthProvider>
