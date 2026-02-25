@@ -50,6 +50,9 @@ import { format, startOfMonth, endOfMonth } from "date-fns";
 import { Calendar } from "./calendar";
 import { ptBR } from "date-fns/locale";
 import SumaryCard from "@/app/(home)/_components/summary-card";
+import { useQuery } from "@tanstack/react-query";
+import { buscarTransacoesCartaoPorPeriodoFetch } from "@/app/fetche/pegarTransacaoPorPeriodoFetch";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -134,6 +137,21 @@ export function DataTable<
     window.addEventListener("resize", checkIsMobile);
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
+
+  const { userId } = useAuth();
+
+  const { data: totalCartao } = useQuery({
+    queryKey: ["transacoes-cartao", userId, dateInicio, dateInicio],
+    queryFn: () =>
+      buscarTransacoesCartaoPorPeriodoFetch({
+        userId: Number(userId),
+        dataInicio: format(dateInicio, "yyyy-MM-dd"),
+        dataFim: format(dateFim, "yyyy-MM-dd"),
+      }),
+    enabled: !!userId,
+  });
+
+  console.log(totalCartao);
 
   // const transacao: Transaction = table.
 

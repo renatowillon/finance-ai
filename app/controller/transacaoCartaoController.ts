@@ -92,3 +92,54 @@ export const DeletarTransacaoCartao = async (id: string) => {
     where: { id },
   });
 };
+
+interface PeriodoDTO {
+  userId: number;
+  dataInicio: Date;
+  dataFim: Date;
+}
+
+export const pegarTransacaoPorPeriodo = async ({
+  dataFim,
+  dataInicio,
+  userId,
+}: PeriodoDTO) => {
+  const usuarioExiste = await db.user.findUnique({
+    where: { id: userId },
+    select: { id: true },
+  });
+
+  if (!usuarioExiste) {
+    throw new Error("usuario não localizado!");
+  }
+
+  const transacoesCartao = await db.transacaoCartaoCredito.findMany({
+    where: {
+      cartaoCredito: {
+        userId: userId,
+      },
+      competencia: {
+        gte: dataInicio,
+        lte: dataFim,
+      },
+    },
+    include: {
+      cartaoCredito: {
+        select: {
+          id: true,
+          nome: true,
+        },
+      },
+    },
+  });
+
+  const totalCartao = transacoesCartao.reduce(
+    (total, transacao) => total + Number(transacao.valor),
+    0,
+  );
+
+  return {
+    totalCartao,
+    transacoes: transacoesCartao,
+  };
+};
