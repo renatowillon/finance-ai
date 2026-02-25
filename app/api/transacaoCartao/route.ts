@@ -1,9 +1,9 @@
 import { AdicionarTransacaoCartao } from "@/app/controller/transacaoCartaoController";
-import { TypeTransacaoCartao } from "@/app/types";
+import { CriarTransacaoCartaoDTO } from "@/app/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const transacaoCartao: TypeTransacaoCartao = await req.json();
+  const transacaoCartao: CriarTransacaoCartaoDTO = await req.json();
 
   try {
     if (!transacaoCartao.cartaoCreditoId) {
