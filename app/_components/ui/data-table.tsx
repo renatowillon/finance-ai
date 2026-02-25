@@ -141,7 +141,7 @@ export function DataTable<
   const { userId } = useAuth();
 
   const { data: totalCartao } = useQuery({
-    queryKey: ["transacoes-cartao", userId, dateInicio, dateInicio],
+    queryKey: ["transacoes-cartao", userId, dateInicio, dateFim],
     queryFn: () =>
       buscarTransacoesCartaoPorPeriodoFetch({
         userId: Number(userId),
