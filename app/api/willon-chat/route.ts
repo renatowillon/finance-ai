@@ -10,6 +10,7 @@ import {
   getPending,
   clearPending,
 } from "@/app/_lib/ai/conversationState";
+import { FinanceQueryService } from "@/app/_services/ai/queryServiceAi";
 
 export async function POST(req: Request) {
   try {
@@ -111,27 +112,35 @@ Você é um assistente financeiro.
 Cartões disponíveis: ${listaCartoes || "nenhum"}
 Bancos disponíveis: ${listaBancos || "nenhum"}
 
-Sua função é interpretar a mensagem do usuário e responder APENAS um JSON com a seguinte estrutura:
+Responda APENAS com JSON:
 
 {
-  "intencao": "criar_transacao" ou null,
-  "tipo": "cartao" ou "banco" ou null,
-  "descricao": string ou null,
-  "valor": number ou null,
-  "movimento": "DESPESA" ou "DEPOSITO" ou null,
-  "cartaoNome": string ou null,
-  "bancoNome": string ou null,
-  "parcelada": boolean ou null,
-  "totalParcelas": number ou null,
+  "intencao": "criar_transacao" | "consultar_resumo" | null,
+  "periodo": "HOJE" | "MES" | "MES_PASSADO" | "ANO" | null,
+  "tipo": "cartao" | "banco" | null,
+  "descricao": string | null,
+  "valor": number | null,
+  "movimento": "DESPESA" | "DEPOSITO" | null,
+  "cartaoNome": string | null,
+  "bancoNome": string | null,
+  "parcelada": boolean | null,
+  "totalParcelas": number | null,
   "completo": boolean,
-  "pergunta": string ou null
+  "pergunta": string | null
 }
 
+
+
 Regras:
-- Nunca invente nomes.
-- Se faltar informação, marque completo como false e preencha pergunta.
-- Se estiver tudo correto, marque completo como true.
-- NÃO escreva texto fora do JSON.
+- Se for pergunta como "quanto gastei", use intencao = "consultar_resumo"
+- Identifique o período corretamente
+- Para consultar_resumo:
+  - Não defina tipo
+  - Não defina cartaoNome
+  - Não defina bancoNome
+  - Se o período estiver presente, marque "completo": true
+- Nunca invente valores
+- Não escreva nada fora do JSON
 `,
       },
       {
@@ -147,28 +156,72 @@ Regras:
 
     const content = aiResponse?.choices?.[0]?.message?.content;
 
-    console.log("CONTENT:", content);
+    if (!content) {
+      return NextResponse.json({
+        reply: "Não consegui processar sua solicitação.",
+      });
+    }
 
     let parsed;
 
     try {
-      const clean = content
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-        .trim();
-
-      parsed = JSON.parse(clean);
+      parsed = JSON.parse(content);
     } catch (err) {
-      console.log("Resposta bruta da IA:", content, err);
+      console.error("Erro parse JSON:", content, err);
       return NextResponse.json({
-        reply: "Não consegui interpretar sua solicitação.",
+        reply: "Erro ao interpretar resposta da IA.",
       });
     }
 
-    if (!parsed.completo) {
-      return NextResponse.json({
-        reply: parsed.pergunta || "Pode me dar mais detalhes?",
-      });
+    console.log("CONTENT:", content);
+
+    // try {
+    //   const clean = content
+    //     .replace(/```json/g, "")
+    //     .replace(/```/g, "")
+    //     .trim();
+
+    //   parsed = JSON.parse(clean);
+    // } catch (err) {
+    //   console.log("Resposta bruta da IA:", content, err);
+    //   return NextResponse.json({
+    //     reply: "Não consegui interpretar sua solicitação.",
+    //   });
+    // }
+
+    if (parsed.intencao === "consultar_resumo") {
+      if (!parsed.periodo) {
+        return NextResponse.json({
+          reply: "Qual período você deseja consultar?",
+        });
+      }
+
+      try {
+        const resumo = await FinanceQueryService.getResumoPeriodo(
+          userId,
+          parsed.periodo,
+        );
+
+        return NextResponse.json({
+          reply: `
+📊 Resumo do período:
+
+💰 Entradas: R$ ${resumo.totalEntradas.toFixed(2)}
+💸 Despesas (Banco): R$ ${resumo.totalDespesasBanco.toFixed(2)}
+💳 Despesas (Cartão): R$ ${resumo.totalDespesasCartao.toFixed(2)}
+
+📉 Total de Despesas: R$ ${resumo.totalDespesas.toFixed(2)}
+📈 Saldo Líquido: R$ ${resumo.saldoLiquido.toFixed(2)}
+
+🧾 Total de Transações: ${resumo.quantidadeTransacoes}
+      `,
+        });
+      } catch (error) {
+        console.error(error);
+        return NextResponse.json({
+          reply: "Erro ao calcular resumo do período.",
+        });
+      }
     }
 
     // 🔎 Resolver ID real
@@ -182,7 +235,6 @@ Regras:
           reply: "Não encontrei esse cartão. Pode verificar o nome?",
         });
       }
-
       const preview = `
         💳 Compra no cartão detectada!
 

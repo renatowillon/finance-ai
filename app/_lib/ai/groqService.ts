@@ -9,9 +9,11 @@ export async function callGroq(messages: any[]) {
         Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
+        model: "llama-3.3-70b-versatile",
+        // model: "llama-3.1-8b-instant",
         messages,
         temperature: 0,
+        top_p: 1,
         response_format: { type: "json_object" },
       }),
     },
