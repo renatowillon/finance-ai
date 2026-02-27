@@ -7,7 +7,7 @@ export const ButtonBot = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  if (pathname === "/login") return null;
+  if (pathname === "/login" || pathname === "/willon-bot") return null;
 
   return (
     <div
