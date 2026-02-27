@@ -454,7 +454,7 @@ export default function Willon() {
             {/* Messages */}
             {messages.length === 0 ? (
               <div className="flex w-full flex-col items-center justify-center gap-8 py-4">
-                <div className="hidden max-w-2xl space-y-3 text-center md:block">
+                <div className="max-w-2xl space-y-3 text-center">
                   <h3 className="text-2xl font-semibold">
                     Olá! Eu sou o Willon 👋
                   </h3>
