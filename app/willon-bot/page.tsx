@@ -294,6 +294,10 @@ export default function Willon() {
 
   const streamChat = async (userMessages: Message[], imageBase64?: string) => {
     const lastMessage = userMessages[userMessages.length - 1];
+    const history = userMessages.slice(-9, -1).map((m) => ({
+      role: m.role,
+      content: m.content,
+    }));
 
     const resp = await fetch("/api/willon-chat", {
       method: "POST",
@@ -302,6 +306,7 @@ export default function Willon() {
       },
       body: JSON.stringify({
         message: lastMessage.content,
+        history,
         imageBase64: imageBase64 || null,
       }),
     });

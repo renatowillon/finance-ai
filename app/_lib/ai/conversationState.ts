@@ -1,7 +1,25 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const pendingActions = new Map<number, any>();
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function setPending(userId: number, data: any) {
+export type PendingAction =
+  | {
+      tipo: "banco";
+      descricao: string;
+      valor: number;
+      movimento: "DESPESA" | "DEPOSITO";
+      bancoId: number;
+      categoriaId: number;
+      categoriaNome: string;
+    }
+  | {
+      tipo: "cartao";
+      descricao: string;
+      valor: number;
+      parcelada: boolean;
+      totalParcelas: number;
+      cartaoId: string;
+    };
+
+const pendingActions = new Map<number, PendingAction>();
+
+export function setPending(userId: number, data: PendingAction) {
   pendingActions.set(userId, data);
 }
 

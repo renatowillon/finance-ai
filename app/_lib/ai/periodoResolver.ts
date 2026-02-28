@@ -2,6 +2,8 @@
 import {
   startOfDay,
   endOfDay,
+  startOfWeek,
+  endOfWeek,
   startOfMonth,
   endOfMonth,
   startOfYear,
@@ -35,6 +37,12 @@ export function resolverPeriodo(
       return {
         inicio: startOfMonth(now),
         fim: endOfMonth(now),
+      };
+
+    case "SEMANA":
+      return {
+        inicio: startOfWeek(now, { weekStartsOn: 1 }),
+        fim: endOfWeek(now, { weekStartsOn: 1 }),
       };
 
     case "MES_PASSADO":
