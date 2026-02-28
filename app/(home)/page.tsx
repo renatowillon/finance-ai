@@ -28,7 +28,13 @@ const Home = async ({ searchParams: { month } }: PropriedadesHome) => {
   if (!usuario) {
     redirect("/login");
   }
-  console.log("Usuario Logado: ", usuario.userId, usuario.email);
+  console.log(
+    ":::Usuario Logado:::\n",
+    "Id: ",
+    usuario.userId,
+    "Email: ",
+    usuario.email,
+  );
 
   const mesAtual = String(new Date().getMonth() + 1).padStart(2, "0");
   const mesInvalido = !month || !isMatch(month, "MM");

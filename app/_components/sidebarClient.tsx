@@ -12,7 +12,7 @@ export function SidebarClient({ usuarioPodeAdicionarTransacao }: Props) {
   const pathname = usePathname();
 
   // Esconde a sidebar na página de login
-  if (pathname === "/login") return null;
+  if (pathname === "/login" || pathname === "/lp") return null;
 
   if (pathname === "/configuracao" || pathname.startsWith("/configuracao/")) {
     return <MenuConfig />;

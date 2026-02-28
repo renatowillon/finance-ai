@@ -1,6 +1,6 @@
 "use client";
 import { User } from "@prisma/client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type AuthContextType = {
@@ -11,12 +11,18 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const PUBLIC_PATHS = ["/login", "/cadastro", "/lp"];
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userId, setUserId] = useState<User | null>(null);
 
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
+    const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
+    if (isPublic) return;
+
     fetch("/api/eu", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {

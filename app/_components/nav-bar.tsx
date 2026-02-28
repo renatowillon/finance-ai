@@ -412,14 +412,17 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
       <div className="hidden h-screen w-64 flex-col rounded-md border shadow-sm md:flex">
         {/* Header */}
         <div className="border-b p-6">
-          <div className="flex items-center justify-center">
+          <Link
+            href="/lp"
+            className="flex cursor-pointer items-center justify-center"
+          >
             <Image
               src="/logo-wfinance.png"
               width={173}
               height={39}
               alt="Wfinance"
             />
-          </div>
+          </Link>
         </div>
 
         {/* Menu */}

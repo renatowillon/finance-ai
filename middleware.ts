@@ -7,6 +7,7 @@ export async function middleware(req: NextRequest) {
   const isPublicPath =
     path.startsWith("/login") ||
     path.startsWith("/cadastro") ||
+    path.startsWith("/lp") ||
     path.startsWith("/api/login") ||
     path.startsWith("/api/cadastro") ||
     path.startsWith("/api/eu") ||
@@ -15,7 +16,7 @@ export async function middleware(req: NextRequest) {
     path.startsWith("/api/pegarCookie");
 
   if (!token && !isPublicPath) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(new URL("/lp", req.url));
   }
 
   const rotasApenasDev = ["/configuracao", "/api/usuarios", "/willon-bot"];
@@ -33,7 +34,7 @@ export async function middleware(req: NextRequest) {
       }
     } catch (error) {
       console.error("Erro ao verificar token:", error);
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/lp", req.url));
     }
   }
 

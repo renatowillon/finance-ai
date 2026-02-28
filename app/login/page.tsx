@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Button } from "../_components/ui/button";
-import { InfoIcon, Loader2Icon, LogInIcon } from "lucide-react";
+import { Home, InfoIcon, Loader2Icon, LogInIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { formSchemaUser } from "./components/formSchemaUser";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -58,6 +58,10 @@ const LoginPage = () => {
 
   // 👇 se a animação estiver ativa, mostra a TelaAnimacao
   if (showAnimation) return <TelaCarregamento />;
+
+  function irParaHome() {
+    router.push("/lp");
+  }
 
   // 👇 caso contrário, mostra o formulário
   return (
@@ -146,6 +150,15 @@ const LoginPage = () => {
             </Button>
           </form>
         </Form>
+        <Button
+          type="button"
+          className="w-full"
+          variant={"outline"}
+          onClick={irParaHome}
+        >
+          <Home className="mr-2" />
+          Voltar para a página inicial
+        </Button>
       </div>
 
       <div className="relative h-full w-full">
