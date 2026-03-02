@@ -398,7 +398,7 @@ export default function LandingPage() {
       </header>
 
       {/* ── hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative mt-10 flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 text-center">
+      <section className="relative mt-24 flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 text-center md:mt-10">
         {/* background glow */}
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-sm text-violet-300">
           <IconSparkle />
@@ -411,8 +411,6 @@ export default function LandingPage() {
               <div className="absolute left-1/4 top-40 h-80 w-80 rounded-full bg-blue-700/10 blur-[80px]" />
               <div className="absolute right-1/4 top-60 h-80 w-80 rounded-full bg-indigo-700/10 blur-[80px]" />
             </div>
-
-            {/* pill badge */}
 
             {/* headline */}
             <h1 className="relative mb-5 max-w-3xl text-balance text-5xl font-black leading-[1.1] tracking-tight text-white md:text-6xl lg:text-7xl">
@@ -430,11 +428,11 @@ export default function LandingPage() {
             </p>
 
             {/* CTAs */}
-            <div className="relative mb-16 flex flex-col items-center gap-3 sm:flex-row">
+            <div className="relative flex flex-col items-center gap-3 sm:flex-row">
               <a
                 id="cta"
                 href="/login"
-                className="group flex items-center gap-2 rounded-2xl bg-violet-600 px-7 py-4 text-base font-bold text-white shadow-xl shadow-violet-600/40 transition hover:bg-violet-500 hover:shadow-violet-500/50"
+                className="group flex items-center gap-2 rounded-2xl bg-violet-600 px-7 py-4 text-base font-bold text-white transition hover:bg-violet-500 hover:shadow-violet-500/50"
               >
                 Teste grátis agora
                 <span className="transition-transform group-hover:translate-x-1">
@@ -465,23 +463,28 @@ export default function LandingPage() {
           </div>
         </div>
         {/* ── marquee ───────────────────────────────────────────────────────── */}
-        <div className="relative flex flex-col overflow-hidden py-5">
+
+        <div className="fade-mask relative mt-2 max-w-6xl overflow-hidden px-5">
           {/* fade edges */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-gradient-to-r from-[#030712] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-gradient-to-l from-[#030712] to-transparent" />
+          {/* <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-gradient-to-r from-[#030712] to-transparent" /> */}
+          {/* <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-gradient-to-l from-[#030712] to-transparent" /> */}
 
           <style>{`
                     @keyframes marquee-ltr {
-                        0%   { transform: translateX(0); }
-                        100% { transform: translateX(-50%); }
+                      0%   { transform: translateX(-50%); }
+                      100% { transform: translateX(0%); }
                     }
+
                     @keyframes marquee-rtl {
-                        0%   { transform: translateX(-50%); }
-                        100% { transform: translateX(0); }
+                      0%   { transform: translateX(0%); }
+                      100% { transform: translateX(-50%); }
                     }
                     .marquee-fwd { animation: marquee-ltr 62s linear infinite; }
                     .marquee-rev { animation: marquee-rtl 62s linear infinite; }
                     .marquee-fwd:hover, .marquee-rev:hover { animation-play-state: paused; }
+
+                    
+
                 `}</style>
 
           {/* row 1 — goes left */}
