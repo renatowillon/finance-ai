@@ -404,7 +404,7 @@ export default function LandingPage() {
           <IconSparkle />
           <span>Assistente financeiro com Inteligência Artificial</span>
         </div>
-        <div className="flex">
+        <div className="flex flex-col md:flex-row">
           <div className="flex flex-col items-center">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute left-1/2 top-20 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-violet-700/20 blur-[120px]" />
@@ -465,7 +465,7 @@ export default function LandingPage() {
           </div>
         </div>
         {/* ── marquee ───────────────────────────────────────────────────────── */}
-        <div className="relative overflow-hidden py-5">
+        <div className="relative flex flex-col overflow-hidden py-5">
           {/* fade edges */}
           <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-gradient-to-r from-[#030712] to-transparent" />
           <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-gradient-to-l from-[#030712] to-transparent" />
@@ -480,7 +480,7 @@ export default function LandingPage() {
                         100% { transform: translateX(0); }
                     }
                     .marquee-fwd { animation: marquee-ltr 62s linear infinite; }
-                    .marquee-rev { animation: marquee-rtl 58s linear infinite; }
+                    .marquee-rev { animation: marquee-rtl 62s linear infinite; }
                     .marquee-fwd:hover, .marquee-rev:hover { animation-play-state: paused; }
                 `}</style>
 
@@ -510,7 +510,7 @@ export default function LandingPage() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="flex flex-shrink-0 items-center gap-2.5 rounded-full bg-violet-600/10 px-5 py-2 text-sm font-medium text-violet-300/70"
+                className="flex flex-shrink-0 gap-2.5 rounded-full bg-violet-600/10 px-5 py-2 text-sm font-medium text-violet-300/70"
               >
                 <span className="text-base">{item.icon}</span>
                 <span>{item.label}</span>
