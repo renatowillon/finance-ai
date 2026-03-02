@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { LogIn } from "lucide-react";
+import { Github, LogIn } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // ─── tiny icon components (inline SVG, zero deps) ──────────────────────────
 const IconChat = () => (
@@ -200,7 +201,7 @@ function TypingDemo() {
   const r = responses[msgIdx];
 
   return (
-    <div className="mx-auto w-full max-w-sm rounded-2xl border border-white/10 bg-[#0D182E]/80 shadow-2xl backdrop-blur-md">
+    <div className="mx-auto min-h-80 w-full max-w-sm rounded-2xl border border-white/10 bg-[#0D182E]/80 shadow-2xl backdrop-blur-md">
       {/* chat header */}
       <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-600 text-sm font-bold text-white">
@@ -213,7 +214,7 @@ function TypingDemo() {
       </div>
 
       {/* messages body */}
-      <div className="space-y-3 px-4 py-4">
+      <div className="min-h-52 space-y-3 px-4 py-4">
         {/* user bubble */}
         <div className="flex justify-end">
           <div className="max-w-[80%] rounded-2xl rounded-tr-sm bg-violet-600 px-3 py-2 text-sm text-white">
@@ -328,6 +329,11 @@ export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
+  const router = useRouter();
+  const githubLink = () => {
+    router.replace("https://renatowillon.vercel.app/");
+  };
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
@@ -375,6 +381,9 @@ export default function LandingPage() {
             <a href="#para-quem" className="transition hover:text-white">
               Para quem é
             </a>
+            <a href="#planos" className="transition hover:text-white">
+              Planos
+            </a>
           </nav>
           <div className="flex items-center justify-center gap-3">
             <a
@@ -389,75 +398,79 @@ export default function LandingPage() {
       </header>
 
       {/* ── hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 pb-16 pt-20 text-center">
+      <section className="relative mt-10 flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 text-center">
         {/* background glow */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-20 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-violet-700/20 blur-[120px]" />
-          <div className="absolute left-1/4 top-40 h-80 w-80 rounded-full bg-blue-700/10 blur-[80px]" />
-          <div className="absolute right-1/4 top-60 h-80 w-80 rounded-full bg-indigo-700/10 blur-[80px]" />
-        </div>
-
-        {/* pill badge */}
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-sm text-violet-300">
           <IconSparkle />
           <span>Assistente financeiro com Inteligência Artificial</span>
         </div>
+        <div className="flex">
+          <div className="flex flex-col items-center">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute left-1/2 top-20 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-violet-700/20 blur-[120px]" />
+              <div className="absolute left-1/4 top-40 h-80 w-80 rounded-full bg-blue-700/10 blur-[80px]" />
+              <div className="absolute right-1/4 top-60 h-80 w-80 rounded-full bg-indigo-700/10 blur-[80px]" />
+            </div>
 
-        {/* headline */}
-        <h1 className="relative mb-5 max-w-3xl text-balance text-5xl font-black leading-[1.1] tracking-tight text-white md:text-6xl lg:text-7xl">
-          Pare de perder{" "}
-          <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
-            o controle
-          </span>{" "}
-          do seu dinheiro.
-        </h1>
+            {/* pill badge */}
 
-        <p className="relative mb-10 max-w-xl text-lg leading-relaxed text-white/60">
-          Escreva o que aconteceu com seu dinheiro — a IA organiza, categoriza e
-          atualiza tudo automaticamente. Sem planilhas. Sem formulários. Só
-          resultado.
-        </p>
+            {/* headline */}
+            <h1 className="relative mb-5 max-w-3xl text-balance text-5xl font-black leading-[1.1] tracking-tight text-white md:text-6xl lg:text-7xl">
+              Pare de perder{" "}
+              <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
+                o controle
+              </span>{" "}
+              do seu dinheiro.
+            </h1>
 
-        {/* CTAs */}
-        <div className="relative mb-16 flex flex-col items-center gap-3 sm:flex-row">
-          <a
-            id="cta"
-            href="/login"
-            className="group flex items-center gap-2 rounded-2xl bg-violet-600 px-7 py-4 text-base font-bold text-white shadow-xl shadow-violet-600/40 transition hover:bg-violet-500 hover:shadow-violet-500/50"
-          >
-            Teste grátis agora
-            <span className="transition-transform group-hover:translate-x-1">
-              <IconArrow />
-            </span>
-          </a>
-          <a
-            href="#como-funciona"
-            className="flex items-center gap-2 rounded-2xl border border-white/15 px-7 py-4 text-base font-semibold text-white/70 transition hover:border-white/30 hover:text-white"
-          >
-            Ver como funciona
-          </a>
+            <p className="relative mb-10 max-w-xl text-lg leading-relaxed text-white/60">
+              Escreva o que aconteceu com seu dinheiro — a IA organiza,
+              categoriza e atualiza tudo automaticamente. Sem planilhas. Sem
+              formulários. Só resultado.
+            </p>
+
+            {/* CTAs */}
+            <div className="relative mb-16 flex flex-col items-center gap-3 sm:flex-row">
+              <a
+                id="cta"
+                href="/login"
+                className="group flex items-center gap-2 rounded-2xl bg-violet-600 px-7 py-4 text-base font-bold text-white shadow-xl shadow-violet-600/40 transition hover:bg-violet-500 hover:shadow-violet-500/50"
+              >
+                Teste grátis agora
+                <span className="transition-transform group-hover:translate-x-1">
+                  <IconArrow />
+                </span>
+              </a>
+              <a
+                href="#como-funciona"
+                className="flex items-center gap-2 rounded-2xl border border-white/15 px-7 py-4 text-base font-semibold text-white/70 transition hover:border-white/30 hover:text-white"
+              >
+                Ver como funciona
+              </a>
+            </div>
+          </div>
+
+          {/* hero demo card */}
+          <div className="flex flex-col items-center">
+            <div className="relative w-full max-w-sm">
+              <div className="absolute -inset-4 rounded-3xl bg-violet-600/20 blur-xl" />
+              <TypingDemo />
+            </div>
+
+            {/* social proof */}
+            <p className="relative mt-10 text-sm text-white/40">
+              Sem cartão de crédito · Plano gratuito disponível · Cancele quando
+              quiser
+            </p>
+          </div>
         </div>
+        {/* ── marquee ───────────────────────────────────────────────────────── */}
+        <div className="relative overflow-hidden py-5">
+          {/* fade edges */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-gradient-to-r from-[#030712] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-gradient-to-l from-[#030712] to-transparent" />
 
-        {/* hero demo card */}
-        <div className="relative w-full max-w-sm">
-          <div className="absolute -inset-4 rounded-3xl bg-violet-600/20 blur-xl" />
-          <TypingDemo />
-        </div>
-
-        {/* social proof */}
-        <p className="relative mt-10 text-sm text-white/40">
-          Sem cartão de crédito · Plano gratuito disponível · Cancele quando
-          quiser
-        </p>
-      </section>
-
-      {/* ── marquee ───────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden py-5">
-        {/* fade edges */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-gradient-to-r from-[#030712] to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-gradient-to-l from-[#030712] to-transparent" />
-
-        <style>{`
+          <style>{`
                     @keyframes marquee-ltr {
                         0%   { transform: translateX(0); }
                         100% { transform: translateX(-50%); }
@@ -471,74 +484,75 @@ export default function LandingPage() {
                     .marquee-fwd:hover, .marquee-rev:hover { animation-play-state: paused; }
                 `}</style>
 
-        {/* row 1 — goes left */}
-        <div className="marquee-fwd mb-3 flex w-max gap-3">
-          {[
-            { icon: "⚡", label: "Registro instantâneo" },
-            { icon: "🤖", label: "IA que entende você" },
-            { icon: "📊", label: "Dashboard em tempo real" },
-            { icon: "💳", label: "Cartão de crédito integrado" },
-            { icon: "🎯", label: "Zero planilhas" },
-            { icon: "🔒", label: "Dados seguros" },
-            { icon: "✨", label: "Categorização automática" },
-            { icon: "📈", label: "Visão clara das finanças" },
-            { icon: "🤝", label: "Ideal para MEIs" },
-            { icon: "🚀", label: "Simples e rápido" },
-            { icon: "⚡", label: "Registro instantâneo" },
-            { icon: "🤖", label: "IA que entende você" },
-            { icon: "📊", label: "Dashboard em tempo real" },
-            { icon: "💳", label: "Cartão de crédito integrado" },
-            { icon: "🎯", label: "Zero planilhas" },
-            { icon: "🔒", label: "Dados seguros" },
-            { icon: "✨", label: "Categorização automática" },
-            { icon: "📈", label: "Visão clara das finanças" },
-            { icon: "🤝", label: "Ideal para MEIs" },
-            { icon: "🚀", label: "Simples e rápido" },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="flex flex-shrink-0 items-center gap-2.5 rounded-full bg-violet-600/10 px-5 py-2 text-sm font-medium text-violet-300/70"
-            >
-              <span className="text-base">{item.icon}</span>
-              <span>{item.label}</span>
-            </div>
-          ))}
-        </div>
+          {/* row 1 — goes left */}
+          <div className="marquee-fwd mb-3 flex w-max gap-3">
+            {[
+              { icon: "⚡", label: "Registro instantâneo" },
+              { icon: "🤖", label: "IA que entende você" },
+              { icon: "📊", label: "Dashboard em tempo real" },
+              { icon: "💳", label: "Cartão de crédito integrado" },
+              { icon: "🎯", label: "Zero planilhas" },
+              { icon: "🔒", label: "Dados seguros" },
+              { icon: "✨", label: "Categorização automática" },
+              { icon: "📈", label: "Visão clara das finanças" },
+              { icon: "🤝", label: "Ideal para MEIs" },
+              { icon: "🚀", label: "Simples e rápido" },
+              { icon: "⚡", label: "Registro instantâneo" },
+              { icon: "🤖", label: "IA que entende você" },
+              { icon: "📊", label: "Dashboard em tempo real" },
+              { icon: "💳", label: "Cartão de crédito integrado" },
+              { icon: "🎯", label: "Zero planilhas" },
+              { icon: "🔒", label: "Dados seguros" },
+              { icon: "✨", label: "Categorização automática" },
+              { icon: "📈", label: "Visão clara das finanças" },
+              { icon: "🤝", label: "Ideal para MEIs" },
+              { icon: "🚀", label: "Simples e rápido" },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="flex flex-shrink-0 items-center gap-2.5 rounded-full bg-violet-600/10 px-5 py-2 text-sm font-medium text-violet-300/70"
+              >
+                <span className="text-base">{item.icon}</span>
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
 
-        {/* row 2 — goes right */}
-        <div className="marquee-rev flex w-max gap-3">
-          {[
-            { icon: "💬", label: "Controle por conversa" },
-            { icon: "🧠", label: "Organização sem esforço" },
-            { icon: "📱", label: "Funciona no celular" },
-            { icon: "🏦", label: "Múltiplas contas" },
-            { icon: "📅", label: "Controle mensal" },
-            { icon: "💡", label: "Insights inteligentes" },
-            { icon: "⏱️", label: "Economia de tempo" },
-            { icon: "😌", label: "Tranquilidade financeira" },
-            { icon: "🎨", label: "Interface moderna" },
-            { icon: "✅", label: "Sem erros de lançamento" },
-            { icon: "💬", label: "Controle por conversa" },
-            { icon: "🧠", label: "Organização sem esforço" },
-            { icon: "📱", label: "Funciona no celular" },
-            { icon: "🏦", label: "Múltiplas contas" },
-            { icon: "📅", label: "Controle mensal" },
-            { icon: "💡", label: "Insights inteligentes" },
-            { icon: "⏱️", label: "Economia de tempo" },
-            { icon: "😌", label: "Tranquilidade financeira" },
-            { icon: "🎨", label: "Interface moderna" },
-            { icon: "✅", label: "Sem erros de lançamento" },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="flex flex-shrink-0 items-center gap-2.5 rounded-full bg-violet-600/10 px-5 py-2 text-sm font-medium text-violet-300/70"
-            >
-              <span className="text-base">{item.icon}</span>
-              <span>{item.label}</span>
-            </div>
-          ))}
+          {/* row 2 — goes right */}
+          <div className="marquee-rev flex w-max gap-3">
+            {[
+              { icon: "💬", label: "Controle por conversa" },
+              { icon: "🧠", label: "Organização sem esforço" },
+              { icon: "📱", label: "Funciona no celular" },
+              { icon: "🏦", label: "Múltiplas contas" },
+              { icon: "📅", label: "Controle mensal" },
+              { icon: "💡", label: "Insights inteligentes" },
+              { icon: "⏱️", label: "Economia de tempo" },
+              { icon: "😌", label: "Tranquilidade financeira" },
+              { icon: "🎨", label: "Interface moderna" },
+              { icon: "✅", label: "Sem erros de lançamento" },
+              { icon: "💬", label: "Controle por conversa" },
+              { icon: "🧠", label: "Organização sem esforço" },
+              { icon: "📱", label: "Funciona no celular" },
+              { icon: "🏦", label: "Múltiplas contas" },
+              { icon: "📅", label: "Controle mensal" },
+              { icon: "💡", label: "Insights inteligentes" },
+              { icon: "⏱️", label: "Economia de tempo" },
+              { icon: "😌", label: "Tranquilidade financeira" },
+              { icon: "🎨", label: "Interface moderna" },
+              { icon: "✅", label: "Sem erros de lançamento" },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="flex flex-shrink-0 items-center gap-2.5 rounded-full bg-violet-600/10 px-5 py-2 text-sm font-medium text-violet-300/70"
+              >
+                <span className="text-base">{item.icon}</span>
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* ── como funciona ──────────────────────────────────────────────── */}
       <section id="como-funciona" className="relative px-5 py-24">
@@ -1194,8 +1208,13 @@ export default function LandingPage() {
               © {new Date().getFullYear()} wFinance. Todos os direitos
               reservados.
             </p>
-            <p className="text-xs text-white/25">
-              Feito com ❤️ para quem quer clareza financeira
+            <p className="flex items-center gap-2 text-xs text-white/25">
+              Feito por{" "}
+              <Github
+                className="cursor-pointer text-violet-600"
+                onClick={() => githubLink()}
+              />{" "}
+              para quem quer clareza financeira
             </p>
           </div>
         </div>
