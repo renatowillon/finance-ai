@@ -37,7 +37,7 @@ export default async function RootLayout({
             <SidebarClient
               usuarioPodeAdicionarTransacao={usuarioPodeAdicionarTransacao}
             />
-            <div className="flex min-h-screen w-full flex-col overflow-y-scroll lg:p-5">
+            <div className="flex min-h-screen w-full flex-col overflow-y-scroll scroll-smooth lg:p-5">
               <div className="mb-20 h-full md:mb-0">
                 <RouteGuardListener />
                 {children}
