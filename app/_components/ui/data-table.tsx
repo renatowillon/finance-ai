@@ -22,7 +22,6 @@ import {
   CheckCheck,
   CreditCard,
   Filter,
-  PiggyBank,
   TrendingDown,
   TrendingUp,
   WalletIcon,
@@ -105,16 +104,29 @@ export function DataTable<
 
     const totais = filtrado.reduce(
       (acc, item) => {
-        if (item.type === "DESPESA") acc.despesas += Number(item.amount) ?? 0;
-        else if (item.type === "DEPOSITO")
-          acc.receitas += Number(item.amount) ?? 0;
-        else if (item.type === "INVESTIMENTO")
-          acc.investimentos += Number(item.amount) ?? 0;
-        else if (item.type === "CARTAOCREDITO")
-          acc.despesas += Number(item.amount) ?? 0;
+        const valor = Number(item.amount) || 0;
+        const pago = "baixado" in item ? item.baixado === true : false;
+
+        // DESPESAS
+        if (item.type === "DESPESA" || item.type === "CARTAOCREDITO") {
+          if (pago) acc.despesasPagas += valor;
+          else acc.despesasPendentes += valor;
+        }
+
+        // RECEITAS
+        if (item.type === "DEPOSITO") {
+          if (pago) acc.receitasPagas += valor;
+          else acc.receitasPendentes += valor;
+        }
+
         return acc;
       },
-      { despesas: 0, receitas: 0, investimentos: 0 },
+      {
+        despesasPagas: 0,
+        despesasPendentes: 0,
+        receitasPagas: 0,
+        receitasPendentes: 0,
+      },
     );
 
     return { dadosFiltrados: filtrado, totais };
@@ -140,6 +152,7 @@ export function DataTable<
 
   const { userId } = useAuth();
 
+  // aqui traz o valor total das despesas de cartão de credito do mês selacionado
   const { data: totalCartao } = useQuery({
     queryKey: ["transacoes-cartao", userId, dateInicio, dateFim],
     queryFn: () =>
@@ -346,7 +359,9 @@ export function DataTable<
                 className="text-end text-green-500 md:text-start"
               />
             }
-            amount={totais.receitas}
+            valorPago={totais.receitasPagas}
+            valorPendente={totais.receitasPendentes}
+            amount={totais.receitasPagas + totais.receitasPendentes}
             size="small"
           />
 
@@ -363,7 +378,9 @@ export function DataTable<
                 className="text-end text-red-500 md:text-start"
               />
             }
-            amount={totais.despesas}
+            valorPago={totais.despesasPagas}
+            valorPendente={totais.despesasPendentes}
+            amount={totais.despesasPagas + totais.despesasPendentes}
             size="small"
           />
 
@@ -376,7 +393,11 @@ export function DataTable<
                 className="text-end text-primary md:text-start"
               />
             }
-            amount={totais.receitas - totais.despesas - totais.investimentos}
+            amount={
+              totais.receitasPagas +
+              totais.receitasPendentes -
+              (totais.despesasPagas + totais.despesasPendentes)
+            }
             size="small"
           />
 
@@ -681,7 +702,9 @@ export function DataTable<
               className="text-end text-green-500 md:text-start"
             />
           }
-          amount={totais.receitas}
+          valorPago={totais.receitasPagas}
+          valorPendente={totais.receitasPendentes}
+          amount={totais.receitasPagas + totais.receitasPendentes}
           size="small"
         />
 
@@ -698,7 +721,9 @@ export function DataTable<
               className="text-end text-red-500 md:text-start"
             />
           }
-          amount={totais.despesas}
+          valorPago={totais.despesasPagas}
+          valorPendente={totais.despesasPendentes}
+          amount={totais.despesasPagas + totais.despesasPendentes}
           size="small"
         />
         <SumaryCard
@@ -710,11 +735,15 @@ export function DataTable<
               className="text-end text-primary md:text-start"
             />
           }
-          amount={totais.receitas - totais.despesas - totais.investimentos}
+          amount={
+            totais.receitasPagas +
+            totais.receitasPendentes -
+            (totais.despesasPagas + totais.despesasPendentes)
+          }
           size="small"
         />
 
-        <SumaryCard
+        {/* <SumaryCard
           className="w-full"
           title="Investimentos"
           icon={
@@ -725,7 +754,7 @@ export function DataTable<
           }
           amount={totais.investimentos}
           size="small"
-        />
+        /> */}
       </div>
       <div className="rounded-md border">
         <Table>

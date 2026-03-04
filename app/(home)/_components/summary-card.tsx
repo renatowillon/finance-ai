@@ -12,6 +12,8 @@ interface SumaryCardProps {
   userCanAddTransaction?: boolean;
   className?: string;
   onClick?: () => void;
+  valorPago?: number;
+  valorPendente?: number;
 }
 
 const SumaryCard = ({
@@ -22,6 +24,8 @@ const SumaryCard = ({
   userCanAddTransaction,
   className,
   onClick,
+  valorPago,
+  valorPendente,
 }: SumaryCardProps) => {
   return (
     <Card
@@ -45,6 +49,23 @@ const SumaryCard = ({
         >
           {formatCurrency(amount)}
         </p>
+        <div className="self-end font-bold text-muted-foreground">
+          {valorPago != null && (
+            <p
+              className={`flex justify-end gap-2 ${size === "small" ? "text-xs" : "text-2xl"}`}
+            >
+              <span>Pagos:</span> {formatCurrency(valorPago)}
+            </p>
+          )}
+          {valorPendente != null && (
+            <p
+              className={`flex justify-end gap-2 ${size === "small" ? "text-xs" : "text-2xl"}`}
+            >
+              <span>Pendente:</span> {formatCurrency(valorPendente)}
+            </p>
+          )}
+        </div>
+
         {size === "large" && (
           <AddTransactionButton
             usuarioPodeAdicionarTransacao={userCanAddTransaction}
