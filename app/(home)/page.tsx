@@ -46,7 +46,7 @@ const Home = async ({ searchParams: { month } }: PropriedadesHome) => {
 
   return (
     <>
-      <div className="flex flex-col space-y-4 p-4 sm:space-y-6 sm:p-6">
+      <div className="flex flex-col space-y-4 p-4 pb-24 sm:space-y-6 sm:p-6 md:pb-0">
         {/* Header responsivo */}
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:gap-0">
           <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>

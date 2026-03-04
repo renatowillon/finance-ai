@@ -31,7 +31,7 @@ const TransactionsPage = async () => {
 
   return (
     <>
-      <div className="space-y-6 p-6">
+      <div className="space-y-6 p-6 pb-24">
         {/* titulo e botão */}
         <div className="flex w-full items-center justify-between">
           <h1 className="text-2xl font-bold">Transações</h1>

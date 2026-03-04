@@ -38,7 +38,7 @@ export default async function RootLayout({
               usuarioPodeAdicionarTransacao={usuarioPodeAdicionarTransacao}
             />
             <div className="flex min-h-screen w-full flex-col overflow-y-scroll scroll-smooth lg:p-5">
-              <div className="mb-20 h-full md:mb-0">
+              <div className="h-full">
                 <RouteGuardListener />
                 {children}
                 <ButtonBot />
