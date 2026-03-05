@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Github, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // ─── tiny icon components (inline SVG, zero deps) ──────────────────────────
@@ -351,7 +351,10 @@ export default function LandingPage() {
   const ctaLabel = isLoggedIn ? "Acessar dashboard" : "Login";
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#030712] text-white selection:bg-violet-600/40">
+    <main
+      id="home"
+      className="min-h-screen overflow-x-hidden bg-[#030712] text-white selection:bg-violet-600/40"
+    >
       {/* ── floating nav ───────────────────────────────────────────────────────── */}
       <header
         className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
@@ -362,7 +365,7 @@ export default function LandingPage() {
       >
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
           {/* logo */}
-          <a href="/lp" className="flex items-center">
+          <a href="#home" className="flex items-center">
             <Image
               src="/logo-wfinance.png"
               alt="wFinance"
@@ -1211,13 +1214,12 @@ export default function LandingPage() {
               © {new Date().getFullYear()} wFinance. Todos os direitos
               reservados.
             </p>
-            <p className="flex items-center gap-2 text-xs text-white/25">
-              Feito por{" "}
-              <Github
-                className="cursor-pointer text-violet-600"
-                onClick={() => githubLink()}
-              />{" "}
-              para quem quer clareza financeira
+            <p
+              className="flex cursor-pointer items-center gap-2 text-xs text-white/25"
+              onClick={() => githubLink()}
+            >
+              Feito por <span className="font-bold">Renato Willon</span> para
+              quem quer clareza financeira
             </p>
           </div>
         </div>

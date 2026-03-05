@@ -21,7 +21,7 @@ export const canUserAddTransaction = async (): Promise<boolean> => {
   // Passa o userId para a função que precisa dele
   const transacoesDoMesAtual = await getCurrentMonthTransactions(sessao.userId);
 
-  if (transacoesDoMesAtual >= 10 && sessao.plano === "FREE") {
+  if (transacoesDoMesAtual >= 50 && sessao.plano === "FREE") {
     return false;
   }
 

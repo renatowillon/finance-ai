@@ -73,9 +73,9 @@ export const inserirOuAtualizarTransacao = async (
       const totalNoMes = await getCurrentMonthTransactions(String(idUsuario));
       const totalQueSeraCriado = parametros.repeteQtd;
 
-      if (!podeAdicionar && totalNoMes + totalQueSeraCriado > 10) {
+      if (!podeAdicionar && totalNoMes + totalQueSeraCriado > 50) {
         throw new Error(
-          "Essa transação repetida ultrapassaria seu limite mensal de 10 transações no plano FREE.",
+          "Essa transação repetida ultrapassaria seu limite mensal de 50 transações no plano FREE.",
         );
       }
     }
