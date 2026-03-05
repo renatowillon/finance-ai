@@ -1,12 +1,14 @@
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader } from "../_components/ui/card";
-import { CheckIcon, X } from "lucide-react";
-import AcquirePlanButton from "./_components/acquire-plan-button";
-import { Badge } from "../_components/ui/badge";
-import { getCurrentMonthTransactions } from "../_data/get-current-month-transaction";
+// import { Card, CardContent, CardHeader } from "../_components/ui/card";
+// import { CheckIcon, X } from "lucide-react";
+// import AcquirePlanButton from "./_components/acquire-plan-button";
+// import { Badge } from "../_components/ui/badge";
+// import { getCurrentMonthTransactions } from "../_data/get-current-month-transaction";
 import { cookies } from "next/headers";
 import { obterUsuarioPorToken } from "../_lib/session";
-import PlanoAdquirido from "./_components/planoAdquirido";
+// import PlanoAdquirido from "./_components/planoAdquirido";
+
+import { PlanoDetalhes } from "./_components/planoDetalhes";
 
 const SubscriptionsPage = async () => {
   const armazenadorCookie = cookies();
@@ -21,15 +23,15 @@ const SubscriptionsPage = async () => {
     redirect("/login");
   }
 
-  const transacoesDoMesAtual = await getCurrentMonthTransactions(
-    String(usuario.userId),
-  );
+  // const transacoesDoMesAtual = await getCurrentMonthTransactions(
+  //   String(usuario.userId),
+  // );
 
   return (
     <>
       <div className="space-y-6 p-6 py-6 sm:p-6">
         <h1 className="text-2xl font-bold">Assinatura</h1>
-        <div className="flex flex-col gap-6 sm:flex-row">
+        {/* <div className="flex flex-col gap-6 sm:flex-row">
           <Card className="sm:w-[450px]">
             <CardHeader className="relative border-b border-solid py-8">
               {usuario.plano === "FREE" && (
@@ -89,7 +91,8 @@ const SubscriptionsPage = async () => {
               {usuario.plano === "DEV" && <PlanoAdquirido />}
             </CardContent>
           </Card>
-        </div>
+        </div> */}
+        <PlanoDetalhes planoUsuario={usuario.plano} />
       </div>
     </>
   );
