@@ -24,68 +24,13 @@ const SubscriptionsPage = async () => {
   return (
     <>
       <div className="space-y-6 p-6 py-6 sm:p-6">
-        <h1 className="text-2xl font-bold">Assinatura</h1>
-        {/* <div className="flex flex-col gap-6 sm:flex-row">
-          <Card className="sm:w-[450px]">
-            <CardHeader className="relative border-b border-solid py-8">
-              {usuario.plano === "FREE" && (
-                <Badge className="absolute left-4 top-4 bg-primary/20 text-primary">
-                  Ativo
-                </Badge>
-              )}
-              <h2 className="text-center text-2xl font-semibold">
-                Plano Básico
-              </h2>
-              <div className="flex items-center justify-center gap-3">
-                <span className="text-4xl">R$</span>
-                <span className="text-6xl font-semibold">0</span>
-                <span className="text-2xl text-muted-foreground">/mês</span>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6 py-8">
-              <div className="flex items-center gap-2">
-                <CheckIcon className="text-primary" />
-                <p>Apenas 50 transações por mês ({transacoesDoMesAtual}/50)</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <X className="" />
-                <p>Relatório de IA</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="sm:w-[450px]">
-            <CardHeader className="relative border-b border-solid py-8">
-              {usuario.plano === "PREMIUM" ||
-                (usuario.plano === "DEV" && (
-                  <Badge className="absolute left-4 top-4 bg-primary/20 text-primary">
-                    Ativo
-                  </Badge>
-                ))}
-
-              <h2 className="pointer-events-none text-center text-2xl font-semibold">
-                Plano Premium
-              </h2>
-              <div className="flex items-center justify-center gap-3">
-                <span className="text-4xl">R$</span>
-                <span className="text-6xl font-semibold">19</span>
-                <span className="text-2xl text-muted-foreground">/mês</span>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6 py-8">
-              <div className="flex items-center gap-2">
-                <CheckIcon className="text-primary" />
-                <p>Transações ilimitadas</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckIcon className="text-primary" />
-                <p>Relatório de IA</p>
-              </div>
-              {usuario.plano === "FREE" && <AcquirePlanButton />}
-              {usuario.plano === "PREMIUM" && <PlanoAdquirido />}
-              {usuario.plano === "DEV" && <PlanoAdquirido />}
-            </CardContent>
-          </Card>
-        </div> */}
+        <div className="">
+          <h1 className="text-2xl font-bold">Assinatura</h1>
+          <p className="mt-2 text-muted-foreground">
+            Veja os detalhes do seu plano, histórico de pagamentos e faça o
+            gerenciamento da sua conta.
+          </p>
+        </div>
         <PlanoDetalhes
           planoUsuario={usuario.plano}
           transacoesDoMesAtual={transacoesDoMesAtual}

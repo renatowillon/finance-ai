@@ -32,20 +32,20 @@ const configuracaoGrafico = {
 interface PropriedadesGraficoPizzaTransacoes {
   porcentagemPorTipo: PorcentagemTransacaoPorTipo;
   totalDepositos: number;
-  totalInvestimentos: number;
+  totalCartao: number;
   totalDespesas: number;
 }
 
 const TransactionsPieChats = ({
   totalDepositos,
   totalDespesas,
-  totalInvestimentos,
+  totalCartao,
   porcentagemPorTipo,
 }: PropriedadesGraficoPizzaTransacoes) => {
   const dadosGrafico = [
     {
       type: TransactionType.INVESTIMENTO,
-      amount: totalInvestimentos,
+      amount: totalCartao,
       fill: "#ffffff",
     },
     {

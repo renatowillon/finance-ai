@@ -21,6 +21,7 @@ import {
   Check,
   CheckCheck,
   CreditCard,
+  CreditCardIcon,
   Filter,
   TrendingDown,
   TrendingUp,
@@ -728,6 +729,18 @@ export function DataTable<
         />
         <SumaryCard
           className="w-full"
+          title="Despesas Cartão"
+          icon={
+            <CreditCardIcon
+              size={16}
+              className="text-primary-500 text-end md:text-start"
+            />
+          }
+          amount={totalCartao?.totalCartao}
+          size="small"
+        />
+        <SumaryCard
+          className="w-full"
           title="Balanço período"
           icon={
             <WalletIcon
@@ -738,23 +751,11 @@ export function DataTable<
           amount={
             totais.receitasPagas +
             totais.receitasPendentes -
-            (totais.despesasPagas + totais.despesasPendentes)
+            (totais.despesasPagas + totais.despesasPendentes) -
+            totalCartao?.totalCartao
           }
           size="small"
         />
-
-        {/* <SumaryCard
-          className="w-full"
-          title="Investimentos"
-          icon={
-            <PiggyBank
-              size={16}
-              className="text-primary-500 text-end md:text-start"
-            />
-          }
-          amount={totais.investimentos}
-          size="small"
-        /> */}
       </div>
       <div className="rounded-md border">
         <Table>

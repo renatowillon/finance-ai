@@ -2,6 +2,8 @@ import { db } from "@/app/_lib/prisma";
 import { TransactionType } from "@prisma/client";
 import { TotalDespesaPorCategoria, PorcentagemTransacaoPorTipo } from "./types";
 import { obterSessao } from "@/app/_lib/session"; // 1. Importar a função de sessão
+import { pegarTransacaoPorPeriodo } from "@/app/controller/transacaoCartaoController";
+import { formatarData } from "@/app/_utils/functions";
 export const obterDashboard = async (mes: string) => {
   // 2. Obter a sessão do usuário no início da função
   const sessao = await obterSessao();
@@ -21,6 +23,16 @@ export const obterDashboard = async (mes: string) => {
       ? new Date(anoAtual + 1, 0, 1)
       : new Date(anoAtual, numeroMes, 1);
   // 3. Adicionar o userId ao objeto 'where' para filtrar TODAS as queries
+
+  const inicioCT = new Date(
+    inicio.getFullYear(),
+    inicio.getMonth(),
+    inicio.getDate(),
+  );
+  const fimCT = new Date(fim.getFullYear(), fim.getMonth(), 0);
+
+  const inicioFormatado = formatarData(inicioCT);
+  const fimFormatado = formatarData(fimCT);
 
   const filtroConsulta = {
     userId: Number(sessao.userId),
@@ -56,8 +68,13 @@ export const obterDashboard = async (mes: string) => {
       })
     )?._sum?.amount || 0,
   );
-
-  const saldo = totalDepositos - totalInvestimentos - totalDespesas;
+  const { totalCartao } = await pegarTransacaoPorPeriodo({
+    dataInicio: new Date(inicioFormatado),
+    dataFim: new Date(fimFormatado),
+    userId: Number(sessao.userId),
+  });
+  const saldo =
+    totalDepositos - totalInvestimentos - totalDespesas - totalCartao;
 
   const totalTransacoes = totalDepositos + totalInvestimentos + totalDespesas;
 
@@ -115,12 +132,15 @@ export const obterDashboard = async (mes: string) => {
     orderBy: { date: "desc" },
     take: 10,
   });
-
+  console.log("inicio:", inicioFormatado, "Fim: ", fimFormatado);
+  console.log("Mês: ", mes);
+  console.log("Total Cartão: ", totalCartao);
   return {
     totalDepositos,
     totalInvestimentos,
     totalDespesas,
     saldo,
+    totalCartao,
     porcentagemPorTipo,
     totalDespesasPorCategoria,
     ultimasTransacoes,

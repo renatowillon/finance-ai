@@ -27,6 +27,10 @@ export function dataFormatada2(data: Date) {
   });
 }
 
+export function formatarData(date: Date) {
+  return date.toISOString().split("T")[0];
+}
+
 export function formatarCompetencia(data: Date | string) {
   const d = new Date(data);
   const ano = d.getFullYear();

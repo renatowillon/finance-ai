@@ -1,5 +1,5 @@
 import {
-  PiggyBankIcon,
+  CreditCard,
   TrendingDownIcon,
   TrendingUpIcon,
   WalletIcon,
@@ -10,6 +10,7 @@ import { CardBancosDashboard } from "@/app/_components/bancos/cardBancosDashboar
 interface PropriedadesResumo {
   month: string;
   saldo: number;
+  totalCartao: number;
   totalDepositos: number;
   totalInvestimentos: number;
   totalDespesas: number;
@@ -18,9 +19,9 @@ interface PropriedadesResumo {
 
 const SumaryCards = async ({
   saldo,
+  totalCartao,
   totalDepositos,
   totalDespesas,
-  totalInvestimentos,
   userCanAddTransaction,
 }: PropriedadesResumo) => {
   return (
@@ -68,9 +69,9 @@ const SumaryCards = async ({
         {/* Mobile: Investimentos ocupa toda largura / Desktop: primeira coluna */}
         <div className="sm:order-1">
           <SumaryCard
-            icon={<PiggyBankIcon size={16} />}
-            title="Investimento"
-            amount={totalInvestimentos}
+            icon={<CreditCard size={16} />}
+            title="Cartão de Credito"
+            amount={totalCartao}
             size="small"
           />
         </div>
