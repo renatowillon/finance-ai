@@ -21,7 +21,7 @@ export const PlanoTooltip = ({
         i
       </span>
 
-      <div className="absolute bottom-full left-1/2 z-50 mb-3 hidden w-[320px] -translate-x-1/2 flex-col gap-3 rounded-2xl border border-white/10 bg-[#0f172a]/95 p-5 text-sm shadow-2xl shadow-black/50 backdrop-blur-xl group-hover:flex">
+      <div className="absolute left-1/2 top-full z-50 mb-3 hidden w-[320px] -translate-x-1/2 flex-col gap-3 rounded-2xl border border-white/10 bg-[#0f172a]/95 p-5 text-sm shadow-2xl shadow-black/50 backdrop-blur-xl group-hover:flex">
         <div className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-b border-r border-white/10 bg-[#0f172a]" />
 
         <div>

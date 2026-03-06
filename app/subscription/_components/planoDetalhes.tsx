@@ -3,9 +3,13 @@ import { PlanoComponente } from "./planoComponente";
 
 interface PlanoDetalhesProps {
   planoUsuario: string;
+  transacoesDoMesAtual: number;
 }
 
-export const PlanoDetalhes = ({ planoUsuario }: PlanoDetalhesProps) => {
+export const PlanoDetalhes = ({
+  planoUsuario,
+  transacoesDoMesAtual,
+}: PlanoDetalhesProps) => {
   function ctaHref(plano: string) {
     window.open(
       `https://api.whatsapp.com/send?phone=5583988332659&text=Ol%C3%A1%2C%20queria%20adquirir%20o%20Plano%20${plano}`,
@@ -19,6 +23,7 @@ export const PlanoDetalhes = ({ planoUsuario }: PlanoDetalhesProps) => {
         name="Denário"
         icon="🪙"
         price={<span className="text-4xl font-black text-white">Grátis</span>}
+        totalTransacao={transacoesDoMesAtual}
         description="Para quem quer começar a organizar as finanças sem custo."
         buttonText="Começar grátis"
         variant="denario"

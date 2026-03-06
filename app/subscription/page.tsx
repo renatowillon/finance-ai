@@ -1,13 +1,7 @@
 import { redirect } from "next/navigation";
-// import { Card, CardContent, CardHeader } from "../_components/ui/card";
-// import { CheckIcon, X } from "lucide-react";
-// import AcquirePlanButton from "./_components/acquire-plan-button";
-// import { Badge } from "../_components/ui/badge";
-// import { getCurrentMonthTransactions } from "../_data/get-current-month-transaction";
+import { getCurrentMonthTransactions } from "../_data/get-current-month-transaction";
 import { cookies } from "next/headers";
 import { obterUsuarioPorToken } from "../_lib/session";
-// import PlanoAdquirido from "./_components/planoAdquirido";
-
 import { PlanoDetalhes } from "./_components/planoDetalhes";
 
 const SubscriptionsPage = async () => {
@@ -23,9 +17,9 @@ const SubscriptionsPage = async () => {
     redirect("/login");
   }
 
-  // const transacoesDoMesAtual = await getCurrentMonthTransactions(
-  //   String(usuario.userId),
-  // );
+  const transacoesDoMesAtual = await getCurrentMonthTransactions(
+    String(usuario.userId),
+  );
 
   return (
     <>
@@ -92,7 +86,10 @@ const SubscriptionsPage = async () => {
             </CardContent>
           </Card>
         </div> */}
-        <PlanoDetalhes planoUsuario={usuario.plano} />
+        <PlanoDetalhes
+          planoUsuario={usuario.plano}
+          transacoesDoMesAtual={transacoesDoMesAtual}
+        />
       </div>
     </>
   );

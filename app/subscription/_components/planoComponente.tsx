@@ -21,6 +21,7 @@ interface PricingCardProps {
 
   toolTip: HistoryTooltipProps;
   usuarioPlano: boolean;
+  totalTransacao?: number;
 }
 
 import { Check, X } from "lucide-react";
@@ -41,6 +42,7 @@ export function PlanoComponente({
   variant = "denario",
   toolTip,
   usuarioPlano,
+  totalTransacao,
 }: PricingCardProps) {
   const variants = {
     denario: {
@@ -108,9 +110,14 @@ export function PlanoComponente({
             </div>
           )}
         </div>
-
-        <div className="mb-3">{price}</div>
-
+        <div className="flex items-center gap-3">
+          <div className="mb-3">{price}</div>
+          {totalTransacao && (
+            <div className="text-xl font-bold text-muted-foreground">
+              {totalTransacao} / 50
+            </div>
+          )}
+        </div>
         <p className="text-sm text-white/50">{description}</p>
       </div>
 
@@ -130,7 +137,8 @@ export function PlanoComponente({
 
       <button
         onClick={onClick}
-        className={`block rounded-xl py-3 text-center text-sm font-bold transition ${style.button}`}
+        disabled={usuarioPlano}
+        className={`block rounded-xl py-3 text-center text-sm font-bold transition ${style.button} ${usuarioPlano ? "cursor-not-allowed" : ""}`}
       >
         {buttonText}
       </button>
