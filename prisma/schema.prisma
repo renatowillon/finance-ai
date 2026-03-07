@@ -60,6 +60,7 @@ model Banco {
   id Int @id @default(autoincrement())
   nome String
   tipo TipoContas
+  principal Boolean? @default(false)
   saldoInicial  Decimal @db.Decimal(10, 2)
   saldoAtual  Decimal @db.Decimal(10, 2)
   diaFechamento String?

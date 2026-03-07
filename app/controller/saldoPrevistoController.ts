@@ -1,6 +1,8 @@
 import { db } from "../_lib/prisma";
 import { obterSessao } from "../_lib/session";
+import { formatarData } from "../_utils/functions";
 import { saldoBancoController } from "./saldoBancoController";
+import { pegarTransacaoPorPeriodo } from "./transacaoCartaoController";
 
 export const saldoPrevistoController = async (
   bancoId: number,
@@ -12,6 +14,29 @@ export const saldoPrevistoController = async (
   const startDate = new Date(`${yearMonth}-01T00:00:00`);
   const endDate = new Date(startDate);
   endDate.setMonth(endDate.getMonth() + 1);
+
+  const inicioCT = new Date(
+    startDate.getFullYear(),
+    startDate.getMonth(),
+    startDate.getDate(),
+  );
+  const fimCT = new Date(endDate.getFullYear(), endDate.getMonth(), 0);
+
+  const inicioFormatado = formatarData(inicioCT);
+  const fimFormatado = formatarData(fimCT);
+
+  const banco = await db.banco.findUnique({
+    where: { id: bancoId },
+    select: { principal: true },
+  });
+
+  const { totalCartao } = await pegarTransacaoPorPeriodo({
+    dataInicio: new Date(inicioFormatado),
+    dataFim: new Date(fimFormatado),
+    userId: Number(usuarioLogado),
+  });
+
+  const totalCartaoConsiderado = banco?.principal ? totalCartao : 0;
 
   const { _sum: despesasGeral } = await db.transaction.aggregate({
     where: {
@@ -45,5 +70,5 @@ export const saldoPrevistoController = async (
   const despesas = despesasGeral.amount?.toNumber() ?? 0;
   const receitas = receitasGeral.amount?.toNumber() ?? 0;
 
-  return receitas - despesas + saldoAtualBanco;
+  return receitas - (despesas + totalCartaoConsiderado) + saldoAtualBanco;
 };

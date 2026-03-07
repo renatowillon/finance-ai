@@ -38,9 +38,11 @@ const Home = async ({ searchParams: { month } }: PropriedadesHome) => {
 
   const mesAtual = String(new Date().getMonth() + 1).padStart(2, "0");
   const mesInvalido = !month || !isMatch(month, "MM");
+
   if (mesInvalido) {
     redirect(`/?month=${mesAtual}`);
   }
+
   const painelControle = await obterDashboard(month);
   const usuarioPodeAdicionarTransacao = await canUserAddTransaction();
 

@@ -384,9 +384,21 @@ export function DataTable<
             amount={totais.despesasPagas + totais.despesasPendentes}
             size="small"
           />
+          <SumaryCard
+            className="w-full"
+            title="Despesas Cartão"
+            icon={
+              <CreditCardIcon
+                size={16}
+                className="text-primary-500 text-end md:text-start"
+              />
+            }
+            amount={totalCartao?.totalCartao}
+            size="small"
+          />
 
           <SumaryCard
-            className="col-span-2 justify-between space-y-1 p-1 text-sm"
+            className="col-span-1 justify-between space-y-1 p-1 text-sm"
             title="Balanço período"
             icon={
               <WalletIcon
@@ -397,7 +409,8 @@ export function DataTable<
             amount={
               totais.receitasPagas +
               totais.receitasPendentes -
-              (totais.despesasPagas + totais.despesasPendentes)
+              (totais.despesasPagas + totais.despesasPendentes) -
+              totalCartao?.totalCartao
             }
             size="small"
           />

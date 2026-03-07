@@ -35,7 +35,7 @@ export const CardBanco = ({ dataBanco, editBanco, mes }: Props) => {
     <>
       <Card
         key={dataBanco.id}
-        className={`space-y-4 p-8`}
+        className={`space-y-4 p-6`}
         style={{
           background: `linear-gradient(135deg, hsl(var(--card)), ${dataBanco.cor}30)`,
         }}
