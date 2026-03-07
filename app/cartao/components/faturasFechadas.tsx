@@ -35,7 +35,10 @@ export const FaturasFechadas = () => {
     queryFn: () => pegarTransacaoFatura(faturaId),
     enabled: !!faturaId,
   });
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function pagarFatura(fatura: any) {
+    console.log(fatura);
+  }
   return (
     <div className="space-y-5">
       <div className="w-full space-y-3 rounded-lg border p-5">
@@ -94,7 +97,7 @@ export const FaturasFechadas = () => {
                     >
                       Ver Transações
                     </Button>
-                    <Button>Pagar</Button>
+                    <Button onClick={() => pagarFatura(fatura)}>Pagar</Button>
                   </div>
                 </div>
               ))}
