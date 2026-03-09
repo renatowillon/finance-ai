@@ -36,6 +36,7 @@ export const obterDashboard = async (mes: string) => {
 
   const filtroConsulta = {
     userId: Number(sessao.userId),
+    afetaSaldo: true,
     date: {
       gte: inicio,
       lt: fim,

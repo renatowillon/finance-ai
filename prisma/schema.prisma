@@ -29,6 +29,9 @@ model Transaction {
   baixado Boolean @default(true)
   categoriaId Int?
   categoria Categoria? @relation(fields: [categoriaId], references: [id])
+  afetaSaldo Boolean @default(true)
+  faturaCartaoId String?
+  faturaCartao FaturaCartao? @relation(fields: [faturaCartaoId], references: [id])
   repete        Boolean                   @default(false)
   repeteQtd     Int?                      // quantidade de repetições
   repetePeriodo  Int?                      // em dias (1, 30, 60, 365)
@@ -155,12 +158,14 @@ model FaturaCartao {
   competencia DateTime
   vencimento DateTime
   valorTotal Decimal @db.Decimal(10,2)
+  valorPago Decimal @default(0) @db.Decimal(10,2)
   fechada Boolean
   paga Boolean
   createdAt DateTime @default(now())
   
   cartao CartaoCredito @relation(fields: [cartaoCreditoId], references: [id])
   transacoes TransacaoCartaoCredito[]
+  pagamentos Transaction[]
   
   @@map("fatura_cartao")
 }

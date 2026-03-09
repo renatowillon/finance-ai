@@ -66,6 +66,7 @@ export function DataTable<
     type: string;
     date: string | number | Date;
     id: string | number;
+    afetaSaldo?: boolean;
   },
   TValue,
 >({ columns, data }: DataTableProps<TData, TValue>) {
@@ -105,6 +106,8 @@ export function DataTable<
 
     const totais = filtrado.reduce(
       (acc, item) => {
+        if (!item.afetaSaldo) return acc;
+
         const valor = Number(item.amount) || 0;
         const pago = "baixado" in item ? item.baixado === true : false;
 

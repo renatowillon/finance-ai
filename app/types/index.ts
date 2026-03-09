@@ -102,6 +102,7 @@ export interface TypeFaturaCartao {
   competencia: Date;
   vencimento: Date;
   valorTotal: number;
+  valorPago: number;
   fechada: boolean;
   paga: boolean;
 }

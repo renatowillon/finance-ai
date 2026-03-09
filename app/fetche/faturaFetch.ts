@@ -10,6 +10,12 @@ interface FaturaFechadaResponse {
   faturaId: string;
 }
 
+interface PagarFaturaPayload {
+  faturaId: string;
+  valorPago: string;
+  bancoId: number;
+}
+
 export async function verificarFaturaFechada(
   payload: FaturaFechadaPayload,
 ): Promise<{ fechada: boolean; faturaId: string }> {
@@ -28,5 +34,15 @@ export async function PegarFaturas(id: string) {
 
 export async function ReabrirFatura(id: string) {
   const response = await axios.post(`/api/fatura/reabrir`, { id });
+  return response.data;
+}
+
+export async function pagarFatura(payload: PagarFaturaPayload) {
+  const response = await axios.post("/api/fatura/pagar", payload);
+  return response.data;
+}
+
+export async function pegarHistoricoFatura(cartaoId: string) {
+  const response = await axios.get(`/api/fatura/historico/${cartaoId}`);
   return response.data;
 }

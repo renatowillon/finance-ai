@@ -1,4 +1,5 @@
 "use client";
+
 import SumaryCard from "@/app/(home)/_components/summary-card";
 import { Loading } from "@/app/_components/loading";
 import { Button } from "@/app/_components/ui/button";
@@ -10,6 +11,8 @@ import {
 } from "@/app/_components/ui/tabs";
 import { TituloPadrao } from "@/app/configuracao/_components/tituloPadrao";
 import { pegarUmCartao } from "@/app/fetche/cartaoFetch";
+import { pegarTransacaoPorCartao } from "@/app/fetche/transacaoCartao";
+import { useMutations } from "@/app/mutetions/transacaoCartaoMutation";
 import {
   TypeCartaoCredito,
   TypeTransacaoCartao,
@@ -18,18 +21,18 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CreditCard, DollarSign } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { DetalheFatura } from "../components/detalheFatura";
-import { pegarTransacaoPorCartao } from "@/app/fetche/transacaoCartao";
-import { AddTransacaoCartao } from "../components/addTransacaoCartao";
 import { useState } from "react";
-import { useMutations } from "@/app/mutetions/transacaoCartaoMutation";
 import { toast } from "sonner";
+import { AddTransacaoCartao } from "../components/addTransacaoCartao";
+import { DetalheFatura } from "../components/detalheFatura";
 import { FaturasFechadas } from "../components/faturasFechadas";
+import { HistoricoPagamentoFatura } from "../components/historicoPagamentoFatura";
 
 const FaturaDetalhada = () => {
   const [openFormCartao, setOpenFormCartao] = useState(false);
   const [transacaoSelecionada, setTransacaoSelecionada] =
     useState<TypeTransacaoCartao>();
+
   const params = useParams();
   const cartaoId = String(params.id);
   const route = useRouter();
@@ -42,7 +45,7 @@ const FaturaDetalhada = () => {
 
   const { data: transacaoCartao } = useQuery({
     queryKey: ["transacaoCartao", cartaoId],
-    queryFn: () => pegarTransacaoPorCartao(cartaoId as string),
+    queryFn: () => pegarTransacaoPorCartao(cartaoId),
   });
 
   const usoLimiteCartao = (transacaoCartao ?? [])
@@ -52,12 +55,14 @@ const FaturaDetalhada = () => {
         total + Number(transacao?.valor),
       0,
     );
+
   const { criarTransacaoCartaoMutation, editarTransacaoCartaoMutation } =
     useMutations();
 
   function AdicionarTransacaoCartao(values: TypeTransacaoCartaoInput) {
     if (transacaoSelecionada) {
       const transacaoAtualizada = transacaoSelecionada;
+
       editarTransacaoCartaoMutation.mutate({
         id: transacaoAtualizada.id,
         transacaoCartao: {
@@ -74,26 +79,29 @@ const FaturaDetalhada = () => {
           totalParcelas: values.totalParcelas,
         },
       });
-      toast.success("Transação atualizada com sucesso");
-    } else {
-      const transacaoNova = { ...values };
-      criarTransacaoCartaoMutation.mutate(transacaoNova);
-      toast.success("Transação adicionada com sucesso");
+
+      toast.success("Transacao atualizada com sucesso");
+      return;
     }
+
+    const transacaoNova = { ...values };
+    criarTransacaoCartaoMutation.mutate(transacaoNova);
+    toast.success("Transacao adicionada com sucesso");
   }
 
   function voltarCartao() {
     route.push("/cartao");
   }
+
   if (isLoading) {
     return <Loading />;
   }
+
   return (
     <div className="w-full space-y-6 p-6">
-      {/* titulo e botão */}
       <div className="flex w-full items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <Button onClick={voltarCartao} variant={"ghost"}>
+          <Button onClick={voltarCartao} variant="ghost">
             <ArrowLeft />
           </Button>
           <TituloPadrao
@@ -115,6 +123,7 @@ const FaturaDetalhada = () => {
           }}
         />
       </div>
+
       {cartao && (
         <div className="flex flex-wrap gap-3 md:grid-cols-[repeat(auto-fit,minmax(200px,2fr))]">
           <SumaryCard
@@ -126,7 +135,7 @@ const FaturaDetalhada = () => {
                 className="text-end text-green-500 md:text-start"
               />
             }
-            amount={cartao?.limite}
+            amount={cartao.limite}
             size="small"
           />
 
@@ -145,46 +154,50 @@ const FaturaDetalhada = () => {
 
           <SumaryCard
             className="w-full flex-grow basis-20 justify-between space-y-1 p-1"
-            title="Disponível"
+            title="Disponivel"
             icon={
               <DollarSign
                 size={16}
                 className="text-end text-green-500 md:text-start"
               />
             }
-            amount={cartao?.limite - usoLimiteCartao}
+            amount={cartao.limite - usoLimiteCartao}
             size="small"
           />
         </div>
       )}
-      <div className="">
-        <Tabs defaultValue="fatAberta" className="">
-          <TabsList className="w-full border bg-azulMuted md:w-auto">
-            <TabsTrigger value="fatAberta" className="text-xs md:text-sm">
-              Fatura Aberta
-            </TabsTrigger>
-            <TabsTrigger value="fatPagamento" className="text-xs md:text-sm">
-              Aguardando Pagamento
-            </TabsTrigger>
-            <TabsTrigger value="fatHistorico" className="text-xs md:text-sm">
-              Histórico
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="fatAberta">
-            <DetalheFatura
-              transacaoSelecionada={(value) => {
-                setTransacaoSelecionada(value);
-                setOpenFormCartao(true);
-              }}
-              cartaoId={cartao?.id}
-            />
-          </TabsContent>
-          <TabsContent value="fatPagamento">
-            <FaturasFechadas />
-          </TabsContent>
-          <TabsContent value="fatHistorico">Histórico</TabsContent>
-        </Tabs>
-      </div>
+
+      <Tabs defaultValue="fatAberta">
+        <TabsList className="w-full border bg-azulMuted md:w-auto">
+          <TabsTrigger value="fatAberta" className="text-xs md:text-sm">
+            Fatura Aberta
+          </TabsTrigger>
+          <TabsTrigger value="fatPagamento" className="text-xs md:text-sm">
+            Aguardando Pagamento
+          </TabsTrigger>
+          <TabsTrigger value="fatHistorico" className="text-xs md:text-sm">
+            Historico
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="fatAberta">
+          <DetalheFatura
+            transacaoSelecionada={(value) => {
+              setTransacaoSelecionada(value);
+              setOpenFormCartao(true);
+            }}
+            cartaoId={cartao?.id}
+          />
+        </TabsContent>
+
+        <TabsContent value="fatPagamento">
+          <FaturasFechadas />
+        </TabsContent>
+
+        <TabsContent value="fatHistorico">
+          <HistoricoPagamentoFatura />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

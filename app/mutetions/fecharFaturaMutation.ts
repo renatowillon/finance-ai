@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { fecharFaturaFetch } from "../fetche/fecharFaturaFetch";
-import { ReabrirFatura } from "../fetche/faturaFetch";
+import { pagarFatura, ReabrirFatura } from "../fetche/faturaFetch";
 
 export const useMutations = () => {
   const queryClient = useQueryClient();
@@ -29,8 +29,32 @@ export const useMutations = () => {
     },
   });
 
+  const pagamentoFaturaMutation = useMutation({
+    mutationFn: ({
+      faturaId,
+      valorPago,
+      bancoId,
+    }: {
+      faturaId: string;
+      valorPago: string;
+      bancoId: number;
+    }) => pagarFatura({ faturaId, valorPago, bancoId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fatura-cartao"] });
+      queryClient.invalidateQueries({
+        queryKey: ["historico-pagamento-fatura"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["saldo"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+    onError: (error) => {
+      console.error("Erro ao pagar fatura: ", error);
+    },
+  });
+
   return {
     fechamentoFaturaMutation,
     reaberturaFaturaMutation,
+    pagamentoFaturaMutation,
   };
 };
