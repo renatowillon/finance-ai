@@ -127,7 +127,11 @@ export function Sidebar({ usuarioPodeAdicionarTransacao }: props) {
   // };
 
   const isPathActive = (href?: string) => {
-    return pathname === href;
+    if (!href) return false;
+    if (href === "/") {
+      return pathname === "/";
+    }
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   const renderMenuItem = (item: MenuItem, level = 0) => {
