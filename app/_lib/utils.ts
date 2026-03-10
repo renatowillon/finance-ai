@@ -15,10 +15,23 @@ export const pegarCategoria = async (id: number) => {
 export const parseMoney = (value: string | number) => {
   if (!value) return 0;
 
-  return Number(
-    String(value)
-      .replace(/[^\d,.-]/g, "") // remove letras (RS), símbolos, espaços
-      .replace(/\./g, "") // remove milhar
-      .replace(",", "."), // decimal
-  );
+  const raw = String(value).trim();
+  const cleaned = raw.replace(/[^\d,.-]/g, "");
+  const hasComma = cleaned.includes(",");
+  const hasDot = cleaned.includes(".");
+
+  if (hasComma && hasDot) {
+    const lastComma = cleaned.lastIndexOf(",");
+    const lastDot = cleaned.lastIndexOf(".");
+    if (lastComma > lastDot) {
+      return Number(cleaned.replace(/\./g, "").replace(",", "."));
+    }
+    return Number(cleaned.replace(/,/g, ""));
+  }
+
+  if (hasComma) {
+    return Number(cleaned.replace(/\./g, "").replace(",", "."));
+  }
+
+  return Number(cleaned.replace(/,/g, ""));
 };
