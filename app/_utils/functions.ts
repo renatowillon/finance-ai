@@ -33,8 +33,8 @@ export function formatarData(date: Date) {
 
 export function formatarCompetencia(data: Date | string) {
   const d = new Date(data);
-  const ano = d.getFullYear();
-  const mes = d.getMonth() + 1;
+  const ano = d.getUTCFullYear();
+  const mes = d.getUTCMonth() + 1;
 
   return `${String(mes).padStart(2, "0")}/${ano}`;
 }

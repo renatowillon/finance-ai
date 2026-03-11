@@ -57,12 +57,12 @@ export const HistoricoPagamentoFatura = () => {
         {historico.map((pagamento: PagamentoFaturaHistorico) => (
           <div
             key={pagamento.id}
-            className="flex flex-col gap-2 rounded-lg border bg-azulMuted p-3 md:flex-row md:items-center md:justify-between"
+            className="flex flex-col gap-2 rounded-lg border-l-8 border-primary bg-azulMuted p-3 md:flex-row md:items-center md:justify-between"
           >
             <div>
               <p className="font-semibold">{pagamento.name}</p>
               <p className="text-xs text-muted-foreground">
-                Competencia{" "}
+                Competência{" "}
                 {dataCompetenciaUtc(pagamento.faturaCartao.competencia)} | Banco{" "}
                 {pagamento.transactionBanco.nome}
               </p>
