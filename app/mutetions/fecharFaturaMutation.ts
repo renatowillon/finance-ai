@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { fecharFaturaFetch } from "../fetche/fecharFaturaFetch";
 import { pagarFatura, ReabrirFatura } from "../fetche/faturaFetch";
+import { toast } from "sonner";
 
 export const useMutations = () => {
   const queryClient = useQueryClient();
@@ -22,9 +23,14 @@ export const useMutations = () => {
 
   const reaberturaFaturaMutation = useMutation({
     mutationFn: ({ id }: { id: string }) => ReabrirFatura(id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["fatura-fechada"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fatura-fechada"] });
+      toast.success("Fatura reaberta com sucesso.");
+    },
     onError: (error) => {
+      toast.error(
+        "Não é possível reabrir uma fatura com pagamentos registrados.",
+      );
       console.error("Erro ao reabrir fatura: ", error);
     },
   });

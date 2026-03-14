@@ -22,11 +22,11 @@ import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { formatCurrency } from "@/app/_utils/currency";
 import { dataCompetenciaUtc, dataFormatada } from "@/app/_utils/functions";
 import { fetchBanco } from "@/app/fetche/bancoFetch";
-import { PegarFaturas } from "@/app/fetche/faturaFetch";
+import { PegarFaturas, pegarHistoricoFatura } from "@/app/fetche/faturaFetch";
 import { pegarTransacaoFatura } from "@/app/fetche/transacaoFaturaFetch";
 import { useMutations } from "@/app/mutetions/fecharFaturaMutation";
 import { TypeBanco, TypeFaturaCartao, TypeTransacaoCartao } from "@/app/types";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Calendar, Lock } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -43,6 +43,7 @@ export const FaturasFechadas = () => {
 
   const params = useParams();
   const cartaoId = String(params.id);
+  const queryCliente = useQueryClient();
 
   const { data: faturasCartao } = useQuery({
     queryKey: ["fatura-cartao", cartaoId],
@@ -60,6 +61,22 @@ export const FaturasFechadas = () => {
     queryFn: () => pegarTransacaoFatura(faturaId),
     enabled: !!faturaId,
   });
+
+  const { data: historicoPagamento = [] } = useQuery({
+    queryKey: ["historico-pagamento-fatura", cartaoId],
+    queryFn: () => pegarHistoricoFatura(cartaoId),
+  });
+
+  function historicoPagamentoFatura(faturaId: string) {
+    const historico = historicoPagamento.filter(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (h: any) => h.faturaCartaoId === faturaId,
+    );
+    return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      historico.reduce((acc: number, item: any) => acc + item.amount, 0) ?? 0
+    );
+  }
 
   const { pagamentoFaturaMutation } = useMutations();
 
@@ -84,15 +101,19 @@ export const FaturasFechadas = () => {
     return Number(
       (
         Number(faturaSelecionada.valorTotal) -
-        Number(faturaSelecionada.valorPago || 0)
+        Number(historicoPagamentoFatura(faturaSelecionada.id) || 0)
       ).toFixed(2),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [faturaSelecionada]);
 
   const abrirModalPagamento = (fatura: TypeFaturaCartao) => {
     setFaturaSelecionada(fatura);
     setValorPagamento(
-      String(Number(fatura.valorTotal) - Number(fatura.valorPago || 0)),
+      String(
+        Number(fatura.valorTotal) -
+          Number(historicoPagamentoFatura(fatura.id) || 0),
+      ),
     );
     setBancoId(null);
     setOpenModalPagamento(true);
@@ -125,6 +146,9 @@ export const FaturasFechadas = () => {
       {
         onSuccess: () => {
           toast.success("Pagamento registrado com sucesso.");
+          queryCliente.invalidateQueries({
+            queryKey: ["historico-pagamento-fatura", cartaoId],
+          });
           setOpenModalPagamento(false);
           setFaturaSelecionada(null);
           setValorPagamento("");
@@ -156,7 +180,8 @@ export const FaturasFechadas = () => {
               {faturasAguardandoPagamento.map((fatura: TypeFaturaCartao) => {
                 const restante = Number(
                   (
-                    Number(fatura.valorTotal) - Number(fatura.valorPago || 0)
+                    Number(fatura.valorTotal) -
+                    Number(historicoPagamentoFatura(fatura.id) || 0)
                   ).toFixed(2),
                 );
 
@@ -182,7 +207,8 @@ export const FaturasFechadas = () => {
                           </div>
                         </div>
                         <div className="pl-3 text-xs text-muted-foreground">
-                          Pago: {formatCurrency(Number(fatura.valorPago || 0))}{" "}
+                          Pago:{" "}
+                          {formatCurrency(historicoPagamentoFatura(fatura.id))}{" "}
                           de {formatCurrency(Number(fatura.valorTotal))}
                         </div>
                         <div className="flex w-full items-center justify-center gap-3 md:hidden">

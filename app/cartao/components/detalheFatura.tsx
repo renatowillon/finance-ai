@@ -201,8 +201,10 @@ export const DetalheFatura = ({ cartaoId, transacaoSelecionada }: Props) => {
   function reabrirFatura(id: string) {
     try {
       reaberturaFaturaMutation.mutate({ id });
-      toast.success("Fatura reaberta com sucesso.");
     } catch (error) {
+      toast.error(
+        "Erro ao reabrir fatura, apague as faturas pagas referente a essa fatura.",
+      );
       console.error("Erro ao reabrir fatura: ", error);
     }
   }

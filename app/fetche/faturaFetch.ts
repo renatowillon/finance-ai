@@ -46,3 +46,11 @@ export async function pegarHistoricoFatura(cartaoId: string) {
   const response = await axios.get(`/api/fatura/historico/${cartaoId}`);
   return response.data;
 }
+
+export async function AtualizarFaturaQuandoDeletarPagamento(faturaId: string) {
+  const response = await axios.post(
+    `/api/fatura/atualizarFaturaQuandoDeletarTransacao`,
+    { faturaId },
+  );
+  return response.data;
+}

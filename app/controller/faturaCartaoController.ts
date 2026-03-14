@@ -210,8 +210,15 @@ export const pagarFatura = async ({
     }
 
     const valorTotalFatura = Number(fatura.valorTotal);
-    const valorJaPago = Number(fatura.valorPago);
-    const valorRestante = Number((valorTotalFatura - valorJaPago).toFixed(2));
+
+    const valorJaPago = await transacao.transaction.aggregate({
+      where: { faturaCartaoId: faturaId },
+      _sum: { amount: true },
+    });
+    const valorJaPagoAmount = valorJaPago._sum.amount ?? 0;
+    const valorRestante = Number(
+      (valorTotalFatura - Number(valorJaPagoAmount)).toFixed(2),
+    );
 
     if (valorRestante <= 0) {
       throw new Error("Essa fatura ja esta totalmente paga.");
@@ -250,7 +257,9 @@ export const pagarFatura = async ({
       },
     });
 
-    const novoValorPago = Number((valorJaPago + valorPagamento).toFixed(2));
+    const novoValorPago = Number(
+      (Number(valorJaPagoAmount) + valorPagamento).toFixed(2),
+    );
     const faturaAtualizada = await transacao.faturaCartao.update({
       where: { id: fatura.id },
       data: {
@@ -304,5 +313,27 @@ export const pegarHistoricoPagamentoCartao = async (
     orderBy: {
       date: "desc",
     },
+  });
+};
+
+export const AtualizarFaturaQuandoDeletarTransacao = async (
+  faturaId: string,
+) => {
+  const fatura = await db.faturaCartao.findUnique({
+    where: { id: faturaId },
+  });
+
+  if (!fatura) {
+    throw new Error("Fatura nao encontrada");
+  }
+
+  const valorPagoFatura = await db.transaction.aggregate({
+    where: { faturaCartaoId: faturaId },
+    _sum: { amount: true },
+  });
+
+  return await db.faturaCartao.update({
+    where: { id: faturaId },
+    data: { paga: false, valorPago: valorPagoFatura._sum.amount ?? 0 },
   });
 };
